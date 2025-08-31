@@ -1,0 +1,2218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎌 日语学习Multi-Agent系统</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* 新增：顶部导航栏 */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-brand h3 {
+            margin: 0;
+            color: #667eea;
+        }
+
+        .backend-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .status-online {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-offline {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            background: #f0f0f0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            margin-top: 60px; /* 新增：为导航栏留出空间 */
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 20px;
+            height: calc(100vh - 200px);
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            overflow-y: auto;
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar h3 {
+            margin-bottom: 15px;
+            color: #4a5568;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+
+        .chat-area {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .agent-card {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .agent-card.active {
+            border-color: #4299e1;
+            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+        }
+
+        .agent-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .agent-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .agent-role {
+            font-size: 0.8em;
+            color: #718096;
+        }
+
+        .agent-emotion {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 16px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .message-content {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            max-width: 70%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+        }
+
+        .message-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.8em;
+            color: #718096;
+        }
+
+        .message.user .message-meta {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .thinking-indicator {
+            display: none;
+            padding: 10px 20px;
+            background: #fff3cd;
+            border-radius: 20px;
+            margin: 10px 0;
+            font-style: italic;
+            color: #856404;
+        }
+
+        .thinking-indicator.active {
+            display: block;
+            animation: pulse 1.5s infinite;
+        }
+
+        .chat-input {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .input-field {
+            flex: 1;
+            min-height: 50px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            resize: none;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #4299e1;
+        }
+
+        .send-btn, .voice-btn {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .voice-btn {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        }
+
+        .send-btn:hover, .voice-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .learning-stats {
+            background: linear-gradient(135deg, #e6fffa 0%, #b2f5ea 100%);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #48bb78 0%, #38a169 100%);
+            transition: width 0.3s ease;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            padding: 10px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .action-btn:hover {
+            border-color: #4299e1;
+            background: #ebf8ff;
+        }
+
+        .scene-selector {
+            margin-bottom: 20px;
+        }
+
+        .scene-selector select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .collaboration-panel {
+            background: linear-gradient(135deg, #fef5e7 0%, #fed7aa 100%);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .collaboration-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .agent-participation {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .participant-badge {
+            background: #4299e1;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+        }
+
+        .novel-creation {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .novel-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .novel-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            background: #48bb78;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        .novel-progress {
+            background: white;
+            border-radius: 5px;
+            padding: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.9em;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #718096;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .personality-sliders {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slider-group label {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .slider {
+            width: 100%;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-weight: bold;
+            color: #4299e1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+
+        .achievements {
+            background: linear-gradient(135deg, #faf5ff 0%, #e9d5ff 100%);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .achievement-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .achievement-item.unlocked {
+            background: rgba(72, 187, 120, 0.1);
+        }
+
+        .achievement-icon {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+        }
+
+        .notification.warning {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .bounce {
+            animation: bounce 1s;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 250px 1fr 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+                height: calc(100vh - 150px);
+            }
+
+            .sidebar {
+                height: auto;
+                max-height: 200px;
+            }
+
+            .agent-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 新增：顶部导航栏 -->
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <h3>🎌 日语学习系统</h3>
+            <span id="backendStatus" class="backend-status status-offline">🟡 检测中...</span>
+        </div>
+        <div class="nav-links">
+            <a href="#" onclick="navigateToPage('chat')">💬 对话</a>
+            <a href="pages/agents.html">🤖 智能体</a>
+            <a href="pages/learning.html">📚 学习</a>
+            <a href="pages/novel.html">📖 小说</a>
+            <a href="pages/progress.html">📊 进度</a>
+            <a href="pages/achievements.html">🏆 成就</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎌 日语学习Multi-Agent系统</h1>
+            <p>与AI智能体一起学习日语，体验协作学习的乐趣</p>
+        </div>
+
+        <div class="main-layout">
+            <!-- 左侧边栏 - 智能体管理 -->
+            <div class="sidebar">
+                <h3><i class="fas fa-users"></i> 智能体团队</h3>
+                <div class="agent-grid">
+                    <div class="agent-card active" data-agent="tanaka">
+                        <div class="agent-emotion">😐</div>
+                        <div class="agent-avatar" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">👨‍🏫</div>
+                        <div class="agent-name">田中先生</div>
+                        <div class="agent-role">语法专家</div>
+                    </div>
+                    <div class="agent-card" data-agent="koumi">
+                        <div class="agent-emotion">😊</div>
+                        <div class="agent-avatar" style="background: linear-gradient(135deg, #ed64a6 0%, #d53f8c 100%);">👧</div>
+                        <div class="agent-name">小美</div>
+                        <div class="agent-role">对话伙伴</div>
+                    </div>
+                    <div class="agent-card" data-agent="ai">
+                        <div class="agent-emotion">🤔</div>
+                        <div class="agent-avatar" style="background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);">🤖</div>
+                        <div class="agent-name">アイ</div>
+                        <div class="agent-role">分析师</div>
+                    </div>
+                    <div class="agent-card" data-agent="yamada">
+                        <div class="agent-emotion">😌</div>
+                        <div class="agent-avatar" style="background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);">🎌</div>
+                        <div class="agent-name">山田先生</div>
+                        <div class="agent-role">文化专家</div>
+                    </div>
+                    <div class="agent-card" data-agent="sato">
+                        <div class="agent-emotion">😤</div>
+                        <div class="agent-avatar" style="background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);">🎯</div>
+                        <div class="agent-name">佐藤教练</div>
+                        <div class="agent-role">考试专家</div>
+                    </div>
+                    <div class="agent-card" data-agent="membot">
+                        <div class="agent-emotion">🧠</div>
+                        <div class="agent-avatar" style="background: linear-gradient(135deg, #805ad5 0%, #6b46c1 100%);">🤖</div>
+                        <div class="agent-name">记忆管家</div>
+                        <div class="agent-role">学习记录</div>
+                    </div>
+                </div>
+
+                <div class="scene-selector">
+                    <label><strong>选择学习场景</strong></label>
+                    <select id="sceneSelect">
+                        <option value="grammar">语法学习</option>
+                        <option value="conversation">日常对话</option>
+                        <option value="restaurant">餐厅场景</option>
+                        <option value="shopping">购物场景</option>
+                        <option value="interview">面试准备</option>
+                        <option value="culture">文化探索</option>
+                        <option value="jlpt">JLPT考试</option>
+                    </select>
+                </div>
+
+                <div class="quick-actions">
+                    <button class="action-btn" onclick="startGrammarCheck()">
+                        <i class="fas fa-spell-check"></i><br>语法检查
+                    </button>
+                    <button class="action-btn" onclick="startVocabExpansion()">
+                        <i class="fas fa-book"></i><br>词汇扩展
+                    </button>
+                    <button class="action-btn" onclick="startCulturalContext()">
+                        <i class="fas fa-torii-gate"></i><br>文化背景
+                    </button>
+                    <button class="action-btn" onclick="startJLPTPrep()">
+                        <i class="fas fa-graduation-cap"></i><br>考试准备
+                    </button>
+                </div>
+
+                <button class="btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="openAgentCreator()">
+                    <i class="fas fa-plus"></i> 创建自定义智能体
+                </button>
+
+                <button class="btn-primary" style="width: 100%;" onclick="openSceneEditor()">
+                    <i class="fas fa-edit"></i> 编辑学习场景
+                </button>
+            </div>
+
+            <!-- 中央聊天区域 -->
+            <div class="chat-area">
+                <div class="collaboration-panel">
+                    <div class="collaboration-status">
+                        <strong>📝 协作状态</strong>
+                        <span id="activeAgentsCount">1 个智能体活跃</span>
+                    </div>
+                    <div class="agent-participation" id="activeAgentsList">
+                        <span class="participant-badge">田中先生</span>
+                    </div>
+                </div>
+
+                <div class="thinking-indicator" id="thinkingIndicator">
+                    <i class="fas fa-brain"></i> 智能体正在思考中...
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message">
+                        <div class="message-avatar" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">👨‍🏫</div>
+                        <div class="message-content">
+                            <div class="message-meta">
+                                <strong>田中先生</strong>
+                                <span>刚刚</span>
+                            </div>
+                            <div>こんにちは！日本語の学習を始めましょう。まず、あなたの日本語レベルを教えてください。初級、中級、上級のどれですか？</div>
+                            <div style="margin-top: 8px; font-size: 0.9em; color: #666;">
+                                <strong>中文翻译：</strong>你好！让我们开始学习日语吧。首先，请告诉我你的日语水平。是初级、中级还是高级？
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input">
+                    <div class="input-group">
+                        <textarea id="messageInput" class="input-field" placeholder="输入你的日语或中文..." rows="2"></textarea>
+                        <button class="voice-btn" onclick="startVoiceInput()" title="语音输入">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button class="send-btn" onclick="sendMessage()" title="发送消息">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧边栏 - 学习进度和功能 -->
+            <div class="sidebar">
+                <div class="learning-stats">
+                    <h3><i class="fas fa-chart-line"></i> 学习进度</h3>
+                    <div class="stat-item">
+                        <span>语法掌握度</span>
+                        <span id="grammarScore">65%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 65%;"></div>
+                    </div>
+
+                    <div class="stat-item">
+                        <span>词汇量</span>
+                        <span id="vocabScore">1,250 词</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 45%;"></div>
+                    </div>
+
+                    <div class="stat-item">
+                        <span>文化理解</span>
+                        <span id="cultureScore">40%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 40%;"></div>
+                    </div>
+
+                    <div class="stat-item">
+                        <span>今日学习时间</span>
+                        <span id="todayTime">45 分钟</span>
+                    </div>
+                </div>
+
+                <div class="achievements">
+                    <h3><i class="fas fa-trophy"></i> 成就系统</h3>
+                    <div class="achievement-item unlocked">
+                        <div class="achievement-icon">🏆</div>
+                        <div>
+                            <strong>初学者</strong><br>
+                            <small>完成第一次对话</small>
+                        </div>
+                    </div>
+                    <div class="achievement-item unlocked">
+                        <div class="achievement-icon">📚</div>
+                        <div>
+                            <strong>词汇学者</strong><br>
+                            <small>学会100个单词</small>
+                        </div>
+                    </div>
+                    <div class="achievement-item">
+                        <div class="achievement-icon">🎌</div>
+                        <div>
+                            <strong>文化专家</strong><br>
+                            <small>完成10个文化主题</small>
+                        </div>
+                    </div>
+                    <div class="achievement-item">
+                        <div class="achievement-icon">🥇</div>
+                        <div>
+                            <strong>JLPT挑战者</strong><br>
+                            <small>通过模拟考试</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="novel-creation">
+                    <h3><i class="fas fa-feather-alt"></i> 协作小说</h3>
+                    <div class="novel-controls">
+                        <button class="novel-btn" onclick="startNovelBrainstorm()">开始创作</button>
+                        <button class="novel-btn" onclick="viewNovelHistory()">查看历史</button>
+                    </div>
+                    <div class="novel-progress" id="novelProgress">
+                        <p><strong>当前主题：</strong>都市奇幻冒险</p>
+                        <p><strong>参与智能体：</strong>田中先生, 小美, 山田先生</p>
+                        <p><strong>创作进度：</strong>第3章 - 神秘的咖啡店</p>
+                        <hr style="margin: 10px 0;">
+                        <p style="font-style: italic;">"在涩谷的小巷深处，隐藏着一家只在雨夜才会出现的咖啡店..."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 智能体创建模态框 -->
+    <div class="modal" id="agentCreatorModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> 创建自定义智能体</h3>
+                <button class="close-btn" onclick="closeModal('agentCreatorModal')">&times;</button>
+            </div>
+
+            <form id="agentCreatorForm">
+                <div class="form-group">
+                    <label>智能体名称</label>
+                    <input type="text" id="agentName" placeholder="例如: 樱花老师" required>
+                </div>
+
+                <div class="form-group">
+                    <label>角色设定</label>
+                    <textarea id="agentRole" placeholder="例如: 温柔的动漫文化专家，喜欢用动漫例子教学"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>专业领域</label>
+                    <select id="agentExpertise" multiple>
+                        <option value="grammar">语法</option>
+                        <option value="vocabulary">词汇</option>
+                        <option value="culture">文化</option>
+                        <option value="anime">动漫</option>
+                        <option value="business">商务</option>
+                        <option value="literature">文学</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>性格特征调节</label>
+                    <div class="personality-sliders">
+                        <div class="slider-group">
+                            <label>严谨程度</label>
+                            <input type="range" class="slider" id="strictness" min="1" max="10" value="5">
+                            <div class="slider-value">5/10</div>
+                        </div>
+                        <div class="slider-group">
+                            <label>幽默感</label>
+                            <input type="range" class="slider" id="humor" min="1" max="10" value="5">
+                            <div class="slider-value">5/10</div>
+                        </div>
+                        <div class="slider-group">
+                            <label>耐心度</label>
+                            <input type="range" class="slider" id="patience" min="1" max="10" value="7">
+                            <div class="slider-value">7/10</div>
+                        </div>
+                        <div class="slider-group">
+                            <label>创造力</label>
+                            <input type="range" class="slider" id="creativity" min="1" max="10" value="6">
+                            <div class="slider-value">6/10</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>说话风格</label>
+                    <select id="speakingStyle">
+                        <option value="formal">正式</option>
+                        <option value="casual">随意</option>
+                        <option value="friendly">友好</option>
+                        <option value="professional">专业</option>
+                        <option value="playful">活泼</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>头像表情</label>
+                    <select id="agentAvatar">
+                        <option value="👩‍🏫">👩‍🏫 女老师</option>
+                        <option value="👨‍🏫">👨‍🏫 男老师</option>
+                        <option value="👩‍🎓">👩‍🎓 女学生</option>
+                        <option value="👨‍🎓">👨‍🎓 男学生</option>
+                        <option value="🧑‍💼">🧑‍💼 商务人士</option>
+                        <option value="👩‍🎨">👩‍🎨 艺术家</option>
+                        <option value="🧙‍♀️">🧙‍♀️ 智者</option>
+                        <option value="🤖">🤖 AI助手</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%;">
+                    <i class="fas fa-plus"></i> 创建智能体
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 场景编辑器模态框 -->
+    <div class="modal" id="sceneEditorModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> 编辑学习场景</h3>
+                <button class="close-btn" onclick="closeModal('sceneEditorModal')">&times;</button>
+            </div>
+
+            <form id="sceneEditorForm">
+                <div class="form-group">
+                    <label>场景名称</label>
+                    <input type="text" id="sceneName" placeholder="例如: 东京咖啡店" required>
+                </div>
+
+                <div class="form-group">
+                    <label>场景描述</label>
+                    <textarea id="sceneDescription" placeholder="详细描述这个场景的环境、氛围和背景..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>学习目标</label>
+                    <textarea id="learningObjectives" placeholder="这个场景主要帮助学习什么内容？"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>难度级别</label>
+                    <select id="sceneDifficulty">
+                        <option value="beginner">初级</option>
+                        <option value="intermediate">中级</option>
+                        <option value="advanced">高级</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>推荐智能体</label>
+                    <select id="recommendedAgents" multiple>
+                        <option value="tanaka">田中先生</option>
+                        <option value="koumi">小美</option>
+                        <option value="ai">アイ</option>
+                        <option value="yamada">山田先生</option>
+                        <option value="sato">佐藤教练</option>
+                        <option value="membot">记忆管家</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>场景规则</label>
+                    <textarea id="sceneRules" placeholder="在这个场景中的特殊规则或限制..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary" style="width: 100%;">
+                    <i class="fas fa-save"></i> 保存场景
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 小说创作模态框 -->
+    <div class="modal" id="novelModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-feather-alt"></i> 协作小说创作</h3>
+                <button class="close-btn" onclick="closeModal('novelModal')">&times;</button>
+            </div>
+
+            <div id="novelContent">
+                <div class="form-group">
+                    <label>选择创作主题</label>
+                    <select id="novelTheme">
+                        <option value="urban_fantasy">都市奇幻</option>
+                        <option value="school_life">校园生活</option>
+                        <option value="historical">历史剧</option>
+                        <option value="sci_fi">科幻未来</option>
+                        <option value="romance">浪漫爱情</option>
+                        <option value="mystery">悬疑推理</option>
+                    </select>
+                </div>
+
+                <div class="collaboration-panel" style="margin-bottom: 20px;">
+                    <div class="collaboration-status">
+                        <strong>参与智能体</strong>
+                        <button class="btn-primary" style="padding: 5px 10px; font-size: 0.8em;" onclick="startBrainstorm()">
+                            开始头脑风暴
+                        </button>
+                    </div>
+                    <div class="agent-participation">
+                        <span class="participant-badge">田中先生 (情节设计)</span>
+                        <span class="participant-badge">小美 (对话润色)</span>
+                        <span class="participant-badge">山田先生 (文化背景)</span>
+                    </div>
+                </div>
+
+                <div id="novelWorkspace" style="background: #f8f9fa; padding: 20px; border-radius: 10px; max-height: 400px; overflow-y: auto;">
+                    <div class="message">
+                        <div class="message-avatar" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">👨‍🏫</div>
+                        <div class="message-content">
+                            <div class="message-meta">
+                                <strong>田中先生</strong>
+                                <span>创意构思</span>
+                            </div>
+                            <div>我建议我们创作一个关于时空穿越的故事。主角是一名现代的日语学生，意外穿越到了江户时代...</div>
+                        </div>
+                    </div>
+
+                    <div class="message">
+                        <div class="message-avatar" style="background: linear-gradient(135deg, #ed64a6 0%, #d53f8c 100%);">👧</div>
+                        <div class="message-content">
+                            <div class="message-meta">
+                                <strong>小美</strong>
+                                <span>角色设计</span>
+                            </div>
+                            <div>哇！这个想法太棒了！主角可以是个爱好历史的女孩子，名字叫美咲。她在穿越后遇到一个武士...</div>
+                        </div>
+                    </div>
+
+                    <div class="message">
+                        <div class="message-avatar" style="background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);">🎌</div>
+                        <div class="message-content">
+                            <div class="message-meta">
+                                <strong>山田先生</strong>
+                                <span>历史背景</span>
+                            </div>
+                            <div>很好的设定！我们可以设定在德川幕府后期，那时正值开国前夕，社会变革即将来临，这样能创造很多戏剧冲突...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button class="btn-primary" onclick="continueWriting()" style="flex: 1;">
+                        <i class="fas fa-pen"></i> 继续创作
+                    </button>
+                    <button class="btn-primary" onclick="exportNovel()" style="flex: 1;">
+                        <i class="fas fa-download"></i> 导出小说
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通知系统 -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // 全局变量
+        let currentAgents = new Set(['tanaka']);
+        let chatHistory = [];
+        let isThinking = false;
+        let currentScene = 'grammar';
+        let voiceRecognition = null;
+        let learningStats = {
+            grammar: 65,
+            vocabulary: 1250,
+            culture: 40,
+            todayTime: 45
+        };
+
+        // 新增：后端API配置
+        const API_BASE_URL = 'http://localhost:8000';
+        let backendConnected = false;
+
+        // 智能体配置
+        const agents = {
+            tanaka: {
+                name: '田中先生',
+                role: '语法专家',
+                avatar: '👨‍🏫',
+                personality: { strict: 8, patient: 6, humor: 3 },
+                expertise: ['grammar', 'formal_language'],
+                speaking_style: 'formal',
+                emotions: ['😐', '🤔', '😤', '😊', '👍']
+            },
+            koumi: {
+                name: '小美',
+                role: '对话伙伴',
+                avatar: '👧',
+                personality: { strict: 2, patient: 9, humor: 8 },
+                expertise: ['conversation', 'casual_language', 'youth_culture'],
+                speaking_style: 'casual',
+                emotions: ['😊', '😄', '😍', '🤗', '😉']
+            },
+            ai: {
+                name: 'アイ',
+                role: '分析师',
+                avatar: '🤖',
+                personality: { strict: 5, patient: 7, humor: 4 },
+                expertise: ['analysis', 'personalization', 'data'],
+                speaking_style: 'professional',
+                emotions: ['🤔', '💡', '📊', '🔍', '⚡']
+            },
+            yamada: {
+                name: '山田先生',
+                role: '文化专家',
+                avatar: '🎌',
+                personality: { strict: 4, patient: 8, humor: 7 },
+                expertise: ['culture', 'history', 'traditions'],
+                speaking_style: 'storytelling',
+                emotions: ['😌', '🎎', '⛩️', '🍃', '📿']
+            },
+            sato: {
+                name: '佐藤教练',
+                role: '考试专家',
+                avatar: '🎯',
+                personality: { strict: 9, patient: 5, humor: 2 },
+                expertise: ['jlpt', 'testing', 'strategy'],
+                speaking_style: 'motivational',
+                emotions: ['😤', '💪', '🏆', '⚡', '🔥']
+            },
+            membot: {
+                name: '记忆管家',
+                role: '学习记录',
+                avatar: '🧠',
+                personality: { strict: 6, patient: 10, humor: 5 },
+                expertise: ['memory', 'progress', 'scheduling'],
+                speaking_style: 'systematic',
+                emotions: ['🧠', '📚', '⏰', '💾', '📈']
+            }
+        };
+
+        // 场景配置
+        const scenes = {
+            grammar: {
+                name: '语法学习',
+                description: '专注于日语语法规则的学习和练习',
+                recommended_agents: ['tanaka', 'ai', 'membot'],
+                difficulty: 'all_levels'
+            },
+            conversation: {
+                name: '日常对话',
+                description: '练习日常生活中的对话技巧',
+                recommended_agents: ['koumi', 'yamada', 'ai'],
+                difficulty: 'beginner_intermediate'
+            },
+            restaurant: {
+                name: '餐厅场景',
+                description: '在日式餐厅点餐和用餐的情境对话',
+                recommended_agents: ['koumi', 'yamada'],
+                difficulty: 'beginner'
+            },
+            shopping: {
+                name: '购物场景',
+                description: '在商店购物时的日语表达',
+                recommended_agents: ['koumi', 'ai'],
+                difficulty: 'beginner'
+            },
+            interview: {
+                name: '面试准备',
+                description: '商务日语和面试技巧训练',
+                recommended_agents: ['sato', 'tanaka', 'ai'],
+                difficulty: 'advanced'
+            },
+            culture: {
+                name: '文化探索',
+                description: '深入了解日本文化和历史',
+                recommended_agents: ['yamada', 'koumi'],
+                difficulty: 'all_levels'
+            },
+            jlpt: {
+                name: 'JLPT考试',
+                description: '针对JLPT考试的专门训练',
+                recommended_agents: ['sato', 'tanaka', 'membot'],
+                difficulty: 'all_levels'
+            }
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            checkBackendConnection();
+            initializeEventListeners();
+            initializeVoiceRecognition();
+            startPeriodicUpdates();
+        });
+
+        // 新增：检查后端连接
+        async function checkBackendConnection() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/health`);
+                if (response.ok) {
+                    backendConnected = true;
+                    updateBackendStatus(true);
+                    showNotification('✅ 后端连接成功，真实AI对话已启用！', 'success');
+                } else {
+                    throw new Error('Backend not responding');
+                }
+            } catch (error) {
+                backendConnected = false;
+                updateBackendStatus(false);
+                showNotification('⚠️ 后端未连接，使用模拟对话模式', 'warning');
+                console.error('Backend connection failed:', error);
+            }
+        }
+
+        // 新增：更新后端状态显示
+        function updateBackendStatus(isOnline) {
+            const statusElement = document.getElementById('backendStatus');
+            if (isOnline) {
+                statusElement.textContent = '🟢 AI在线';
+                statusElement.className = 'backend-status status-online';
+            } else {
+                statusElement.textContent = '🟡 模拟模式';
+                statusElement.className = 'backend-status status-offline';
+            }
+        }
+
+        // 新增：页面导航函数
+        function navigateToPage(page) {
+            switch(page) {
+                case 'chat':
+                    // 已经在聊天页面，滚动到聊天区域
+                    document.querySelector('.chat-area').scrollIntoView({ behavior: 'smooth' });
+                    break;
+                default:
+                    showNotification('页面跳转功能开发中...', 'info');
+            }
+        }
+
+        // 事件监听器初始化
+        function initializeEventListeners() {
+            // 智能体卡片点击
+            document.querySelectorAll('.agent-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const agentId = this.dataset.agent;
+                    toggleAgent(agentId);
+                });
+            });
+
+            // 场景选择
+            document.getElementById('sceneSelect').addEventListener('change', function() {
+                changeScene(this.value);
+            });
+
+            // 发送消息
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // 表单提交
+            document.getElementById('agentCreatorForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                createCustomAgent();
+            });
+
+            document.getElementById('sceneEditorForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveCustomScene();
+            });
+
+            // 滑块更新
+            document.querySelectorAll('.slider').forEach(slider => {
+                slider.addEventListener('input', function() {
+                    const valueDisplay = this.parentNode.querySelector('.slider-value');
+                    valueDisplay.textContent = this.value + '/10';
+                });
+            });
+        }
+
+        // 切换智能体激活状态
+        function toggleAgent(agentId) {
+            const card = document.querySelector(`.agent-card[data-agent="${agentId}"]`);
+
+            if (currentAgents.has(agentId)) {
+                if (currentAgents.size > 1) {
+                    currentAgents.delete(agentId);
+                    card.classList.remove('active');
+                    showNotification(`${agents[agentId].name} 已离开对话`, 'info');
+                } else {
+                    showNotification('至少需要保持一个智能体在线！', 'warning');
+                    return;
+                }
+            } else {
+                currentAgents.add(agentId);
+                card.classList.add('active');
+                showNotification(`${agents[agentId].name} 加入了对话`, 'success');
+
+                // 智能体加入时的欢迎消息
+                setTimeout(() => {
+                    const joinMessage = getAgentJoinMessage(agentId);
+                    addMessage(agentId, joinMessage);
+                }, 500);
+            }
+
+            updateActiveAgentsDisplay();
+        }
+
+        // 获取智能体加入消息
+        function getAgentJoinMessage(agentId) {
+            const joinMessages = {
+                tanaka: "失礼します。田中です。皆さんの日本語学習をお手伝いさせていただきます。",
+                koumi: "やっほー！小美だよ～！一緒に楽しく日本語を練習しよう！",
+                ai: "こんにちは、アイです。データ分析を通じて、あなたの学習をサポートします。",
+                yamada: "こんにちは。山田と申します。日本の文化について、色々とお話ししましょう。",
+                sato: "佐藤だ！試験合格を目指して、しっかりと練習するぞ！",
+                membot: "学習記録システム起動。あなたの進歩を記録・分析いたします。"
+            };
+            return joinMessages[agentId] || `${agents[agentId].name}が参加しました。`;
+        }
+
+        // 更新活跃智能体显示
+        function updateActiveAgentsDisplay() {
+            const countElement = document.getElementById('activeAgentsCount');
+            const listElement = document.getElementById('activeAgentsList');
+
+            countElement.textContent = `${currentAgents.size} 个智能体活跃`;
+
+            listElement.innerHTML = '';
+            currentAgents.forEach(agentId => {
+                const badge = document.createElement('span');
+                badge.className = 'participant-badge';
+                badge.textContent = agents[agentId].name;
+                listElement.appendChild(badge);
+            });
+        }
+
+        // 发送消息
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            // 添加用户消息
+            addMessage('user', message);
+            input.value = '';
+
+            // 显示思考指示器
+            showThinkingIndicator();
+
+            // 处理消息
+            setTimeout(() => {
+                processMessage(message);
+            }, 1000);
+        }
+
+        // 修改：处理消息并生成智能体回应
+        async function processMessage(userMessage) {
+            if (backendConnected) {
+                // 真实API调用
+                await processMessageWithAPI(userMessage);
+            } else {
+                // 模拟响应
+                await processMessageMock(userMessage);
+            }
+        }
+
+        // 新增：真实API调用处理
+        // async function processMessageWithAPI(userMessage) {
+        //     try {
+        //         const activeAgentsList = Array.from(currentAgents);
+        //
+        //         for (const agentId of activeAgentsList) {
+        //             const requestBody = {
+        //                 content: userMessage,
+        //                 user_id: "demo_user",
+        //                 session_id: "session_" + Date.now(),
+        //                 agent_name: agents[agentId].name,
+        //                 scene_context: currentScene
+        //             };
+        //
+        //             const response = await fetch(`${API_BASE_URL}/api/v1/chat/send`, {
+        //                 method: 'POST',
+        //                 headers: {
+        //                     'Content-Type': 'application/json; charset=utf-8',
+        //                     'Accept': 'application/json'
+        //                 },
+        //                 body: JSON.stringify(requestBody)
+        //             });
+        //
+        //             if (response.ok) {
+        //                 const data = await response.json();
+        //
+        //                 // 延迟显示回应以模拟思考时间
+        //                 setTimeout(() => {
+        //                     addMessage(agentId, data.response || "抱歉，我现在无法回答。");
+        //                     updateAgentEmotion(agentId);
+        //
+        //                     // 显示学习点
+        //                     if (data.learning_points && data.learning_points.length > 0) {
+        //                         showNotification(`📚 学习点: ${data.learning_points.join(', ')}`, 'info');
+        //                     }
+        //                 }, (activeAgentsList.indexOf(agentId) * 1000) + 500);
+        //
+        //             } else {
+        //                 const errorText = await response.text();
+        //                 console.error('API调用失败:', response.status, errorText);
+        //                 // 回退到模拟响应
+        //                 setTimeout(() => {
+        //                     const mockResponse = generateAgentResponse(agentId, userMessage);
+        //                     addMessage(agentId, mockResponse + "\n\n*[API调用失败，使用模拟响应]*");
+        //                     updateAgentEmotion(agentId);
+        //                 }, (activeAgentsList.indexOf(agentId) * 1000) + 500);
+        //             }
+        //         }
+        //
+        //         // 隐藏思考指示器
+        //         setTimeout(() => {
+        //             hideThinkingIndicator();
+        //             updateLearningProgress();
+        //         }, activeAgentsList.length * 1000 + 1000);
+        //
+        //     } catch (error) {
+        //         console.error('API请求错误:', error);
+        //         showNotification('网络错误，切换到模拟模式', 'warning');
+        //         await processMessageMock(userMessage);
+        //     }
+        // }
+
+        // ✅ 按方案A：前端改用 message 字段；scene_context 保证是字符串
+        async function processMessageWithAPI(userMessage) {
+            try {
+                const activeAgentsList = Array.from(currentAgents);
+
+                // 逐个智能体并行请求 + 逐个延迟展示
+                for (const [idx, agentId] of activeAgentsList.entries()) {
+                    // 构造正确的请求体（后端要求 message + scene_context 为字符串）
+                    const requestBody = {
+                        message: String(userMessage), // ⚠️ 必须叫 message
+                        user_id: "demo_user",
+                        session_id: "session_" + Date.now(),
+                        agent_name: agents[agentId].name,
+                        scene_context:
+                            (typeof currentScene === "string" && currentScene.trim() !== "")
+                                ? currentScene
+                                : "general" // 给个兜底，避免非字符串导致 422
+                    };
+
+                    // 发送请求
+                    const response = await fetch(`${API_BASE_URL}/api/v1/chat/send`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json; charset=utf-8",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    if (response.ok) {
+                        // 成功：解析 JSON
+                        const data = await response.json();
+
+                        // 延迟显示回应以模拟思考时间（按序排队）
+                        setTimeout(() => {
+                            // 1) 智能体回复
+                            addMessage(agentId, data.response || "抱歉，我现在无法回答。");
+
+                            // 2) 更新情绪
+                            updateAgentEmotion(agentId);
+
+                            // 3) 学习点
+                            if (Array.isArray(data.learning_points) && data.learning_points.length > 0) {
+                                showNotification(`📚 学习点: ${data.learning_points.join(", ")}`, "info");
+                            }
+
+                            // 4) 建议
+                            if (Array.isArray(data.suggestions) && data.suggestions.length > 0) {
+                                showNotification(`💡 建议: ${data.suggestions.join(", ")}`, "success");
+                            }
+                        }, idx * 1000 + 500);
+
+                    } else {
+                        // 失败：尽量解析后端错误（JSON 优先，退回文本）
+                        let errorPayload;
+                        try {
+                            errorPayload = await response.clone().json();
+                        } catch {
+                            errorPayload = await response.text();
+                        }
+                        console.error("API调用失败:", response.status, errorPayload);
+
+                        // 回退到模拟响应
+                        setTimeout(() => {
+                            const mockResponse = generateAgentResponse(agentId, userMessage);
+                            addMessage(agentId, mockResponse + "\n\n*[API调用失败，使用模拟响应]*");
+                            updateAgentEmotion(agentId);
+                        }, idx * 1000 + 500);
+                    }
+                }
+
+                // 所有代理显示完后，收尾
+                setTimeout(() => {
+                    hideThinkingIndicator?.();
+                    updateLearningProgress?.();
+                }, activeAgentsList.length * 1000 + 1000);
+
+            } catch (error) {
+                console.error("API请求错误:", error);
+                showNotification("网络错误，切换到模拟模式", "warning");
+                await processMessageMock(userMessage);
+            }
+        }
+
+        // 新增：模拟响应处理
+        async function processMessageMock(userMessage) {
+            const responses = [];
+
+            // 根据当前场景和活跃智能体生成回应
+            currentAgents.forEach(agentId => {
+                const response = generateAgentResponse(agentId, userMessage);
+                responses.push({ agentId, response: response + "\n\n*[模拟响应]*" });
+            });
+
+            // 随机延迟显示各智能体回应
+            responses.forEach((item, index) => {
+                setTimeout(() => {
+                    addMessage(item.agentId, item.response);
+                    updateAgentEmotion(item.agentId);
+
+                    if (index === responses.length - 1) {
+                        hideThinkingIndicator();
+                        updateLearningProgress();
+                    }
+                }, index * (500 + Math.random() * 1000));
+            });
+        }
+
+        // 生成智能体回应
+        function generateAgentResponse(agentId, userMessage) {
+            const agent = agents[agentId];
+            const scene = scenes[currentScene];
+
+            // 基于智能体类型和场景生成不同回应
+            const responses = {
+                tanaka: {
+                    grammar: [
+                        "文法を確認しましょう。「" + userMessage + "」の文法構造を分析すると...",
+                        "その表現は正しいですが、より自然な言い方もあります。",
+                        "助詞の使い方に注意してください。例えば..."
+                    ],
+                    conversation: [
+                        "丁寧語を使う場面では、このように表現しましょう。",
+                        "日常会話では、もう少しカジュアルな表現も使えます。"
+                    ]
+                },
+                koumi: {
+                    conversation: [
+                        "あ、それ分かる！私たちもよく使うよ～",
+                        "今度は私が答える番だね！えーっと...",
+                        "そういう時は、こんな感じで言うと自然だよ！"
+                    ],
+                    restaurant: [
+                        "レストランでは「すみません」って呼ぶのが普通だよ！",
+                        "メニューを見ながら「これ、おいしそう！」って言えるね。"
+                    ]
+                },
+                ai: [
+                    "データ分析によると、あなたの学習パターンは...",
+                    "この表現の習得度は78%です。復習をお勧めします。",
+                    "類似表現との比較結果をお示しします。"
+                ],
+                yamada: {
+                    culture: [
+                        "この表現には興味深い文化的背景があります。",
+                        "日本では昔から、このような場面で...",
+                        "季節の挨拶は日本文化の重要な要素ですね。"
+                    ]
+                },
+                sato: {
+                    jlpt: [
+                        "JLPT N3レベルの重要表現です！必ず覚えてください。",
+                        "試験でよく出る文法パターンですね。",
+                        "この問題形式で練習してみましょう。"
+                    ]
+                },
+                membot: [
+                    "学習記録を更新しました。今日の進歩率: +5%",
+                    "この単語は3回目の出現です。定着度が向上しています。",
+                    "復習スケジュールを調整しました。"
+                ]
+            };
+
+            // エージェント固有の回答がある場合は使用
+            let agentResponses = responses[agentId];
+            if (typeof agentResponses === 'object' && agentResponses[currentScene]) {
+                agentResponses = agentResponses[currentScene];
+            } else if (typeof agentResponses === 'object') {
+                agentResponses = agentResponses.conversation || Object.values(agentResponses)[0];
+            }
+
+            // ランダムに回答を選択
+            const randomResponse = agentResponses[Math.floor(Math.random() * agentResponses.length)];
+
+            // 中文翻译
+            const translations = {
+                "文法を確認しましょう": "让我们确认一下语法",
+                "その表現は正しいです": "这个表达是正确的",
+                "助詞の使い方に注意": "请注意助词的用法",
+                "データ分析によると": "根据数据分析",
+                "学習記録を更新しました": "已更新学习记录"
+            };
+
+            let translation = "";
+            for (const [japanese, chinese] of Object.entries(translations)) {
+                if (randomResponse.includes(japanese)) {
+                    translation = `\n\n**中文提示：** ${chinese}相关内容...`;
+                    break;
+                }
+            }
+
+            return randomResponse + translation;
+        }
+
+        // 添加消息到聊天区域
+        function addMessage(senderId, content) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message' + (senderId === 'user' ? ' user' : '');
+
+            let avatarContent, senderName, avatarStyle;
+
+            if (senderId === 'user') {
+                avatarContent = '👤';
+                senderName = '你';
+                avatarStyle = 'background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);';
+            } else {
+                const agent = agents[senderId];
+                avatarContent = agent.avatar;
+                senderName = agent.name;
+                avatarStyle = getAgentAvatarStyle(senderId);
+            }
+
+            messageDiv.innerHTML = `
+                <div class="message-avatar" style="${avatarStyle}">${avatarContent}</div>
+                <div class="message-content">
+                    <div class="message-meta">
+                        <strong>${senderName}</strong>
+                        <span>${new Date().toLocaleTimeString()}</span>
+                    </div>
+                    <div>${content}</div>
+                </div>
+            `;
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            // 添加动画效果
+            messageDiv.classList.add('bounce');
+        }
+
+        // 获取智能体头像样式
+        function getAgentAvatarStyle(agentId) {
+            const styles = {
+                tanaka: 'background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);',
+                koumi: 'background: linear-gradient(135deg, #ed64a6 0%, #d53f8c 100%);',
+                ai: 'background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);',
+                yamada: 'background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);',
+                sato: 'background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);',
+                membot: 'background: linear-gradient(135deg, #805ad5 0%, #6b46c1 100%);'
+            };
+            return styles[agentId] || styles.ai;
+        }
+
+        // 更新智能体情绪
+        function updateAgentEmotion(agentId) {
+            const card = document.querySelector(`.agent-card[data-agent="${agentId}"]`);
+            const emotionElement = card.querySelector('.agent-emotion');
+            const emotions = agents[agentId].emotions;
+            const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
+            emotionElement.textContent = randomEmotion;
+        }
+
+        // 显示/隐藏思考指示器
+        function showThinkingIndicator() {
+            document.getElementById('thinkingIndicator').classList.add('active');
+            isThinking = true;
+        }
+
+        function hideThinkingIndicator() {
+            document.getElementById('thinkingIndicator').classList.remove('active');
+            isThinking = false;
+        }
+
+        // 场景切换
+        function changeScene(sceneId) {
+            currentScene = sceneId;
+            const scene = scenes[sceneId];
+
+            showNotification(`场景切换到: ${scene.name}`, 'info');
+
+            // 推荐智能体
+            if (scene.recommended_agents) {
+                highlightRecommendedAgents(scene.recommended_agents);
+            }
+
+            // 添加场景转换消息
+            setTimeout(() => {
+                addMessage('system', `场景已切换到：${scene.name}。${scene.description}`);
+            }, 500);
+        }
+
+        // 高亮推荐智能体
+        function highlightRecommendedAgents(recommendedAgents) {
+            document.querySelectorAll('.agent-card').forEach(card => {
+                const agentId = card.dataset.agent;
+                if (recommendedAgents.includes(agentId)) {
+                    card.style.border = '2px solid #48bb78';
+                    card.style.boxShadow = '0 0 15px rgba(72, 187, 120, 0.3)';
+                    setTimeout(() => {
+                        card.style.border = '';
+                        card.style.boxShadow = '';
+                    }, 3000);
+                }
+            });
+        }
+
+        // 快速操作功能
+        function startGrammarCheck() {
+            changeScene('grammar');
+            if (!currentAgents.has('tanaka')) {
+                toggleAgent('tanaka');
+            }
+            addMessage('tanaka', '語法チェックを開始しましょう。文章を入力してください。\n\n**中文提示：** 请输入需要检查语法的日语句子。');
+        }
+
+        function startVocabExpansion() {
+            if (!currentAgents.has('koumi')) {
+                toggleAgent('koumi');
+            }
+            if (!currentAgents.has('ai')) {
+                toggleAgent('ai');
+            }
+            addMessage('koumi', '語彙を増やそう！何か単語を教えて～\n\n**中文提示：** 说出一个日语单词，我们来扩展相关词汇！');
+        }
+
+        function startCulturalContext() {
+            changeScene('culture');
+            if (!currentAgents.has('yamada')) {
+                toggleAgent('yamada');
+            }
+            addMessage('yamada', '日本の文化について何か聞きたいことはありますか？\n\n**中文提示：** 有什么想了解的日本文化吗？');
+        }
+
+        function startJLPTPrep() {
+            changeScene('jlpt');
+            if (!currentAgents.has('sato')) {
+                toggleAgent('sato');
+            }
+            if (!currentAgents.has('membot')) {
+                toggleAgent('membot');
+            }
+            addMessage('sato', 'JLPT対策を始めよう！目標レベルは何級ですか？\n\n**中文提示：** 开始JLPT备考！目标是几级？');
+        }
+
+        // 语音输入功能
+        function initializeVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                voiceRecognition = new SpeechRecognition();
+                voiceRecognition.lang = 'ja-JP';
+                voiceRecognition.continuous = false;
+                voiceRecognition.interimResults = false;
+
+                voiceRecognition.onresult = function(event) {
+                    const result = event.results[0][0].transcript;
+                    document.getElementById('messageInput').value = result;
+                    showNotification('语音识别完成！', 'success');
+                };
+
+                voiceRecognition.onerror = function(event) {
+                    showNotification('语音识别失败，请重试', 'warning');
+                };
+            }
+        }
+
+        function startVoiceInput() {
+            if (voiceRecognition) {
+                voiceRecognition.start();
+                showNotification('正在监听语音输入...', 'info');
+
+                const voiceBtn = document.querySelector('.voice-btn');
+                voiceBtn.style.background = 'linear-gradient(135deg, #e53e3e 0%, #c53030 100%)';
+                voiceBtn.innerHTML = '<i class="fas fa-stop"></i>';
+
+                setTimeout(() => {
+                    voiceBtn.style.background = 'linear-gradient(135deg, #ed8936 0%, #dd6b20 100%)';
+                    voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                }, 3000);
+            } else {
+                showNotification('浏览器不支持语音识别功能', 'warning');
+            }
+        }
+
+        // 模态框控制
+        function openAgentCreator() {
+            document.getElementById('agentCreatorModal').style.display = 'block';
+        }
+
+        function openSceneEditor() {
+            document.getElementById('sceneEditorModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // 创建自定义智能体
+        function createCustomAgent() {
+            const formData = {
+                name: document.getElementById('agentName').value,
+                role: document.getElementById('agentRole').value,
+                expertise: Array.from(document.getElementById('agentExpertise').selectedOptions).map(o => o.value),
+                personality: {
+                    strictness: document.getElementById('strictness').value,
+                    humor: document.getElementById('humor').value,
+                    patience: document.getElementById('patience').value,
+                    creativity: document.getElementById('creativity').value
+                },
+                speakingStyle: document.getElementById('speakingStyle').value,
+                avatar: document.getElementById('agentAvatar').value
+            };
+
+            // 生成唯一ID
+            const customId = 'custom_' + Date.now();
+
+            // 添加到智能体列表
+            agents[customId] = {
+                name: formData.name,
+                role: formData.role,
+                avatar: formData.avatar,
+                personality: formData.personality,
+                expertise: formData.expertise,
+                speaking_style: formData.speakingStyle,
+                emotions: ['😊', '🤔', '💡', '👍', '🎉'],
+                isCustom: true
+            };
+
+            // 创建智能体卡片
+            createAgentCard(customId, agents[customId]);
+
+            closeModal('agentCreatorModal');
+            showNotification(`自定义智能体 ${formData.name} 创建成功！`, 'success');
+
+            // 重置表单
+            document.getElementById('agentCreatorForm').reset();
+            document.querySelectorAll('.slider-value').forEach(el => el.textContent = '5/10');
+        }
+
+        // 创建智能体卡片
+        function createAgentCard(agentId, agentData) {
+            const agentGrid = document.querySelector('.agent-grid');
+            const agentCard = document.createElement('div');
+            agentCard.className = 'agent-card';
+            agentCard.dataset.agent = agentId;
+
+            agentCard.innerHTML = `
+                <div class="agent-emotion">😊</div>
+                <div class="agent-avatar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">${agentData.avatar}</div>
+                <div class="agent-name">${agentData.name}</div>
+                <div class="agent-role">${agentData.role}</div>
+            `;
+
+            agentCard.addEventListener('click', function() {
+                toggleAgent(agentId);
+            });
+
+            agentGrid.appendChild(agentCard);
+        }
+
+        // 保存自定义场景
+        function saveCustomScene() {
+            const formData = {
+                name: document.getElementById('sceneName').value,
+                description: document.getElementById('sceneDescription').value,
+                objectives: document.getElementById('learningObjectives').value,
+                difficulty: document.getElementById('sceneDifficulty').value,
+                recommendedAgents: Array.from(document.getElementById('recommendedAgents').selectedOptions).map(o => o.value),
+                rules: document.getElementById('sceneRules').value
+            };
+
+            // 生成唯一ID
+            const sceneId = 'custom_' + Date.now();
+
+            // 添加到场景列表
+            scenes[sceneId] = {
+                name: formData.name,
+                description: formData.description,
+                learning_objectives: formData.objectives,
+                difficulty: formData.difficulty,
+                recommended_agents: formData.recommendedAgents,
+                rules: formData.rules,
+                isCustom: true
+            };
+
+            // 添加到选择器
+            const sceneSelect = document.getElementById('sceneSelect');
+            const option = document.createElement('option');
+            option.value = sceneId;
+            option.textContent = formData.name;
+            sceneSelect.appendChild(option);
+
+            closeModal('sceneEditorModal');
+            showNotification(`自定义场景 ${formData.name} 保存成功！`, 'success');
+
+            // 重置表单
+            document.getElementById('sceneEditorForm').reset();
+        }
+
+        // 小说创作功能
+        function startNovelBrainstorm() {
+            document.getElementById('novelModal').style.display = 'block';
+        }
+
+        function viewNovelHistory() {
+            showNotification('小说历史功能正在开发中...', 'info');
+        }
+
+        function startBrainstorm() {
+            const theme = document.getElementById('novelTheme').value;
+            showNotification('开始头脑风暴会议...', 'info');
+
+            // 模拟智能体参与头脑风暴
+            setTimeout(() => {
+                addNovelMessage('tanaka', `关于${getThemeName(theme)}主题，我建议我们设定一个有趣的前提...`);
+            }, 1000);
+
+            setTimeout(() => {
+                addNovelMessage('koumi', '哇！这个想法很棒！我们可以加入一些年轻人喜欢的元素...');
+            }, 2500);
+
+            setTimeout(() => {
+                addNovelMessage('yamada', '让我来补充一些文化背景，这样故事会更有深度...');
+            }, 4000);
+        }
+
+        function continueWriting() {
+            showNotification('智能体正在协作创作下一段...', 'info');
+
+            setTimeout(() => {
+                const novelWorkspace = document.getElementById('novelWorkspace');
+                const newParagraph = document.createElement('div');
+                newParagraph.style.cssText = 'background: #e6fffa; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #38a169;';
+                newParagraph.innerHTML = '<strong>协作创作 - 第4段</strong><br>"美咲小心翼翼地推开咖啡店的门，一股淡淡的樱花香味扑面而来。店内昏暗的灯光下，她看到了一个熟悉的身影..."';
+                novelWorkspace.appendChild(newParagraph);
+                novelWorkspace.scrollTop = novelWorkspace.scrollHeight;
+            }, 2000);
+        }
+
+        function exportNovel() {
+            const novelContent = document.getElementById('novelWorkspace').textContent;
+            const blob = new Blob([novelContent], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '协作小说_' + new Date().toLocaleDateString() + '.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification('小说已导出！', 'success');
+        }
+
+        function addNovelMessage(agentId, content) {
+            const workspace = document.getElementById('novelWorkspace');
+            const message = document.createElement('div');
+            message.className = 'message';
+
+            const agent = agents[agentId];
+            message.innerHTML = `
+                <div class="message-avatar" style="${getAgentAvatarStyle(agentId)}">${agent.avatar}</div>
+                <div class="message-content">
+                    <div class="message-meta">
+                        <strong>${agent.name}</strong>
+                        <span>创作讨论</span>
+                    </div>
+                    <div>${content}</div>
+                </div>
+            `;
+
+            workspace.appendChild(message);
+            workspace.scrollTop = workspace.scrollHeight;
+        }
+
+        function getThemeName(theme) {
+            const themes = {
+                urban_fantasy: '都市奇幻',
+                school_life: '校园生活',
+                historical: '历史剧',
+                sci_fi: '科幻未来',
+                romance: '浪漫爱情',
+                mystery: '悬疑推理'
+            };
+            return themes[theme] || theme;
+        }
+
+        // 更新学习进度
+        function updateLearningProgress() {
+            // 模拟学习进度更新
+            const progressTypes = ['grammar', 'vocabulary', 'culture'];
+            const randomType = progressTypes[Math.floor(Math.random() * progressTypes.length)];
+
+            switch (randomType) {
+                case 'grammar':
+                    learningStats.grammar = Math.min(100, learningStats.grammar + Math.floor(Math.random() * 3) + 1);
+                    document.getElementById('grammarScore').textContent = learningStats.grammar + '%';
+                    document.querySelector('.progress-fill').style.width = learningStats.grammar + '%';
+                    break;
+                case 'vocabulary':
+                    learningStats.vocabulary += Math.floor(Math.random() * 5) + 1;
+                    document.getElementById('vocabScore').textContent = learningStats.vocabulary + ' 词';
+                    break;
+                case 'culture':
+                    learningStats.culture = Math.min(100, learningStats.culture + Math.floor(Math.random() * 2) + 1);
+                    document.getElementById('cultureScore').textContent = learningStats.culture + '%';
+                    break;
+            }
+
+            // 更新今日学习时间
+            learningStats.todayTime += Math.floor(Math.random() * 3) + 1;
+            document.getElementById('todayTime').textContent = learningStats.todayTime + ' 分钟';
+
+            // 检查成就解锁
+            checkAchievements();
+        }
+
+        // 检查成就解锁
+        function checkAchievements() {
+            const achievements = document.querySelectorAll('.achievement-item:not(.unlocked)');
+
+            achievements.forEach(achievement => {
+                const achievementText = achievement.textContent;
+                let shouldUnlock = false;
+
+                if (achievementText.includes('文化专家') && learningStats.culture >= 60) {
+                    shouldUnlock = true;
+                } else if (achievementText.includes('JLPT挑战者') && learningStats.grammar >= 80) {
+                    shouldUnlock = true;
+                }
+
+                if (shouldUnlock) {
+                    achievement.classList.add('unlocked');
+                    const achievementName = achievement.querySelector('strong').textContent;
+                    showNotification(`🎉 成就解锁：${achievementName}！`, 'success');
+                }
+            });
+        }
+
+        // 通知系统
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // 修改：定期更新系统
+        function startPeriodicUpdates() {
+            // 每30秒检查后端连接状态
+            setInterval(async () => {
+                const wasConnected = backendConnected;
+                await checkBackendConnection();
+
+                // 如果连接状态改变，更新UI
+                if (wasConnected !== backendConnected) {
+                    updateBackendStatus(backendConnected);
+                }
+            }, 30000);
+
+            // 每30秒更新智能体情绪
+            setInterval(() => {
+                if (!isThinking) {
+                    currentAgents.forEach(agentId => {
+                        updateAgentEmotion(agentId);
+                    });
+                }
+            }, 30000);
+
+            // 每分钟更新学习时间
+            setInterval(() => {
+                learningStats.todayTime += 1;
+                document.getElementById('todayTime').textContent = learningStats.todayTime + ' 分钟';
+            }, 60000);
+
+            // 每10分钟显示学习提醒
+            setInterval(() => {
+                const reminders = [
+                    '记得复习今天学过的内容哦！',
+                    '试试和不同的智能体对话吧！',
+                    '要不要挑战一下新的场景？',
+                    '学习进度很棒，继续加油！'
+                ];
+                const randomReminder = reminders[Math.floor(Math.random() * reminders.length)];
+                showNotification(randomReminder, 'info');
+            }, 600000);
+        }
+
+        // 键盘快捷键支持
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + Enter 发送消息
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                sendMessage();
+            }
+
+            // Esc 关闭模态框
+            if (e.key === 'Escape') {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            }
+
+            // 数字键1-6快速切换智能体
+            if (e.key >= '1' && e.key <= '6') {
+                const agentIds = ['tanaka', 'koumi', 'ai', 'yamada', 'sato', 'membot'];
+                const agentId = agentIds[parseInt(e.key) - 1];
+                if (agentId) {
+                    toggleAgent(agentId);
+                }
+            }
+        });
+
+        // 窗口关闭时的提醒
+        window.addEventListener('beforeunload', function(e) {
+            if (chatHistory.length > 0) {
+                e.preventDefault();
+                e.returnValue = '确定要离开吗？聊天记录将会丢失。';
+            }
+        });
+
+        // 移动端优化
+        if (window.innerWidth <= 768) {
+            // 移动端特殊处理
+            document.querySelector('.main-layout').style.height = 'auto';
+            document.querySelector('.chat-area').style.height = '60vh';
+
+            // 触摸事件优化
+            document.querySelectorAll('.agent-card').forEach(card => {
+                card.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.95)';
+                });
+
+                card.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+            });
+        }
+    </script>
+</body>
+</html>

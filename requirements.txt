@@ -1,46 +1,22 @@
-# 🎌 日语学习Multi-Agent系统依赖包
+# 核心Web框架
+fastapi==0.104.1
+uvicorn==0.24.0
 
-# Web框架
-fastapi>=0.104.1
-uvicorn[standard]>=0.24.0
-
-# WebSocket支持
-websockets>=12.0
+# 前端框架
+streamlit
 
 # HTTP客户端
-httpx>=0.25.0
-aiohttp>=3.9.0
+aiohttp
+requests
+
+# 数据库和存储
+chromadb
+
+# 环境配置
+python-dotenv
 
 # 数据处理
-pandas>=2.1.0
-numpy>=1.24.0
+pydantic
 
-# 数据库 (sqlite3是Python内置模块，不需要安装)
-sqlalchemy>=2.0.0
-# redis>=5.0.0  # 暂时注释，如果需要Redis再启用
-# chromadb>=0.4.0  # 暂时注释，如果需要向量数据库再启用
-
-# LLM集成
-openai>=1.0.0
-anthropic>=0.7.0
-
-# 异步支持
-aiofiles>=23.0.0
-
-# 配置管理
-pydantic>=2.0.0
-python-dotenv>=1.0.0
-
-# 日志
-# loguru>=0.7.0  # 使用Python标准库logging
-
-# 测试
-pytest>=7.4.0
-pytest-asyncio>=0.21.0
-
-# 开发工具 (可选)
-# black>=23.0.0
-# flake8>=6.0.0
-
-# CORS支持
-python-multipart>=0.0.6
+# 系统监控
+psutil

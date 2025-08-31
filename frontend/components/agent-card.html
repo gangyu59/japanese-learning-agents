@@ -1,0 +1,301 @@
+<!-- agent-card.html -->
+<!-- Agent Card Component -->
+<template id="agent-card-template">
+    <div class="agent-card" data-agent-id="" data-agent-type="core">
+        <!-- Card Header -->
+        <div class="agent-card-header">
+            <!-- Specialization Badge -->
+            <div class="specialization-badge">
+                <span class="specialization-icon"></span>
+            </div>
+
+            <!-- Favorite Button -->
+            <button class="favorite-btn" data-action="favorite">
+                <span class="favorite-icon">🤍</span>
+            </button>
+        </div>
+
+        <!-- Agent Avatar and Basic Info -->
+        <div class="agent-main-info">
+            <div class="agent-avatar-container">
+                <div class="agent-avatar">
+                    <div class="avatar-background"></div>
+                    <div class="avatar-content">
+                        <span class="avatar-text"></span>
+                    </div>
+
+                    <!-- Status Indicator -->
+                    <div class="agent-status-indicator">
+                        <div class="status-dot"></div>
+                    </div>
+
+                    <!-- Emotion Indicator -->
+                    <div class="agent-emotion-indicator">
+                        <span class="emotion-emoji">😊</span>
+                    </div>
+
+                    <!-- Activity Ring -->
+                    <div class="activity-ring">
+                        <svg class="activity-circle" viewBox="0 0 36 36">
+                            <path class="circle-bg" d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <path class="circle-fill" stroke-dasharray="0, 100" d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="agent-basic-details">
+                <h3 class="agent-name"></h3>
+                <p class="agent-role"></p>
+                <div class="agent-rating">
+                    <div class="rating-stars">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">☆</span>
+                    </div>
+                    <span class="rating-text">4.8 (127)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent Mood/Status -->
+        <div class="agent-mood-section">
+            <div class="mood-indicator">
+                <span class="mood-icon"></span>
+                <span class="mood-text"></span>
+            </div>
+            <div class="last-active">
+                <span class="active-text">最終活動: 2分前</span>
+            </div>
+        </div>
+
+        <!-- Personality Traits -->
+        <div class="personality-section">
+            <div class="section-header">
+                <h4>性格特性</h4>
+                <button class="expand-btn" data-action="expand-personality">
+                    <span class="expand-icon">▼</span>
+                </button>
+            </div>
+            <div class="personality-traits">
+                <div class="trait-item">
+                    <span class="trait-label">厳格さ</span>
+                    <div class="trait-bar">
+                        <div class="trait-fill" data-trait="strictness"></div>
+                    </div>
+                    <span class="trait-value">9</span>
+                </div>
+                <div class="trait-item">
+                    <span class="trait-label">忍耐力</span>
+                    <div class="trait-bar">
+                        <div class="trait-fill" data-trait="patience"></div>
+                    </div>
+                    <span class="trait-value">7</span>
+                </div>
+                <div class="trait-item">
+                    <span class="trait-label">ユーモア</span>
+                    <div class="trait-bar">
+                        <div class="trait-fill" data-trait="humor"></div>
+                    </div>
+                    <span class="trait-value">3</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expertise Tags -->
+        <div class="expertise-section">
+            <div class="section-header">
+                <h4>専門分野</h4>
+            </div>
+            <div class="expertise-tags">
+                <!-- Expertise tags will be dynamically added here -->
+            </div>
+        </div>
+
+        <!-- Agent Statistics -->
+        <div class="agent-stats-section">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" data-stat="interactions">0</div>
+                    <div class="stat-label">会話回数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" data-stat="satisfaction">0%</div>
+                    <div class="stat-label">満足度</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" data-stat="helpfulness">0%</div>
+                    <div class="stat-label">有用性</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="agent-actions">
+            <button class="action-btn primary-action" data-action="chat">
+                <span class="btn-icon">💬</span>
+                <span class="btn-text">チャット</span>
+            </button>
+            <button class="action-btn secondary-action" data-action="customize">
+                <span class="btn-icon">⚙️</span>
+                <span class="btn-text">設定</span>
+            </button>
+        </div>
+
+        <!-- Additional Actions Menu -->
+        <div class="more-actions-menu hidden">
+            <button class="menu-item" data-action="view-history">
+                <span class="menu-icon">📚</span>
+                <span class="menu-text">履歴表示</span>
+            </button>
+            <button class="menu-item" data-action="agent-info">
+                <span class="menu-icon">ℹ️</span>
+                <span class="menu-text">詳細情報</span>
+            </button>
+            <button class="menu-item" data-action="feedback">
+                <span class="menu-icon">💭</span>
+                <span class="menu-text">フィードバック</span>
+            </button>
+            <div class="menu-divider"></div>
+            <button class="menu-item danger" data-action="reset-relationship">
+                <span class="menu-icon">🔄</span>
+                <span class="menu-text">関係リセット</span>
+            </button>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div class="agent-loading hidden">
+            <div class="loading-spinner"></div>
+            <span class="loading-text">読み込み中...</span>
+        </div>
+    </div>
+</template>
+
+<!-- Compact Agent Card Template (for sidebar) -->
+<template id="compact-agent-card-template">
+    <div class="agent-card compact" data-agent-id="">
+        <div class="compact-avatar">
+            <div class="avatar-background"></div>
+            <div class="avatar-content">
+                <span class="avatar-text"></span>
+            </div>
+            <div class="status-dot"></div>
+            <div class="emotion-indicator">
+                <span class="emotion-emoji">😊</span>
+            </div>
+        </div>
+
+        <div class="compact-info">
+            <div class="compact-name"></div>
+            <div class="compact-status"></div>
+        </div>
+
+        <div class="compact-actions">
+            <button class="compact-btn" data-action="toggle-active" title="アクティブ切り替え">
+                <span class="toggle-icon">⚡</span>
+            </button>
+            <button class="compact-btn" data-action="quick-settings" title="クイック設定">
+                <span class="settings-icon">⚙️</span>
+            </button>
+        </div>
+    </div>
+</template>
+
+<!-- Agent Template Card (for creation) -->
+<template id="agent-template-card">
+    <div class="agent-template-card" data-template-id="">
+        <div class="template-icon">
+            <span class="template-emoji"></span>
+        </div>
+
+        <div class="template-info">
+            <h3 class="template-name"></h3>
+            <p class="template-description"></p>
+
+            <div class="template-features">
+                <!-- Feature tags will be added here -->
+            </div>
+        </div>
+
+        <div class="template-stats">
+            <div class="template-difficulty">
+                <span class="difficulty-label">難易度:</span>
+                <div class="difficulty-dots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+        </div>
+
+        <button class="use-template-btn" data-action="use-template">
+            <span class="btn-icon">✨</span>
+            <span class="btn-text">このテンプレートを使用</span>
+        </button>
+    </div>
+</template>
+
+<style>
+/* Agent Card Component Styles */
+.agent-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid transparent;
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.agent-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.5s;
+}
+
+.agent-card:hover::before {
+    left: 100%;
+}
+
+.agent-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--primary-color);
+}
+
+.agent-card.active {
+    border-color: var(--primary-color);
+    background: rgba(102, 126, 234, 0.08);
+    box-shadow: var(--shadow-lg);
+}
+
+.agent-card.compact {
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-radius: var(--radius-lg);
+}
+
+.agent-card-header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items

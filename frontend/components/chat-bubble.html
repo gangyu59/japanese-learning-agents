@@ -1,0 +1,737 @@
+<!-- Chat Bubble Component -->
+<template id="chat-bubble-template">
+    <div class="chat-bubble-container" data-message-id="">
+        <!-- Avatar Section -->
+        <div class="message-avatar-section">
+            <div class="message-avatar">
+                <div class="avatar-image"></div>
+                <div class="status-indicator"></div>
+                <div class="emotion-indicator"></div>
+            </div>
+        </div>
+
+        <!-- Message Content -->
+        <div class="message-content-section">
+            <!-- Message Header -->
+            <div class="message-header">
+                <span class="message-sender"></span>
+                <span class="message-time"></span>
+                <div class="message-badges">
+                    <span class="badge grammar-corrected hidden">文法修正</span>
+                    <span class="badge cultural-context hidden">文化解説</span>
+                    <span class="badge vocabulary-expansion hidden">語彙拡張</span>
+                </div>
+            </div>
+
+            <!-- Main Message Bubble -->
+            <div class="message-bubble">
+                <!-- Message Text Content -->
+                <div class="message-text">
+                    <!-- Text content will be inserted here -->
+                </div>
+
+                <!-- Special Content Types -->
+                <div class="message-attachments hidden">
+                    <!-- For images, audio, etc. -->
+                </div>
+
+                <div class="grammar-corrections hidden">
+                    <div class="corrections-header">
+                        <span class="corrections-icon">📝</span>
+                        <span class="corrections-title">文法の修正</span>
+                    </div>
+                    <div class="corrections-content">
+                        <!-- Grammar check results will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="message-actions user-actions">
+                    <button class="action-btn edit-btn" data-action="edit" title="編集">
+                        <span class="btn-icon">✏️</span>
+                        <span class="btn-text">編集</span>
+                    </button>
+                    
+                    <button class="action-btn retry-btn" data-action="retry" title="再送信">
+                        <span class="btn-icon">🔄</span>
+                        <span class="btn-text">再送信</span>
+                    </button>
+                    
+                    <button class="action-btn delete-btn" data-action="delete" title="削除">
+                        <span class="btn-icon">🗑️</span>
+                        <span class="btn-text">削除</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="message-avatar-section">
+            <div class="message-avatar user-avatar">
+                <div class="avatar-image">あ</div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- System Message Template -->
+<template id="system-message-template">
+    <div class="chat-bubble-container system-message" data-message-id="">
+        <div class="message-content-section">
+            <div class="message-bubble system-bubble">
+                <div class="system-icon"></div>
+                <div class="message-text"></div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Typing Indicator Template -->
+<template id="typing-indicator-template">
+    <div class="chat-bubble-container typing-indicator" data-agent-id="">
+        <div class="message-avatar-section">
+            <div class="message-avatar">
+                <div class="avatar-image"></div>
+                <div class="status-indicator thinking"></div>
+            </div>
+        </div>
+
+        <div class="message-content-section">
+            <div class="message-header">
+                <span class="message-sender"></span>
+                <span class="typing-status">入力中...</span>
+            </div>
+
+            <div class="message-bubble typing-bubble">
+                <div class="typing-animation">
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Grammar Correction Item Template -->
+<template id="grammar-correction-template">
+    <div class="correction-item">
+        <div class="correction-type"></div>
+        <div class="correction-content">
+            <div class="correction-original">
+                <span class="correction-label">修正前:</span>
+                <span class="correction-text original-text"></span>
+            </div>
+            <div class="correction-suggested">
+                <span class="correction-label">修正後:</span>
+                <span class="correction-text suggested-text"></span>
+            </div>
+            <div class="correction-explanation">
+                <span class="explanation-icon">💡</span>
+                <span class="explanation-text"></span>
+            </div>
+        </div>
+        <div class="correction-actions">
+            <button class="correction-btn apply" data-action="apply">適用</button>
+            <button class="correction-btn dismiss" data-action="dismiss">無視</button>
+        </div>
+    </div>
+</template>
+
+<!-- Vocabulary Expansion Item Template -->
+<template id="vocabulary-expansion-template">
+    <div class="vocabulary-item">
+        <div class="vocab-word">
+            <span class="vocab-kanji"></span>
+            <span class="vocab-reading"></span>
+        </div>
+        <div class="vocab-meaning"></div>
+        <div class="vocab-example">
+            <span class="example-label">例文:</span>
+            <span class="example-sentence"></span>
+        </div>
+        <div class="vocab-actions">
+            <button class="vocab-btn add-to-study" data-action="add-to-study">
+                <span class="btn-icon">📚</span>
+                <span class="btn-text">学習リストに追加</span>
+            </button>
+            <button class="vocab-btn speak" data-action="speak">
+                <span class="btn-icon">🔊</span>
+                <span class="btn-text">発音</span>
+            </button>
+        </div>
+    </div>
+</template>
+
+<!-- Cultural Explanation Template -->
+<template id="cultural-explanation-template">
+    <div class="cultural-item">
+        <div class="cultural-header">
+            <div class="cultural-icon"></div>
+            <div class="cultural-title"></div>
+        </div>
+        <div class="cultural-content">
+            <div class="cultural-description"></div>
+            <div class="cultural-context hidden">
+                <div class="context-header">背景情報</div>
+                <div class="context-content"></div>
+            </div>
+        </div>
+        <div class="cultural-actions">
+            <button class="cultural-btn expand" data-action="expand">
+                <span class="btn-text">詳細を見る</span>
+                <span class="btn-icon">▼</span>
+            </button>
+            <button class="cultural-btn learn-more" data-action="learn-more">
+                <span class="btn-icon">🎌</span>
+                <span class="btn-text">もっと学ぶ</span>
+            </button>
+        </div>
+    </div>
+</template>
+
+<!-- Message More Actions Dropdown -->
+<template id="message-more-actions-template">
+    <div class="more-actions-dropdown">
+        <button class="dropdown-item" data-action="copy">
+            <span class="item-icon">📋</span>
+            <span class="item-text">コピー</span>
+        </button>
+        
+        <button class="dropdown-item" data-action="bookmark">
+            <span class="item-icon">🔖</span>
+            <span class="item-text">ブックマーク</span>
+        </button>
+        
+        <button class="dropdown-item" data-action="share">
+            <span class="item-icon">🔗</span>
+            <span class="item-text">共有</span>
+        </button>
+        
+        <button class="dropdown-item" data-action="report">
+            <span class="item-icon">⚠️</span>
+            <span class="item-text">報告</span>
+        </button>
+        
+        <div class="dropdown-divider"></div>
+        
+        <button class="dropdown-item" data-action="analyze">
+            <span class="item-icon">📊</span>
+            <span class="item-text">詳細分析</span>
+        </button>
+        
+        <button class="dropdown-item" data-action="practice-similar">
+            <span class="item-icon">💪</span>
+            <span class="item-text">類似表現練習</span>
+        </button>
+    </div>
+</template>
+
+<!-- Learning Insight Template -->
+<template id="learning-insight-template">
+    <div class="insight-item">
+        <div class="insight-header">
+            <span class="insight-icon"></span>
+            <span class="insight-title"></span>
+            <span class="insight-level"></span>
+        </div>
+        <div class="insight-content">
+            <div class="insight-description"></div>
+            <div class="insight-examples hidden">
+                <div class="examples-header">例文</div>
+                <div class="examples-list"></div>
+            </div>
+        </div>
+        <div class="insight-actions">
+            <button class="insight-btn practice" data-action="practice">
+                <span class="btn-icon">💪</span>
+                <span class="btn-text">練習</span>
+            </button>
+            <button class="insight-btn save" data-action="save">
+                <span class="btn-icon">💾</span>
+                <span class="btn-text">保存</span>
+            </button>
+        </div>
+    </div>
+</template>
+
+<!-- Agent Collaboration Template -->
+<template id="collaboration-template">
+    <div class="collaboration-bubble">
+        <div class="collaboration-header">
+            <div class="collaboration-avatars"></div>
+            <div class="collaboration-title">エージェント協力中</div>
+            <div class="collaboration-progress">
+                <div class="progress-dots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+        </div>
+        <div class="collaboration-content">
+            <div class="collaboration-steps">
+                <div class="step active" data-step="analyze">分析中...</div>
+                <div class="step" data-step="discuss">議論中...</div>
+                <div class="step" data-step="synthesize">統合中...</div>
+                <div class="step" data-step="respond">回答準備中...</div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style>
+/* Chat Bubble Component Styles */
+.chat-bubble-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: messageSlideIn 0.4s ease-out forwards;
+}
+
+.chat-bubble-container.user-message {
+    flex-direction: row-reverse;
+}
+
+.message-avatar-section {
+    flex-shrink: 0;
+}
+
+.message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.875rem;
+    background: var(--gradient-primary);
+    box-shadow: var(--shadow-md);
+}
+
+.message-avatar.user-avatar {
+    background: var(--gradient-sakura);
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-japanese);
+}
+
+.status-indicator {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: var(--success);
+}
+
+.status-indicator.thinking {
+    background: var(--warning);
+    animation: pulse 1s infinite;
+}
+
+.status-indicator.offline {
+    background: var(--gray-400);
+}
+
+.emotion-indicator {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 1rem;
+    animation: bounce 2s infinite;
+}
+
+.message-content-section {
+    flex: 1;
+    max-width: 70%;
+}
+
+.message-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.message-sender {
+    font-weight: 600;
+    color: var(--gray-700);
+    font-family: var(--font-japanese);
+}
+
+.message-time {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+}
+
+.message-badges {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+}
+
+.badge {
+    font-size: 0.625rem;
+    padding: 0.125rem 0.375rem;
+    border-radius: var(--radius-full);
+    font-weight: 500;
+    color: white;
+}
+
+.badge.grammar-corrected { background: #10b981; }
+.badge.cultural-context { background: #f59e0b; }
+.badge.vocabulary-expansion { background: #8b5cf6; }
+
+.message-bubble {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+}
+
+.message-bubble::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 8px 8px 8px 0;
+    border-color: transparent var(--white) transparent transparent;
+}
+
+.user-message .message-bubble {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.user-message .message-bubble::before {
+    left: auto;
+    right: -8px;
+    border-width: 8px 0 8px 8px;
+    border-color: transparent transparent transparent var(--primary-color);
+}
+
+.system-bubble {
+    background: var(--gray-100);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+    text-align: center;
+    padding: 0.75rem;
+}
+
+.system-bubble::before {
+    display: none;
+}
+
+.message-text {
+    line-height: 1.6;
+    font-family: var(--font-japanese);
+    word-wrap: break-word;
+}
+
+.grammar-corrections,
+.vocabulary-expansions,
+.cultural-explanations {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-200);
+}
+
+.corrections-header,
+.expansions-header,
+.explanations-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 0.75rem;
+}
+
+.message-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-200);
+    flex-wrap: wrap;
+}
+
+.user-message .message-actions {
+    border-top-color: rgba(255, 255, 255, 0.2);
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: none;
+    border: none;
+    color: var(--gray-600);
+    font-size: 0.75rem;
+    cursor: pointer;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+}
+
+.user-message .action-btn {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.action-btn:hover {
+    background: var(--gray-100);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.user-message .action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.message-reactions {
+    display: flex;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+.reaction-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+    opacity: 0.7;
+}
+
+.reaction-btn:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+.typing-indicator {
+    opacity: 1;
+}
+
+.typing-bubble {
+    background: var(--gray-100);
+    padding: 1rem;
+}
+
+.typing-animation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.typing-dots {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.typing-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gray-500);
+    animation: typingPulse 1.4s ease-in-out infinite both;
+}
+
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+.typing-dot:nth-child(3) { animation-delay: 0s; }
+
+@keyframes messageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+@keyframes bounce {
+    0%, 20%, 53%, 80%, 100% {
+        animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+        transform: translate3d(0,0,0);
+    }
+    40%, 43% {
+        animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+        transform: translate3d(0, -8px, 0);
+    }
+    70% {
+        animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+        transform: translate3d(0, -4px, 0);
+    }
+    90% {
+        transform: translate3d(0, -2px, 0);
+    }
+}
+
+@keyframes typingPulse {
+    0%, 80%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chat-bubble-container {
+        margin-bottom: 1rem;
+    }
+    
+    .message-content-section {
+        max-width: 85%;
+    }
+    
+    .message-actions {
+        gap: 0.25rem;
+    }
+    
+    .action-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.7rem;
+    }
+}
+</style> corrections will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="vocabulary-expansions hidden">
+                    <div class="expansions-header">
+                        <span class="expansions-icon">📚</span>
+                        <span class="expansions-title">関連語彙</span>
+                    </div>
+                    <div class="expansions-content">
+                        <!-- Vocabulary expansions will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="cultural-explanations hidden">
+                    <div class="explanations-header">
+                        <span class="explanations-icon">🎌</span>
+                        <span class="explanations-title">文化的背景</span>
+                    </div>
+                    <div class="explanations-content">
+                        <!-- Cultural explanations will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Message Actions -->
+                <div class="message-actions">
+                    <button class="action-btn translate-btn" data-action="translate" title="翻訳">
+                        <span class="btn-icon">🌐</span>
+                        <span class="btn-text">翻訳</span>
+                    </button>
+                    
+                    <button class="action-btn grammar-btn" data-action="explain-grammar" title="文法解説">
+                        <span class="btn-icon">📝</span>
+                        <span class="btn-text">文法</span>
+                    </button>
+                    
+                    <button class="action-btn vocabulary-btn" data-action="expand-vocabulary" title="語彙拡張">
+                        <span class="btn-icon">📚</span>
+                        <span class="btn-text">語彙</span>
+                    </button>
+                    
+                    <button class="action-btn speak-btn" data-action="speak" title="読み上げ">
+                        <span class="btn-icon">🔊</span>
+                        <span class="btn-text">再生</span>
+                    </button>
+                    
+                    <button class="action-btn study-btn" data-action="add-to-study" title="復習に追加">
+                        <span class="btn-icon">⭐</span>
+                        <span class="btn-text">復習</span>
+                    </button>
+                    
+                    <button class="action-btn more-btn" data-action="more" title="その他">
+                        <span class="btn-icon">⋯</span>
+                    </button>
+                </div>
+
+                <!-- Reaction Buttons -->
+                <div class="message-reactions">
+                    <button class="reaction-btn" data-reaction="like">👍</button>
+                    <button class="reaction-btn" data-reaction="love">❤️</button>
+                    <button class="reaction-btn" data-reaction="useful">💡</button>
+                    <button class="reaction-btn" data-reaction="confused">❓</button>
+                </div>
+            </div>
+
+            <!-- Learning Insights -->
+            <div class="learning-insights hidden">
+                <div class="insights-content">
+                    <!-- Learning points will be highlighted here -->
+                </div>
+            </div>
+
+            <!-- Agent Collaboration Indicator -->
+            <div class="collaboration-indicator hidden">
+                <div class="collaboration-avatars">
+                    <!-- Multiple agent avatars for collaborative responses -->
+                </div>
+                <div class="collaboration-text">
+                    複数のエージェントが協力して回答しています...
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- User Message Template -->
+<template id="user-message-template">
+    <div class="chat-bubble-container user-message" data-message-id="">
+        <div class="message-content-section">
+            <div class="message-header">
+                <span class="message-time"></span>
+                <span class="message-sender">あなた</span>
+            </div>
+
+            <div class="message-bubble user-bubble">
+                <div class="message-text"></div>
+                
+                <!-- Grammar Check Results -->
+                <div class="grammar-check-results hidden">
+                    <div class="check-header">
+                        <span class="check-icon">✅</span>
+                        <span class="check-title">文法チェック結果</span>
+                    </div>
+                    <div class="check-content">
+                        <!-- Grammar

@@ -1,0 +1,51 @@
+/* =============== components.css — 组件级样式（可复用） =============== */
+
+/* Agent 卡片 */
+.agent{
+  display:grid; grid-template-columns:56px 1fr auto; gap:14px; align-items:center;
+  padding:16px; background:#fff; border-radius:20px; box-shadow:var(--shadow-1);
+}
+.agent__avatar{
+  width:56px; height:56px; border-radius:16px; display:flex; align-items:center; justify-content:center;
+  color:#3b3f6b; font-weight:900;
+  background:linear-gradient(135deg, #e0e7ff, #c7d2ff);
+}
+.agent__avatar.alt{background:linear-gradient(135deg,#ffd1dc,#ffb3c7)}
+.agent__avatar.ai{background:linear-gradient(135deg,#c1f1d7,#8de0aa)}
+.agent__name{margin:0; font-size:18px; font-weight:900}
+.agent__desc{margin:4px 0 0; color:var(--muted); font-size:12px}
+.agent__ops .btn{border-radius:12px}
+
+/* 通知条/Toast（静态示例） */
+.toast{
+  background:#fff; border-left:6px solid var(--info);
+  border-radius:16px; padding:14px 16px; box-shadow:var(--shadow-1);
+}
+.toast.ok{border-color:var(--ok)}
+.toast.err{border-color:var(--err)}
+.toast.warn{border-color:var(--warn)}
+.toast.ai{border-color:var(--ai)}
+
+/* 模态框（静态示例） */
+.modal{background:#fff; border-radius:18px; padding:18px; box-shadow:var(--shadow-1)}
+.modal__head{font-weight:900; margin-bottom:8px}
+.modal__foot{display:flex; gap:10px; justify-content:flex-end}
+
+/* 录音条（静态示例） */
+.recorder{
+  display:flex; align-items:center; gap:12px; padding:12px; border-radius:14px; background:#fff; box-shadow:var(--shadow-1);
+}
+.recorder .dot{width:10px; height:10px; border-radius:999px; background:#ef6fa7; animation:rec-blink 1.2s infinite}
+@keyframes rec-blink{50%{opacity:.2}}
+
+/* 进度统计（组件版本） */
+.stats-box{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+.stats-box .box{background:#fff; border-radius:16px; padding:14px; box-shadow:var(--shadow-1)}
+.stats-box .box .num{font-size:24px; font-weight:900}
+.stats-box .box .label{color:var(--muted); font-size:12px}
+
+/* 小徽章/Chip */
+.chip{
+  display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+  background:#f5f7ff; color:#4c54a2; font-weight:800; font-size:12px;
+}

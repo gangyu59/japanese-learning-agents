@@ -1,0 +1,24 @@
+/* =============== agents.css — 智能体列表页专属样式 =============== */
+
+.grid-3{display:grid; gap:20px; grid-template-columns:repeat(3,1fr)}
+@media (max-width:1024px){ .grid-3{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:680px){ .grid-3{grid-template-columns:1fr} }
+
+/* 卡片阴影与悬停 */
+.agent{transition:transform .08s ease, box-shadow .15s ease}
+.agent:hover{transform:translateY(-2px); box-shadow:var(--shadow-2)}
+
+/* 头像大小在 agents 页面更大一点 */
+.agent__avatar{width:64px; height:64px; border-radius:18px}
+
+/* 顶部筛选/排序（可留给后续 JS） */
+.agent-toolbar{
+  display:flex; gap:12px; align-items:center; margin:10px 0 16px;
+}
+.agent-toolbar .search{
+  flex:1; display:flex; gap:8px; background:#fff; border-radius:12px; padding:8px 10px; box-shadow:var(--shadow-1);
+}
+.agent-toolbar input{
+  flex:1; border:none; outline:none; background:transparent;
+}
+.agent-toolbar .btn{border-radius:12px}

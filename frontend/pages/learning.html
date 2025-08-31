@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日语学习 - Learning Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+        }
+
+        .chat-area {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .agents-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .agents-title {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .agent-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .agent-card:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .agent-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .tanaka { background: linear-gradient(45deg, #2196F3, #1976D2); }
+        .koumi { background: linear-gradient(45deg, #E91E63, #C2185B); }
+        .ai { background: linear-gradient(45deg, #9C27B0, #7B1FA2); }
+
+        .agent-info {
+            flex: 1;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: #2c3e50;
+        }
+
+        .agent-role {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            min-height: 400px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+
+        .agent-message {
+            background: white;
+            border: 1px solid #e9ecef;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 16px;
+        }
+
+        .send-button {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 日语学习系统</h1>
+            <p>与智能体老师一起学习日语</p>
+        </div>
+
+        <div class="main-content">
+            <div class="chat-area">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message agent-message">
+                        <strong>田中先生：</strong> こんにちは！日本語の勉強を始めましょう！
+                    </div>
+                    <div class="message user-message">
+                        你好！我想学习日语基础语法
+                    </div>
+                    <div class="message agent-message">
+                        <strong>田中先生：</strong> 很好！我们从最基础的「です・ます」敬语开始。这是日语中最重要的礼貌表达方式。
+                    </div>
+                </div>
+
+                <div class="chat-input">
+                    <input type="text" class="input-field" placeholder="输入您的消息..." id="messageInput">
+                    <button class="send-button" onclick="sendMessage()">发送</button>
+                </div>
+            </div>
+
+            <div class="agents-panel">
+                <h3 class="agents-title">选择智能体老师</h3>
+
+                <div class="agent-card" onclick="selectAgent('tanaka')">
+                    <div class="agent-avatar tanaka">田</div>
+                    <div class="agent-info">
+                        <div class="agent-name">田中先生</div>
+                        <div class="agent-role">语法专家</div>
+                    </div>
+                </div>
+
+                <div class="agent-card" onclick="selectAgent('koumi')">
+                    <div class="agent-avatar koumi">美</div>
+                    <div class="agent-info">
+                        <div class="agent-name">小美</div>
+                        <div class="agent-role">对话伙伴</div>
+                    </div>
+                </div>
+
+                <div class="agent-card" onclick="selectAgent('ai')">
+                    <div class="agent-avatar ai">AI</div>
+                    <div class="agent-info">
+                        <div class="agent-name">アイ助手</div>
+                        <div class="agent-role">学习分析</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAgent = 'tanaka';
+
+        function selectAgent(agentId) {
+            currentAgent = agentId;
+
+            const agents = {
+                'tanaka': '田中先生',
+                'koumi': '小美',
+                'ai': 'アイ助手'
+            };
+
+            showNotification(`已选择 ${agents[agentId]} 作为对话对象`);
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (message) {
+                addMessage(message, 'user');
+                input.value = '';
+
+                // 模拟智能体回复
+                setTimeout(() => {
+                    const responses = [
+                        '很好的问题！让我来详细解释...',
+                        '这个语法点确实比较难，我们一步步学习',
+                        'あなたの日本語はとても上手ですね！',
+                        '我建议您多练习这类句型'
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    addMessage(randomResponse, 'agent');
+                }, 1000);
+            }
+        }
+
+        function addMessage(content, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+
+            if (sender === 'agent') {
+                const agents = {
+                    'tanaka': '田中先生',
+                    'koumi': '小美',
+                    'ai': 'アイ助手'
+                };
+                messageDiv.innerHTML = `<strong>${agents[currentAgent]}：</strong> ${content}`;
+            } else {
+                messageDiv.textContent = content;
+            }
+
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                background: #667eea;
+                color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                z-index: 10000;
+            `;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        // 回车发送消息
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

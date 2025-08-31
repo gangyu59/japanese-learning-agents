@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚙️ 系统设置 - 日语学习系统</title>
+
+    <!-- 引入CSS文件 -->
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/settings.css">
+    <link rel="stylesheet" href="../assets/css/animations.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 页面标题 -->
+        <header class="page-header">
+            <h1>⚙️ 系统设置</h1>
+            <p>个性化你的学习体验</p>
+        </header>
+
+        <!-- 设置导航 -->
+        <div class="settings-nav">
+            <button class="nav-btn active" data-section="general">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">通用设置</span>
+            </button>
+            <button class="nav-btn" data-section="learning">
+                <span class="nav-icon">📚</span>
+                <span class="nav-text">学习设置</span>
+            </button>
+            <button class="nav-btn" data-section="agents">
+                <span class="nav-icon">🤖</span>
+                <span class="nav-text">智能体设置</span>
+            </button>
+            <button class="nav-btn" data-section="notifications">
+                <span class="nav-icon">🔔</span>
+                <span class="nav-text">通知设置</span>
+            </button>
+            <button class="nav-btn" data-section="privacy">
+                <span class="nav-icon">🔒</span>
+                <span class="nav-text">隐私安全</span>
+            </button>
+        </div>
+
+        <!-- 设置内容区域 -->
+        <div class="settings-content">
+            <!-- 通用设置 -->
+            <div class="settings-section active" id="general">
+                <h2>🏠 通用设置</h2>
+
+                <div class="setting-group">
+                    <h3>🌐 语言与地区</h3>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>界面语言</strong>
+                            <span class="setting-desc">选择系统界面显示语言</span>
+                        </div>
+                        <div class="setting-control">
+                            <select class="setting-select" id="interface-language">
+                                <option value="zh-CN" selected>简体中文</option>
+                                <option value="zh-TW">繁体中文</option>
+                                <option value="ja-JP">日本語</option>
+                                <option value="en-US">English</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>时区设置</strong>
+                            <span class="setting-desc">用于学习提醒和统计</span>
+                        </div>
+                        <div class="setting-control">
+                            <select class="setting-select" id="timezone">
+                                <option value="Asia/Shanghai" selected>北京时间 (GMT+8)</option>
+                                <option value="Asia/Tokyo">东京时间 (GMT+9)</option>
+                                <option value="America/New_York">纽约时间 (GMT-5)</option>
+                                <option value="Europe/London">伦敦时间 (GMT+0)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>🎨 外观主题</h3>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>主题模式</strong>
+                            <span class="setting-desc">选择你喜欢的界面主题</span>
+                        </div>
+                        <div class="setting-control">
+                            <div class="theme-selector">
+                                <div class="theme-option light active" data-theme="light">
+                                    <div class="theme-preview"></div>
+                                    <span class="theme-name">明亮</span>
+                                </div>
+                                <div class="theme-option dark" data-theme="dark">
+                                    <div class="theme-preview"></div>
+                                    <span class="theme-name">暗黑</span>
+                                </div>
+                                <div class="theme-option sakura" data-theme="sakura">
+                                    <div class="theme-preview"></div>
+                                    <span class="theme-name">樱花</span>
+                                </div>
+                                <div class="theme-option matcha" data-theme="matcha">
+                                    <div class="theme-preview"></div>
+                                    <span class="theme-name">抹茶</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>自动切换主题</strong>
+                            <span class="setting-desc">根据时间自动切换明暗主题</span>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="auto-theme">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>🔊 音频设置</h3>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>系统音效</strong>
+                            <span class="setting-desc">启用按钮点击和通知音效</span>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="system-sounds" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>语音播放</strong>
+                            <span class="setting-desc">日语发音播放功能</span>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="voice-playback" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 学习设置 -->
+            <div class="settings-section" id="learning">
+                <h2>📚 学习设置</h2>
+
+                <div class="setting-group">
+                    <h3>🎯 学习目标</h3>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>目标JLPT等级</strong>
+                            <span class="setting-desc">设置你的学习目标等级</span>
+                        </div>
+                        <div class="setting-control">
+                            <select class="setting-select" id="target-jlpt">
+                                <option value="N5">N5 - 入门</option>
+                                <option value="N4">N4 - 初级</option>
+                                <option value="N3" selected>N3 - 中级</option>
+                                <option value="N2">N2 - 中高级</option>
+                                <option value="N1">N1 - 高级</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>每日学习时间</strong>
+                            <span class="setting-desc">设置每天的学习目标时间</span>
+                        </div>
+                        <div class="setting-control">
+                            <div class="time-selector">
+                                <button class="time-btn" data-time="15">15分钟</button>
+                                <button class="time-btn" data-time="30">30分钟</button>
+                                <button class="time-btn active" data-time="60">1小时</button>
+                                <button class="time-btn" data-time="90">1.5小时</button>
+                                <button class="time-btn" data-time="120">2小时</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>📝 学习偏好</h3>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>难度自动调节</strong>
+                            <span class="setting-desc">系统根据学习表现自动调节内容难度</span>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="auto-difficulty" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>显示罗马音</strong>
+                            <span class="setting-desc">在假名下方显示罗马音标注</span>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="show-romaji">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>自动翻译</strong>
+                            <span class="setting-desc">自动显示日语内容的中文翻译</span>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="auto-translate" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 智能体设置 -->
+            <div class="settings-section" id="agents">
+                <h2>🤖 智能体设置</h2>
+
+                <div class="setting-group">
+                    <h3>🎭 智能体个性</h3>
+                    <div class="agent-personality-list">
+                        <div class="agent-personality-item">
+                            <div class="agent-info">
+                                <div class="agent-avatar tanaka">田</div>
+                                <div class="agent-details">
+                                    <div class="agent-name">田中先生</div>
+                                    <div class="agent-role">语法专家</div>
+                                </div>
+                            </div>
+                            <div class="personality-controls">
+                                <div class="control-item">
+                                    <label>严格程度</label>
+                                    <input type="range" min="1" max="10" value="8" class="personality-slider">
+                                </div>
+                                <div class="control-item">
+                                    <label>友好度</label>
+                                    <input type="range" min="1" max="10" value="6" class="personality-slider">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="agent-personality-item">
+                            <div class="agent-info">
+                                <div class="agent-avatar koumi">美</div>
+                                <div class="agent-details">
+                                    <div class="agent-name">小美</div>
+                                    <div class="agent-role">对话伙伴</div>
+                                </div>
+                            </div>
+                            <div class="personality-controls">
+                                <div class="control-item">
+                                    <label>活泼程度</label>
+                                    <input type="range" min="1" max="10" value="9" class="personality-slider">
+                                </div>
+                                <div class="control-item">
+                                    <label>耐心度</label>
+                                    <input type="range" min="1" max="10" value="8" class="personality-slider">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="agent-personality-item">
+                            <div class="agent-info">
+                                <div class="agent-avatar yamada">山</div>
+                                <div class="agent-details">
+                                    <div class="agent-name">山田</div>
+                                    <div class="agent-role">文化专家</div>
+                                </div>
+                            </div>
+                            <div class="personality-controls">
+                                <div class="control-item">
+                                    <label>详细程度</label>
+                                    <input type="range" min="1" max="10" value="7" class="personality-slider">
+                                </div>
+                                <div class="control-item">
+                                    <label>幽默感</label>
+                                    <input type="range" min="1" max="10" value="6" class="personality-slider">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 通知设置 -->
+            <div class="settings-section" id="notifications">
+                <h2>🔔 通知设置</h2>
+
+                <div class="setting-group">
+                    <h3>📱 推送通知</h3>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>学习提醒</strong>
+                            <span class="setting-desc">每日学习时间提醒</span>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="study-reminder" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>复习提醒</strong>
+                            <span class="setting-desc">词汇和语法复习提醒</span>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="review-reminder" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>成就通知</strong>
+                            <span class="setting-desc">获得新成就时的通知</span>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="achievement-notification" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>⏰ 提醒时间</h3>
+                    <div class="time-settings">
+                        <div class="time-setting-item">
+                            <label>学习提醒时间</label>
+                            <input type="time" value="09:00" class="time-input">
+                        </div>
+                        <div class="time-setting-item">
+                            <label>复习提醒时间</label>
+                            <input type="time" value="19:00" class="time-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 隐私安全 -->
+            <div class="settings-section" id="privacy">
+                <h2>🔒 隐私安全</h2>
+
+                <div class="setting-group">
+                    <h3>📊 数据收集</h3>
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>学习数据分析</strong>
+                            <span class="setting-desc">允许系统分析学习数据以改进体验</span>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="data-analysis" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <strong>匿名统计</strong>
+                            <span class="setting-desc">参与匿名使用统计以帮助改进产品</span>
+                        </div>
+                        <div class="setting-control">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="anonymous-stats" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-group">
+                    <h3>🔐 账户安全</h3>
+                    <div class="security-actions">
+                        <button class="security-btn" onclick="changePassword()">
+                            <span class="btn-icon">🔑</span>
+                            <span class="btn-text">修改密码</span>
+                        </button>
+                        <button class="security-btn" onclick="exportData()">
+                            <span class="btn-icon">📥</span>
+                            <span class="btn-text">导出数据</span>
+                        </button>
+                        <button class="security-btn danger" onclick="deleteAccount()">
+                            <span class="btn-icon">🗑️</span>
+                            <span class="btn-text">删除账户</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 保存按钮 -->
+        <div class="settings-footer">
+            <button class="save-btn" onclick="saveSettings()">
+                <span class="btn-icon">💾</span>
+                <span class="btn-text">保存设置</span>
+            </button>
+            <button class="reset-btn" onclick="resetSettings()">
+                <span class="btn-icon">🔄</span>
+                <span class="btn-text">重置默认</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/settings.js"></script>
+    <script src="../assets/js/animations.js"></script>
+
+    <script>
+        // 设置页面的JavaScript逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSettingsPage();
+            bindSettingsEvents();
+
+            console.log('⚙️ 系统设置页面已初始化');
+        });
+
+        function initializeSettingsPage() {
+            // 加载保存的设置
+            loadSettings();
+
+            // 初始化导航
+            initializeNavigation();
+
+            // 初始化主题选择器
+            initializeThemeSelector();
+
+            // 初始化时间选择器
+            initializeTimeSelector();
+        }
+
+        function bindSettingsEvents() {
+            // 绑定所有切换开关
+            document.querySelectorAll('.toggle-switch input').forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    handleToggleChange(this);
+                });
+            });
+
+            // 绑定个性滑块
+            document.querySelectorAll('.personality-slider').forEach(slider => {
+                slider.addEventListener('input', function() {
+                    handlePersonalityChange(this);
+                });
+            });
+
+            // 绑定下拉框
+            document.querySelectorAll('.setting-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    handleSelectChange(this);
+                });
+            });
+        }
+
+        function initializeNavigation() {
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const sections = document.querySelectorAll('.settings-section');
+
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除所有活跃状态
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active'));
+
+                    // 添加当前活跃状态
+                    this.classList.add('active');
+                    const targetSection = document.getElementById(this.dataset.section);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    }
+
+                    // 添加动画效果
+                    targetSection.style.animation = 'fadeInUp 0.3s ease';
+                });
+            });
+        }
+
+        function initializeThemeSelector() {
+            const themeOptions = document.querySelectorAll('.theme-option');
+
+            themeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    themeOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const theme = this.dataset.theme;
+                    applyTheme(theme);
+                    showNotification(`🎨 已切换到${this.querySelector('.theme-name').textContent}主题`, 'success');
+                });
+            });
+        }
+
+        function initializeTimeSelector() {
+            const timeBtns = document.querySelectorAll('.time-btn');
+
+            timeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    timeBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const time = this.dataset.time;
+                    updateDailyGoal(time);
+                    showNotification(`⏰ 每日学习时间已设置为${this.textContent}`, 'success');
+                });
+            });
+        }
+
+        function handleToggleChange(toggle) {
+            const settingName = toggle.id;
+            const isEnabled = toggle.checked;
+
+            console.log(`设置 ${settingName} 已${isEnabled ? '启用' : '禁用'}`);
+
+            // 保存设置
+            saveSetting(settingName, isEnabled);
+
+            // 显示通知
+            const settingNames = {
+                'auto-theme': '自动主题切换',
+                'system-sounds': '系统音效',
+                'voice-playback': '语音播放',
+                'auto-difficulty': '难度自动调节',
+                'show-romaji': '罗马音显示',
+                'auto-translate': '自动翻译',
+                'study-reminder': '学习提醒',
+                'review-reminder': '复习提醒',
+                'achievement-notification': '成就通知',
+                'data-analysis': '数据分析',
+                'anonymous-stats': '匿名统计'
+            };
+
+            const displayName = settingNames[settingName] || settingName;
+            showNotification(`${displayName}已${isEnabled ? '启用' : '禁用'}`, 'info');
+        }
+
+        function handlePersonalityChange(slider) {
+            const value = slider.value;
+            const agentCard = slider.closest('.agent-personality-item');
+            const agentName = agentCard.querySelector('.agent-name').textContent;
+            const controlLabel = slider.closest('.control-item').querySelector('label').textContent;
+
+            console.log(`${agentName}的${controlLabel}已调整为${value}`);
+
+            // 保存个性设置
+            savePersonalitySetting(agentName, controlLabel, value);
+        }
+
+        function handleSelectChange(select) {
+            const settingName = select.id;
+            const value = select.value;
+
+            console.log(`设置 ${settingName} 已更改为 ${value}`);
+
+            // 保存设置
+            saveSetting(settingName, value);
+
+            // 显示通知
+            const settingNames = {
+                'interface-language': '界面语言',
+                'timezone': '时区',
+                'target-jlpt': '目标JLPT等级'
+            };
+
+            const displayName = settingNames[settingName] || settingName;
+            showNotification(`${displayName}已更新`, 'success');
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            saveSetting('current-theme', theme);
+        }
+
+        function updateDailyGoal(minutes) {
+            saveSetting('daily-goal', minutes);
+        }
+
+        function loadSettings() {
+            // 从localStorage加载设置
+            try {
+                const settings = JSON.parse(localStorage.getItem('user-settings') || '{}');
+
+                // 应用保存的设置
+                Object.entries(settings).forEach(([key, value]) => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            element.checked = value;
+                        } else if (element.tagName === 'SELECT') {
+                            element.value = value;
+                        }
+                    }
+                });
+
+                console.log('✓ 用户设置已加载');
+            } catch (e) {
+                console.warn('⚠️ 无法加载用户设置');
+            }
+        }
+
+        function saveSetting(key, value) {
+            try {
+                const settings = JSON.parse(localStorage.getItem('user-settings') || '{}');
+                settings[key] = value;
+                localStorage.setItem('user-settings', JSON.stringify(settings));
+            } catch (e) {
+                console.warn('⚠️ 无法保存设置');
+            }
+        }
+
+        function savePersonalitySetting(agent, property, value) {
+            try {
+                const personalitySettings = JSON.parse(localStorage.getItem('personality-settings') || '{}');
+                if (!personalitySettings[agent]) {
+                    personalitySettings[agent] = {};
+                }
+                personalitySettings[agent][property] = value;
+                localStorage.setItem('personality-settings', JSON.stringify(personalitySettings));
+            } catch (e) {
+                console.warn('⚠️ 无法保存个性设置');
+            }
+        }
+
+        function saveSettings() {
+            showNotification('💾 所有设置已保存', 'success');
+
+            // 实际保存逻辑
+            const allSettings = {};
+
+            // 收集所有设置
+            document.querySelectorAll('.toggle-switch input, .setting-select, .time-input').forEach(element => {
+                if (element.id) {
+                    if (element.type === 'checkbox') {
+                        allSettings[element.id] = element.checked;
+                    } else {
+                        allSettings[element.id] = element.value;
+                    }
+                }
+            });
+
+            try {
+                localStorage.setItem('user-settings', JSON.stringify(allSettings));
+                console.log('✓ 所有设置已保存到localStorage');
+            } catch (e) {
+                console.error('❌ 设置保存失败:', e);
+            }
+        }
+
+        function resetSettings() {
+            if (confirm('确定要重置所有设置为默认值吗？此操作不可撤销。')) {
+                // 清除保存的设置
+                localStorage.removeItem('user-settings');
+                localStorage.removeItem('personality-settings');
+
+                // 重新加载页面
+                location.reload();
+
+                showNotification('🔄 设置已重置为默认值', 'info');
+            }
+        }
+
+        // 安全功能
+        function changePassword() {
+            const newPassword = prompt('请输入新密码：');
+            if (newPassword && newPassword.length >= 6) {
+                showNotification('🔑 密码修改成功', 'success');
+            } else if (newPassword) {
+                showNotification('❌ 密码长度至少6位', 'error');
+            }
+        }
+
+        function exportData() {
+            const userData = {
+                settings: JSON.parse(localStorage.getItem('user-settings') || '{}'),
+                personality: JSON.parse(localStorage.getItem('personality-settings') || '{}'),
+                progress: JSON.parse(localStorage.getItem('user-progress') || '{}'),
+                exportDate: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(userData, null, 2)], {
+                type: 'application/json'
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `japanese-learning-data-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showNotification('📥 数据导出完成', 'success');
+        }
+
+        function deleteAccount() {
+            const confirmation = prompt('请输入"DELETE"确认删除账户（此操作不可撤销）：');
+            if (confirmation === 'DELETE') {
+                // 清除所有本地数据
+                localStorage.clear();
+
+                alert('账户已删除，即将返回首页');
+                window.location.href = '../index.html';
+            } else if (confirmation) {
+                showNotification('❌ 确认文本不正确', 'error');
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : type === 'warning' ? '#FF9800' : '#2196F3'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+                max-width: 300px;
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // CSS动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            @keyframes fadeInUp {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+    <!-- 设置页面样式 -->
+    <style>
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 设置导航 */
+        .settings-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+        }
+
+        /* 设置内容 */
+        .settings-content {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+
+        .settings-section {
+            display: none;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        .settings-section h2 {
+            margin-bottom: 30px;
+            color: #333;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .setting-group {
+            margin-bottom: 35px;
+        }
+
+        .setting-group h3 {
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 1.2rem;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            flex: 1;
+        }
+
+        .setting-label strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .setting-desc {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .setting-control {
+            margin-left: 20px;
+        }
+
+        /* 下拉框样式 */
+        .setting-select {
+            padding: 8px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            font-size: 1rem;
+            min-width: 160px;
+        }
+
+        .setting-select:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        /* 切换开关 */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #667eea;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* 主题选择器 */
+        .theme-selector {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .theme-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+        }
+
+        .theme-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .theme-option.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .theme-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+        }
+
+        .theme-option.light .theme-preview { background: linear-gradient(45deg, #4A90E2, #FFFFFF); }
+        .theme-option.dark .theme-preview { background: linear-gradient(45deg, #1A1A1A, #42A5F5); }
+        .theme-option.sakura .theme-preview { background: linear-gradient(45deg, #FFB3C1, #FFE1E6); }
+        .theme-option.matcha .theme-preview { background: linear-gradient(45deg, #7CB342, #DCEDC8); }
+
+        .theme-name {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        /* 时间选择器 */
+        .time-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .time-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .time-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .time-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* 智能体个性设置 */
+        .agent-personality-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .agent-personality-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .agent-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .agent-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .agent-avatar.tanaka { background: linear-gradient(45deg, #2196F3, #1976D2); }
+        .agent-avatar.koumi { background: linear-gradient(45deg, #E91E63, #C2185B); }
+        .agent-avatar.yamada { background: linear-gradient(45deg, #FF9800, #F57C00); }
+
+        .agent-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .agent-role {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .personality-controls {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-left: 20px;
+        }
+
+        .control-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-item label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .personality-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .personality-slider:hover {
+            opacity: 1;
+        }
+
+        .personality-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        /* 时间设置 */
+        .time-settings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .time-setting-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .time-setting-item label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .time-input {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .time-input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        /* 安全按钮 */
+        .security-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .security-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .security-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .security-btn.danger {
+            border-color: #f44336;
+            color: #f44336;
+        }
+
+        .security-btn.danger:hover {
+            background: #fff5f5;
+        }
+
+        /* 设置页脚 */
+        .settings-footer {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .save-btn, .reset-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .reset-btn {
+            background: #f5f5f5;
+            color: #666;
+            border: 2px solid #e0e0e0;
+        }
+
+        .save-btn:hover, .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .settings-content {
+                padding: 25px;
+            }
+
+            .settings-nav {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                justify-content: center;
+            }
+
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .setting-control {
+                margin-left: 0;
+            }
+
+            .agent-personality-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .personality-controls {
+                margin-left: 0;
+                grid-template-columns: 1fr;
+            }
+
+            .time-settings {
+                grid-template-columns: 1fr;
+            }
+
+            .theme-selector {
+                justify-content: center;
+            }
+
+            .time-selector {
+                justify-content: center;
+            }
+
+            .settings-footer {
+                flex-direction: column;
+            }
+
+            .save-btn, .reset-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</body>
+</html>

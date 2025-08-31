@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 学习进度 - 日语学习系统</title>
+
+    <!-- 引入CSS文件 -->
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/progress.css">
+    <link rel="stylesheet" href="../assets/css/animations.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 页面标题 -->
+        <header class="page-header">
+            <h1>📊 学习进度</h1>
+            <p>追踪你的日语学习轨迹</p>
+        </header>
+
+        <!-- 总体进度概览 -->
+        <div class="progress-overview">
+            <div class="overview-card main-progress">
+                <div class="card-header">
+                    <h3>🎯 整体进度</h3>
+                    <div class="level-badge">N3 级别</div>
+                </div>
+                <div class="progress-circle">
+                    <svg class="circular-progress" width="120" height="120">
+                        <circle cx="60" cy="60" r="54" fill="none" stroke="#f0f0f0" stroke-width="12"/>
+                        <circle cx="60" cy="60" r="54" fill="none" stroke="#4CAF50" stroke-width="12"
+                                stroke-dasharray="339.29" stroke-dashoffset="67.86" stroke-linecap="round"/>
+                    </svg>
+                    <div class="progress-text">
+                        <div class="progress-percentage">78%</div>
+                        <div class="progress-label">完成度</div>
+                    </div>
+                </div>
+                <div class="progress-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">当前等级</span>
+                        <span class="stat-value">15</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">总经验值</span>
+                        <span class="stat-value">3,247 XP</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">连续学习</span>
+                        <span class="stat-value">23 天</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overview-cards">
+                <div class="overview-card">
+                    <div class="card-icon">📚</div>
+                    <div class="card-info">
+                        <div class="card-number">1,247</div>
+                        <div class="card-label">已学词汇</div>
+                    </div>
+                    <div class="card-progress">
+                        <div class="mini-progress-bar">
+                            <div class="mini-progress-fill" style="width: 62%"></div>
+                        </div>
+                        <span class="progress-text">62%</span>
+                    </div>
+                </div>
+
+                <div class="overview-card">
+                    <div class="card-icon">📝</div>
+                    <div class="card-info">
+                        <div class="card-number">89</div>
+                        <div class="card-label">语法点</div>
+                    </div>
+                    <div class="card-progress">
+                        <div class="mini-progress-bar">
+                            <div class="mini-progress-fill" style="width: 74%"></div>
+                        </div>
+                        <span class="progress-text">74%</span>
+                    </div>
+                </div>
+
+                <div class="overview-card">
+                    <div class="card-icon">💬</div>
+                    <div class="card-info">
+                        <div class="card-number">156</div>
+                        <div class="card-label">对话练习</div>
+                    </div>
+                    <div class="card-progress">
+                        <div class="mini-progress-bar">
+                            <div class="mini-progress-fill" style="width: 85%"></div>
+                        </div>
+                        <span class="progress-text">85%</span>
+                    </div>
+                </div>
+
+                <div class="overview-card">
+                    <div class="card-icon">🎌</div>
+                    <div class="card-info">
+                        <div class="card-number">34</div>
+                        <div class="card-label">文化知识</div>
+                    </div>
+                    <div class="card-progress">
+                        <div class="mini-progress-bar">
+                            <div class="mini-progress-fill" style="width: 56%"></div>
+                        </div>
+                        <span class="progress-text">56%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 技能进度详情 -->
+        <div class="skills-progress">
+            <h2>🎯 技能进度详情</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <div class="skill-icon">📚</div>
+                        <div class="skill-info">
+                            <h3>词汇量</h3>
+                            <span class="skill-level">中级</span>
+                        </div>
+                        <div class="skill-percentage">68%</div>
+                    </div>
+                    <div class="skill-progress-bar">
+                        <div class="skill-progress-fill" style="width: 68%"></div>
+                    </div>
+                    <div class="skill-details">
+                        <div class="detail-item">
+                            <span class="detail-label">N5词汇</span>
+                            <span class="detail-value">100%</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">N4词汇</span>
+                            <span class="detail-value">85%</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">N3词汇</span>
+                            <span class="detail-value">42%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <div class="skill-icon">📝</div>
+                        <div class="skill-info">
+                            <h3>语法</h3>
+                            <span class="skill-level">中级</span>
+                        </div>
+                        <div class="skill-percentage">72%</div>
+                    </div>
+                    <div class="skill-progress-bar">
+                        <div class="skill-progress-fill" style="width: 72%"></div>
+                    </div>
+                    <div class="skill-details">
+                        <div class="detail-item">
+                            <span class="detail-label">基础语法</span>
+                            <span class="detail-value">92%</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">中级语法</span>
+                            <span class="detail-value">65%</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">高级语法</span>
+                            <span class="detail-value">28%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <div class="skill-icon">👂</div>
+                        <div class="skill-info">
+                            <h3>听力</h3>
+                            <span class="skill-level">初级</span>
+                        </div>
+                        <div class="skill-percentage">45%</div>
+                    </div>
+                    <div class="skill-progress-bar">
+                        <div class="skill-progress-fill" style="width: 45%"></div>
+                    </div>
+                    <div class="skill-details">
+                        <div class="detail-item">
+                            <span class="detail-label">日常对话</span>
+                            <span class="detail-value">60%</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">新闻听力</span>
+                            <span class="detail-value">30%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <div class="skill-icon">🗣️</div>
+                        <div class="skill-info">
+                            <h3>口语</h3>
+                            <span class="skill-level">初级</span>
+                        </div>
+                        <div class="skill-percentage">38%</div>
+                    </div>
+                    <div class="skill-progress-bar">
+                        <div class="skill-progress-fill" style="width: 38%"></div>
+                    </div>
+                    <div class="skill-details">
+                        <div class="detail-item">
+                            <span class="detail-label">发音准确度</span>
+                            <span class="detail-value">55%</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">表达流畅度</span>
+                            <span class="detail-value">21%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 学习建议 -->
+        <div class="recommendations">
+            <h2>💡 个性化建议</h2>
+            <div class="recommendations-grid">
+                <div class="recommendation-card priority-high">
+                    <div class="rec-header">
+                        <div class="rec-icon">⚠️</div>
+                        <div class="rec-priority">高优先级</div>
+                    </div>
+                    <h3>加强听力训练</h3>
+                    <p>你的听力成绩相对较低，建议每天增加30分钟的听力练习。</p>
+                    <div class="rec-actions">
+                        <button class="rec-btn primary" onclick="showNotification('🎧 听力练习已启动', 'success')">开始练习</button>
+                    </div>
+                </div>
+
+                <div class="recommendation-card priority-medium">
+                    <div class="rec-header">
+                        <div class="rec-icon">📈</div>
+                        <div class="rec-priority">中优先级</div>
+                    </div>
+                    <h3>扩展N3词汇</h3>
+                    <p>你的N3词汇掌握率为42%，建议使用间隔重复法学习。</p>
+                    <div class="rec-actions">
+                        <button class="rec-btn primary" onclick="showNotification('📚 词汇练习已启动', 'success')">词汇练习</button>
+                    </div>
+                </div>
+
+                <div class="recommendation-card priority-low">
+                    <div class="rec-header">
+                        <div class="rec-icon">🎯</div>
+                        <div class="rec-priority">低优先级</div>
+                    </div>
+                    <h3>保持学习节奏</h3>
+                    <p>你的学习习惯很好！继续保持每日学习的好习惯。</p>
+                    <div class="rec-actions">
+                        <button class="rec-btn secondary" onclick="showNotification('📅 计划调整功能开发中', 'info')">调整计划</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/progress.js"></script>
+    <script src="../assets/js/animations.js"></script>
+
+    <script>
+        // 进度页面的JavaScript逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            animateProgressBars();
+            initializeProgressPage();
+
+            console.log('📊 学习进度页面已初始化');
+        });
+
+        function initializeProgressPage() {
+            // 动画观察器
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, observerOptions);
+
+            // 观察所有卡片
+            document.querySelectorAll('.overview-card, .skill-card, .recommendation-card').forEach(card => {
+                observer.observe(card);
+            });
+        }
+
+        function animateProgressBars() {
+            // 小型进度条动画
+            document.querySelectorAll('.mini-progress-fill, .skill-progress-fill').forEach((bar, index) => {
+                setTimeout(() => {
+                    bar.style.transition = 'width 1.5s ease-out';
+                    const targetWidth = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = targetWidth;
+                    }, 100);
+                }, index * 200);
+            });
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // CSS动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            .animate-in {
+                animation: slideInUp 0.6s ease;
+            }
+            @keyframes slideInUp {
+                from { opacity: 0; transform: translateY(30px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+    <!-- 进度页面样式 -->
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 总体进度概览 */
+        .progress-overview {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .main-progress {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .level-badge {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .progress-circle {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .circular-progress {
+            transform: rotate(-90deg);
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-percentage {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .progress-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .overview-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .overview-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .overview-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .card-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .card-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .card-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mini-progress-bar {
+            flex: 1;
+            height: 6px;
+            background: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .mini-progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #4CAF50, #81C784);
+            transition: width 1.5s ease-out;
+        }
+
+        /* 技能进度 */
+        .skills-progress {
+            margin-bottom: 50px;
+        }
+
+        .skills-progress h2 {
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .skill-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .skill-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .skill-icon {
+            font-size: 2.5rem;
+        }
+
+        .skill-info h3 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .skill-level {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .skill-percentage {
+            margin-left: auto;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .skill-progress-bar {
+            height: 12px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .skill-progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #4CAF50, #81C784);
+            transition: width 2s ease-out;
+        }
+
+        .skill-details {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: #666;
+        }
+
+        .detail-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* 学习建议 */
+        .recommendations {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .recommendations h2 {
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .recommendation-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 4px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-card.priority-high {
+            border-left-color: #f44336;
+            background: #fff5f5;
+        }
+
+        .recommendation-card.priority-medium {
+            border-left-color: #FF9800;
+            background: #fff8f0;
+        }
+
+        .recommendation-card.priority-low {
+            border-left-color: #4CAF50;
+            background: #f5fff5;
+        }
+
+        .rec-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .rec-icon {
+            font-size: 1.5rem;
+        }
+
+        .rec-priority {
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .priority-high .rec-priority {
+            color: #f44336;
+        }
+
+        .priority-medium .rec-priority {
+            color: #FF9800;
+        }
+
+        .priority-low .rec-priority {
+            color: #4CAF50;
+        }
+
+        .recommendation-card h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .recommendation-card p {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .rec-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .rec-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .rec-btn.primary {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .rec-btn.secondary {
+            background: white;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+
+        .rec-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .progress-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .overview-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .overview-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .main-progress {
+                padding: 30px;
+            }
+
+            .progress-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .skill-card {
+                padding: 25px;
+            }
+
+            .recommendations-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

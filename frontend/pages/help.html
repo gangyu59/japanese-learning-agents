@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>帮助中心 - pages/help.html</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .search-bar {
+            max-width: 600px;
+            margin: 20px auto 0;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 16px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+            outline: none;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .help-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            height: fit-content;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 1.3em;
+        }
+
+        .help-nav {
+            list-style: none;
+        }
+
+        .help-nav li {
+            margin-bottom: 8px;
+        }
+
+        .help-nav a {
+            display: block;
+            padding: 12px 15px;
+            color: #666;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .help-nav a:hover,
+        .help-nav a.active {
+            background: #f0f7ff;
+            color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .help-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .help-section.active {
+            display: block;
+        }
+
+        .help-section h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .help-section h3 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin: 30px 0 15px 0;
+            position: relative;
+        }
+
+        .help-section h3::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 20px;
+            background: #667eea;
+            border-radius: 2px;
+        }
+
+        .help-section p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .feature-desc {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .agent-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .agent-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .agent-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .tanaka { background: linear-gradient(45deg, #2196F3, #1976D2); }
+        .koumi { background: linear-gradient(45deg, #E91E63, #C2185B); }
+        .ai { background: linear-gradient(45deg, #9C27B0, #7B1FA2); }
+        .yamada { background: linear-gradient(45deg, #FF9800, #F57C00); }
+        .sato { background: linear-gradient(45deg, #4CAF50, #388E3C); }
+        .membot { background: linear-gradient(45deg, #607D8B, #455A64); }
+
+        .agent-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .agent-role {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .faq-item {
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            background: white;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-size: 1.1em;
+            font-weight: 500;
+            color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: #f0f7ff;
+            color: #667eea;
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            color: #555;
+        }
+
+        .faq-item.open .faq-answer {
+            padding: 20px;
+            max-height: 200px;
+        }
+
+        .faq-item.open .faq-question::after {
+            transform: rotate(180deg);
+        }
+
+        .faq-question::after {
+            content: '▼';
+            transition: transform 0.3s ease;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .quick-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .quick-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .quick-link-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .quick-link-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .quick-link-desc {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .help-content {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid,
+            .agent-showcase {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🆘 帮助中心</h1>
+            <p>学习如何使用Multi-Agent日语学习系统</p>
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="搜索帮助内容..." onkeyup="searchHelp(event)">
+                <button class="search-btn">🔍</button>
+            </div>
+        </div>
+
+        <div class="help-content">
+            <div class="sidebar">
+                <h3>📚 帮助导航</h3>
+                <ul class="help-nav">
+                    <li><a href="#" class="active" onclick="showSection('getting-started')">🚀 快速开始</a></li>
+                    <li><a href="#" onclick="showSection('features')">✨ 功能介绍</a></li>
+                    <li><a href="#" onclick="showSection('agents')">🤖 智能体指南</a></li>
+                    <li><a href="#" onclick="showSection('learning')">📖 学习技巧</a></li>
+                    <li><a href="#" onclick="showSection('troubleshooting')">🔧 故障排除</a></li>
+                    <li><a href="#" onclick="showSection('faq')">❓ 常见问题</a></li>
+                    <li><a href="#" onclick="showSection('contact')">📞 联系我们</a></li>
+                </ul>
+            </div>
+
+            <div class="main-content">
+                <!-- 快速开始 -->
+                <div class="help-section active" id="getting-started">
+                    <h2>🚀 快速开始</h2>
+                    <p>欢迎使用Multi-Agent日语学习系统！这里是您开始学习之旅的地方。</p>
+
+                    <h3>第一步：选择学习目标</h3>
+                    <p>在个人资料页面设置您的JLPT目标级别（N5到N1），系统会根据您的目标调整学习内容的难度和重点。</p>
+
+                    <h3>第二步：认识您的智能体老师们</h3>
+                    <div class="agent-showcase">
+                        <div class="agent-card">
+                            <div class="agent-avatar tanaka">田</div>
+                            <div class="agent-name">田中先生</div>
+                            <div class="agent-role">语法专家</div>
+                        </div>
+                        <div class="agent-card">
+                            <div class="agent-avatar koumi">美</div>
+                            <div class="agent-name">小美</div>
+                            <div class="agent-role">对话伙伴</div>
+                        </div>
+                        <div class="agent-card">
+                            <div class="agent-avatar ai">AI</div>
+                            <div class="agent-name">アイ</div>
+                            <div class="agent-role">学习分析师</div>
+                        </div>
+                    </div>
+
+                    <h3>第三步：开始您的第一次对话</h3>
+                    <p>进入学习页面，选择一个智能体开始对话。建议新手从小美开始，她会用简单友好的方式帮助您适应系统。</p>
+
+                    <div class="quick-links">
+                        <a href="#" class="quick-link" onclick="goToLearning()">
+                            <span class="quick-link-icon">📚</span>
+                            <div class="quick-link-title">开始学习</div>
+                            <div class="quick-link-desc">直接跳转到学习界面</div>
+                        </a>
+                        <a href="#" class="quick-link" onclick="goToProfile()">
+                            <span class="quick-link-icon">👤</span>
+                            <div class="quick-link-title">设置个人资料</div>
+                            <div class="quick-link-desc">配置学习目标和偏好</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 功能介绍 -->
+                <div class="help-section" id="features">
+                    <h2>✨ 功能介绍</h2>
+                    <p>探索系统的强大功能，让您的日语学习更加高效有趣。</p>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">💬</div>
+                            <div class="feature-title">智能体对话</div>
+                            <div class="feature-desc">与6个不同性格的智能体进行自然对话，练习日语表达</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🤝</div>
+                            <div class="feature-title">协作讨论</div>
+                            <div class="feature-desc">智能体们会就您的问题展开讨论，提供多角度解答</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📖</div>
+                            <div class="feature-title">协作小说</div>
+                            <div class="feature-desc">与智能体一起创作日语小说，在创作中学习语言</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <div class="feature-title">个性化学习</div>
+                            <div class="feature-desc">根据您的学习进度和弱点，智能推荐学习内容</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🎤</div>
+                            <div class="feature-title">语音识别</div>
+                            <div class="feature-desc">练习日语发音，获得实时的发音评估和建议</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📊</div>
+                            <div class="feature-title">学习分析</div>
+                            <div class="feature-desc">详细的学习数据分析，帮助您了解学习进展</div>
+                        </div>
+                    </div>
+
+                    <h3>高级功能</h3>
+                    <p>🎭 <strong>自定义智能体：</strong>创建属于您的专属日语老师，设定个性和教学风格。</p>
+                    <p>🎬 <strong>场景编辑器：</strong>自定义学习场景，如商务会议、旅游对话等。</p>
+                    <p>🏆 <strong>成就系统：</strong>通过完成学习目标获得成就，保持学习动力。</p>
+                </div>
+
+                <!-- 智能体指南 -->
+                <div class="help-section" id="agents">
+                    <h2>🤖 智能体使用指南</h2>
+                    <p>了解每个智能体的特点和最佳使用方式。</p>
+
+                    <h3>📚 田中先生 - 语法专家</h3>
+                    <p><strong>性格特点：</strong>严格认真，注重细节，对语法错误零容忍</p>
+                    <p><strong>最适合：</strong>语法学习、语法错误纠正、语法规则解释</p>
+                    <p><strong>使用技巧：</strong>向他提问具体的语法问题，他会给出详细准确的解答</p>
+
+                    <h3>👧 小美 - 对话伙伴</h3>
+                    <p><strong>性格特点：</strong>活泼开朗，富有耐心，喜欢用年轻人的表达方式</p>
+                    <p><strong>最适合：</strong>日常对话练习、口语训练、轻松聊天</p>
+                    <p><strong>使用技巧：</strong>和她进行日常话题的对话，她会纠正您的表达并教您更自然的说法</p>
+
+                    <h3>🔍 アイ - 智能分析师</h3>
+                    <p><strong>性格特点：</strong>理性客观，善于数据分析，提供个性化建议</p>
+                    <p><strong>最适合：</strong>学习进度分析、个性化推荐、学习计划制定</p>
+                    <p><strong>使用技巧：</strong>询问学习建议时找她，她会基于您的数据给出科学建议</p>
+
+                    <h3>🎌 山田老师 - 文化专家</h3>
+                    <p><strong>性格特点：</strong>博学风趣，热爱分享日本文化故事</p>
+                    <p><strong>最适合：</strong>文化背景学习、习俗解释、历史故事</p>
+                    <p><strong>使用技巧：</strong>遇到文化相关问题时请教他，他会结合有趣故事来解释</p>
+
+                    <h3>🎯 佐藤教练 - 考试专家</h3>
+                    <p><strong>性格特点：</strong>目标导向，严格高效，专注于考试成绩</p>
+                    <p><strong>最适合：</strong>JLPT考试准备、模拟测试、考试策略</p>
+                    <p><strong>使用技巧：</strong>制定考试计划时找他，他会提供针对性的备考建议</p>
+
+                    <h3>🧠 MemBot - 记忆管家</h3>
+                    <p><strong>性格特点：</strong>细致周到，记录详尽，提醒及时</p>
+                    <p><strong>最适合：</strong>学习记录、复习提醒、进度跟踪</p>
+                    <p><strong>使用技巧：</strong>他会自动记录您的学习内容并在适当时机提醒复习</p>
+                </div>
+
+                <!-- 学习技巧 -->
+                <div class="help-section" id="learning">
+                    <h2>📖 学习技巧与策略</h2>
+                    <p>掌握这些技巧，让您的日语学习事半功倍。</p>
+
+                    <h3>🎯 制定学习计划</h3>
+                    <p>建议每天学习30-60分钟，将时间分配给：</p>
+                    <p>• <strong>词汇学习（40%）：</strong>使用间隔重复系统记忆新词汇</p>
+                    <p>• <strong>语法练习（30%）：</strong>与田中先生练习语法规则</p>
+                    <p>• <strong>对话练习（20%）：</strong>与小美进行日常对话</p>
+                    <p>• <strong>文化学习（10%）：</strong>向山田老师了解文化背景</p>
+
+                    <h3>🤖 如何与智能体高效互动</h3>
+                    <p><strong>提出具体问题：</strong>避免问"如何学日语"这样的宽泛问题，而是问"「は」和「が」的区别是什么"</p>
+                    <p><strong>要求举例：</strong>让智能体提供具体例句来说明语法点</p>
+                    <p><strong>模拟真实场景：</strong>要求智能体模拟特定场景，如餐厅点餐、面试等</p>
+                    <p><strong>请求文化解释：</strong>遇到不理解的表达时，请山田老师解释文化背景</p>
+
+                    <h3>📈 利用学习数据</h3>
+                    <p>定期查看进度页面，了解：</p>
+                    <p>• 您的强项和弱项领域</p>
+                    <p>• 需要复习的词汇和语法点</p>
+                    <p>• 学习时间分配是否合理</p>
+                    <p>• アイ的个性化学习建议</p>
+
+                    <h3>🎮 充分利用游戏化元素</h3>
+                    <p>系统设计了丰富的游戏化元素来保持学习动力：</p>
+                    <p>• <strong>每日目标：</strong>完成每日学习目标获得经验值</p>
+                    <p>• <strong>成就系统：</strong>解锁各种学习成就，展示学习成果</p>
+                    <p>• <strong>智能体好感度：</strong>与智能体的互动会影响好感度</p>
+                    <p>• <strong>学习排行榜：</strong>与其他学习者比较进度（可选）</p>
+                </div>
+
+                <!-- 故障排除 -->
+                <div class="help-section" id="troubleshooting">
+                    <h2>🔧 故障排除</h2>
+                    <p>遇到问题时的解决方案和常见故障处理方法。</p>
+
+                    <h3>🎤 语音功能问题</h3>
+                    <p><strong>无法录音：</strong>检查浏览器是否允许麦克风权限，尝试刷新页面重新授权</p>
+                    <p><strong>识别不准确：</strong>确保环境安静，说话清晰，可以调整麦克风灵敏度</p>
+                    <p><strong>播放无声音：</strong>检查系统音量设置，确认音频输出设备正常</p>
+
+                    <h3>🤖 智能体响应问题</h3>
+                    <p><strong>响应缓慢：</strong>可能是网络延迟或服务器负载高，请耐心等待</p>
+                    <p><strong>智能体离线：</strong>尝试刷新页面或切换到其他智能体</p>
+                    <p><strong>回答不相关：</strong>重新清晰地描述您的问题，或尝试换个问法</p>
+
+                    <h3>💾 数据同步问题</h3>
+                    <p><strong>学习进度丢失：</strong>检查网络连接，确保登录状态正常</p>
+                    <p><strong>设置未保存：</strong>修改设置后务必点击保存按钮</p>
+                    <p><strong>多设备同步：</strong>使用同一账户登录可以在不同设备间同步学习数据</p>
+
+                    <h3>🌐 浏览器兼容性</h3>
+                    <p><strong>推荐浏览器：</strong>Chrome 90+, Firefox 88+, Safari 14+, Edge 90+</p>
+                    <p><strong>不支持功能：</strong>IE浏览器不支持语音功能和部分动画效果</p>
+                    <p><strong>移动设备：</strong>iOS Safari和Android Chrome均支持全部功能</p>
+                </div>
+
+                <!-- 常见问题 -->
+                <div class="help-section" id="faq">
+                    <h2>❓ 常见问题</h2>
+                    <p>用户最常询问的问题和详细解答。</p>
+
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <button class="faq-question">
+                            系统如何判断我的日语水平？
+                        </button>
+                        <div class="faq-answer">
+                            系统通过多维度评估您的日语水平：语法准确率、词汇使用丰富度、发音清晰度、对话流畅性等。アイ会持续分析您的学习数据，动态调整内容难度。
+                        </div>
+                    </div>
+
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <button class="faq-question">
+                            可以同时与多个智能体对话吗？
+                        </button>
+                        <div class="faq-answer">
+                            可以！这正是我们系统的特色。您可以邀请多个智能体参与同一个话题的讨论，他们会从不同角度给您建议，有时甚至会产生有趣的争论。
+                        </div>
+                    </div>
+
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <button class="faq-question">
+                            如何创建自定义智能体？
+                        </button>
+                        <div class="faq-answer">
+                            进入智能体页面，点击"创建新智能体"，您可以设定智能体的姓名、性格特点、专业领域、说话风格等。系统提供多种模板供您选择。
+                        </div>
+                    </div>
+
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <button class="faq-question">
+                            学习数据会被保存多久？
+                        </button>
+                        <div class="faq-answer">
+                            您的学习数据会永久保存（除非您主动删除账户）。我们使用加密存储保护您的隐私，数据仅用于改善学习体验，不会与第三方分享。
+                        </div>
+                    </div>
+
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <button class="faq-question">
+                            系统支持离线使用吗？
+                        </button>
+                        <div class="faq-answer">
+                            部分功能支持离线使用，如复习已下载的词汇卡片。但智能体对话、语音识别等核心功能需要网络连接。我们正在开发更多离线功能。
+                        </div>
+                    </div>
+
+                    <div class="faq-item" onclick="toggleFAQ(this)">
+                        <button class="faq-question">
+                            如何提高学习效率？
+                        </button>
+                        <div class="faq-answer">
+                            建议：1）设定清晰的学习目标；2）定期与アイ讨论学习计划；3）充分利用智能体协作功能；4）坚持每日练习；5）及时复习MemBot提醒的内容。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 联系我们 -->
+                <div class="help-section" id="contact">
+                    <h2>📞 联系我们</h2>
+                    <p>需要更多帮助？我们随时为您服务。</p>
+
+                    <div class="quick-links">
+                        <a href="#" class="quick-link">
+                            <span class="quick-link-icon">📧</span>
+                            <div class="quick-link-title">邮件支持</div>
+                            <div class="quick-link-desc">support@japanese-ai.com</div>
+                        </a>
+                        <a href="#" class="quick-link">
+                            <span class="quick-link-icon">💬</span>
+                            <div class="quick-link-title">在线客服</div>
+                            <div class="quick-link-desc">工作日 9:00-18:00</div>
+                        </a>
+                        <a href="#" class="quick-link">
+                            <span class="quick-link-icon">📱</span>
+                            <div class="quick-link-title">QQ群</div>
+                            <div class="quick-link-desc">加入用户交流群</div>
+                        </a>
+                        <a href="#" class="quick-link">
+                            <span class="quick-link-icon">📚</span>
+                            <div class="quick-link-title">文档中心</div>
+                            <div class="quick-link-desc">查看详细技术文档</div>
+                        </a>
+                    </div>
+
+                    <h3>📝 反馈建议</h3>
+                    <p>您的反馈对我们非常重要！如果您有任何建议或发现了问题，请通过以下方式联系我们：</p>
+                    <p>• 使用系统内置的反馈功能（设置页面）</p>
+                    <p>• 发送邮件到 feedback@japanese-ai.com</p>
+                    <p>• 在GitHub项目页面提交Issue</p>
+
+                    <h3>🔄 版本更新</h3>
+                    <p>系统会自动检查更新，新版本发布时您会收到通知。重要更新包括：</p>
+                    <p>• 新智能体角色和功能</p>
+                    <p>• 学习算法优化</p>
+                    <p>• 界面改进和Bug修复</p>
+                    <p>• 新的学习内容和场景</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面功能
+        function showSection(sectionId) {
+            // 隐藏所有部分
+            document.querySelectorAll('.help-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // 移除导航项active状态
+            document.querySelectorAll('.help-nav a').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // 显示选中部分
+            document.getElementById(sectionId).classList.add('active');
+
+            // 激活对应导航项
+            event.target.classList.add('active');
+        }
+
+        function toggleFAQ(faqItem) {
+            const isOpen = faqItem.classList.contains('open');
+
+            // 关闭所有FAQ项
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('open');
+            });
+
+            // 如果当前项不是打开状态，则打开它
+            if (!isOpen) {
+                faqItem.classList.add('open');
+            }
+        }
+
+        function searchHelp(event) {
+            const query = event.target.value.toLowerCase();
+            const sections = document.querySelectorAll('.help-section');
+
+            if (query.length < 2) return;
+
+            // 简单搜索实现
+            sections.forEach(section => {
+                const text = section.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    // 高亮搜索结果（简化实现）
+                    console.log(`找到匹配内容: ${section.id}`);
+                }
+            });
+        }
+
+        function goToLearning() {
+            showNotification('跳转到学习页面...', 'info');
+        }
+
+        function goToProfile() {
+            showNotification('跳转到个人资料页面...', 'info');
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            const colors = {
+                success: '#00b894',
+                warning: '#fdcb6e',
+                danger: '#fd79a8',
+                info: '#74b9ff'
+            };
+
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                background: ${colors[type]};
+                color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // 页面加载时显示欢迎提示
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                showNotification('欢迎来到帮助中心！有任何问题都可以在这里找到答案', 'info');
+            }, 1000);
+        });
+
+        // 添加CSS动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

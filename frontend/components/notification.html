@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知组件 - components/notification.html</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #2c3e50;
+        }
+
+        .demo-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .demo-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .demo-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-success { background: linear-gradient(45deg, #56ab2f, #a8e6cf); }
+        .btn-info { background: linear-gradient(45deg, #4facfe, #00f2fe); }
+        .btn-warning { background: linear-gradient(45deg, #f093fb, #f5576c); }
+        .btn-danger { background: linear-gradient(45deg, #ff416c, #ff4b2b); }
+
+        /* 通知容器 */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 350px;
+            z-index: 10000;
+            pointer-events: none;
+        }
+
+        /* 通知基础样式 */
+        .notification {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-left: 5px solid;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: all;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .notification.hide {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        /* 通知类型样式 */
+        .notification.success {
+            border-left-color: #27ae60;
+        }
+
+        .notification.info {
+            border-left-color: #3498db;
+        }
+
+        .notification.warning {
+            border-left-color: #f39c12;
+        }
+
+        .notification.error {
+            border-left-color: #e74c3c;
+        }
+
+        .notification.agent {
+            border-left-color: #9b59b6;
+        }
+
+        /* 通知图标 */
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .notification.success .notification-icon {
+            background: #27ae60;
+        }
+
+        .notification.info .notification-icon {
+            background: #3498db;
+        }
+
+        .notification.warning .notification-icon {
+            background: #f39c12;
+        }
+
+        .notification.error .notification-icon {
+            background: #e74c3c;
+        }
+
+        .notification.agent .notification-icon {
+            background: #9b59b6;
+        }
+
+        /* 通知内容 */
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            font-size: 1em;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .notification-message {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        /* 关闭按钮 */
+        .notification-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #bdc3c7;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .notification-close:hover {
+            background: #ecf0f1;
+            color: #7f8c8d;
+        }
+
+        /* 进度条 */
+        .notification-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1));
+            border-radius: 0 0 15px 15px;
+            animation: progressBar 5s linear;
+        }
+
+        @keyframes progressBar {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
+        /* 特殊通知类型 */
+        .notification.learning-reminder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .notification.learning-reminder .notification-title,
+        .notification.learning-reminder .notification-message {
+            color: white;
+        }
+
+        .notification.learning-reminder .notification-close {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .notification.learning-reminder .notification-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* 智能体通知样式 */
+        .agent-notification {
+            border-left-color: #9b59b6;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+        }
+
+        .agent-avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* 系统状态通知 */
+        .system-notification {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+        }
+
+        .system-notification .notification-title,
+        .system-notification .notification-message {
+            color: white;
+        }
+
+        /* 成就解锁通知 */
+        .achievement-notification {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            animation: celebrateShake 0.6s ease-in-out;
+        }
+
+        .achievement-notification .notification-title,
+        .achievement-notification .notification-message {
+            color: white;
+        }
+
+        @keyframes celebrateShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .notification-container {
+                left: 20px;
+                right: 20px;
+                width: auto;
+            }
+
+            .notification {
+                margin-bottom: 10px;
+                padding: 15px;
+            }
+        }
+
+        /* 通知堆叠动画 */
+        .notification-stack {
+            animation: stackPush 0.3s ease-out;
+        }
+
+        @keyframes stackPush {
+            from {
+                transform: translateY(-10px);
+                opacity: 0.7;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🔔 通知组件演示</h1>
+            <p>多样式通知系统，支持不同类型和动画效果</p>
+        </div>
+
+        <div class="demo-buttons">
+            <button class="demo-btn btn-success" onclick="showSuccessNotification()">✅ 成功通知</button>
+            <button class="demo-btn btn-info" onclick="showInfoNotification()">ℹ️ 信息通知</button>
+            <button class="demo-btn btn-warning" onclick="showWarningNotification()">⚠️ 警告通知</button>
+            <button class="demo-btn btn-danger" onclick="showErrorNotification()">❌ 错误通知</button>
+            <button class="demo-btn btn-success" onclick="showAgentNotification()">🤖 智能体通知</button>
+            <button class="demo-btn btn-warning" onclick="showLearningReminder()">📚 学习提醒</button>
+            <button class="demo-btn btn-info" onclick="showAchievementNotification()">🏆 成就解锁</button>
+            <button class="demo-btn btn-danger" onclick="showSystemAlert()">⚙️ 系统警报</button>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <button class="demo-btn btn-danger" onclick="clearAllNotifications()">🗑️ 清除所有通知</button>
+        </div>
+    </div>
+
+    <!-- 通知容器 -->
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <script>
+        // 通知管理器
+        class NotificationManager {
+            constructor() {
+                this.container = document.getElementById('notificationContainer');
+                this.notifications = new Map();
+                this.idCounter = 0;
+            }
+
+            show(options) {
+                const id = ++this.idCounter;
+                const notification = this.createNotification(id, options);
+
+                this.container.appendChild(notification);
+                this.notifications.set(id, notification);
+
+                // 触发显示动画
+                requestAnimationFrame(() => {
+                    notification.classList.add('show');
+                });
+
+                // 自动关闭
+                if (options.autoClose !== false) {
+                    setTimeout(() => {
+                        this.hide(id);
+                    }, options.duration || 5000);
+                }
+
+                // 推动其他通知
+                this.stackNotifications();
+
+                return id;
+            }
+
+            createNotification(id, options) {
+                const notification = document.createElement('div');
+                notification.className = `notification ${options.type || 'info'}`;
+                notification.dataset.id = id;
+
+                const icon = this.getIcon(options.type);
+                const showProgress = options.showProgress !== false;
+
+                notification.innerHTML = `
+                    ${options.avatar ?
+                        `<div class="agent-avatar-small">${options.avatar}</div>` :
+                        `<div class="notification-icon">${icon}</div>`
+                    }
+                    <div class="notification-content">
+                        <div class="notification-title">${options.title || this.getDefaultTitle(options.type)}</div>
+                        <div class="notification-message">${options.message}</div>
+                    </div>
+                    <button class="notification-close" onclick="notificationManager.hide(${id})">&times;</button>
+                    ${showProgress ? '<div class="notification-progress"></div>' : ''}
+                `;
+
+                // 特殊样式
+                if (options.customClass) {
+                    notification.classList.add(options.customClass);
+                }
+
+                return notification;
+            }
+
+            getIcon(type) {
+                const icons = {
+                    success: '✓',
+                    info: 'ℹ',
+                    warning: '⚠',
+                    error: '✕',
+                    agent: '🤖'
+                };
+                return icons[type] || icons.info;
+            }
+
+            getDefaultTitle(type) {
+                const titles = {
+                    success: '操作成功',
+                    info: '信息提示',
+                    warning: '注意',
+                    error: '错误',
+                    agent: '智能体消息'
+                };
+                return titles[type] || '通知';
+            }
+
+            hide(id) {
+                const notification = this.notifications.get(id);
+                if (notification) {
+                    notification.classList.add('hide');
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                        this.notifications.delete(id);
+                        this.stackNotifications();
+                    }, 300);
+                }
+            }
+
+            stackNotifications() {
+                const notifications = Array.from(this.container.children);
+                notifications.forEach((notification, index) => {
+                    if (index > 0) {
+                        notification.classList.add('notification-stack');
+                    }
+                });
+            }
+
+            clear() {
+                this.notifications.forEach((notification, id) => {
+                    this.hide(id);
+                });
+            }
+
+            // 批量显示通知
+            showBatch(notificationsArray) {
+                notificationsArray.forEach((options, index) => {
+                    setTimeout(() => {
+                        this.show(options);
+                    }, index * 200);
+                });
+            }
+
+            // 显示智能体对话通知
+            showAgentMessage(agentName, message, avatar) {
+                return this.show({
+                    type: 'agent',
+                    title: `${agentName} 说：`,
+                    message: message,
+                    avatar: avatar,
+                    customClass: 'agent-notification',
+                    duration: 8000
+                });
+            }
+
+            // 显示学习提醒
+            showLearningReminder(message) {
+                return this.show({
+                    type: 'info',
+                    title: '📚 学习提醒',
+                    message: message,
+                    customClass: 'learning-reminder',
+                    duration: 10000
+                });
+            }
+
+            // 显示成就解锁
+            showAchievement(title, description) {
+                return this.show({
+                    type: 'success',
+                    title: `🏆 ${title}`,
+                    message: description,
+                    customClass: 'achievement-notification',
+                    duration: 8000,
+                    showProgress: false
+                });
+            }
+
+            // 显示系统状态
+            showSystemStatus(message, isError = false) {
+                return this.show({
+                    type: isError ? 'error' : 'info',
+                    title: '⚙️ 系统状态',
+                    message: message,
+                    customClass: 'system-notification',
+                    duration: 6000
+                });
+            }
+        }
+
+        // 创建全局通知管理器实例
+        const notificationManager = new NotificationManager();
+
+        // 演示函数
+        function showSuccessNotification() {
+            notificationManager.show({
+                type: 'success',
+                title: '学习完成',
+                message: '恭喜！您已完成今天的日语学习目标，词汇掌握度提升了15%',
+                duration: 5000
+            });
+        }
+
+        function showInfoNotification() {
+            notificationManager.show({
+                type: 'info',
+                title: '系统更新',
+                message: '新版本v2.1已发布，增加了语音识别功能和更多智能体角色',
+                duration: 6000
+            });
+        }
+
+        function showWarningNotification() {
+            notificationManager.show({
+                type: 'warning',
+                title: '注意',
+                message: '您的API配额即将用尽，建议升级到高级版本以继续使用',
+                duration: 8000
+            });
+        }
+
+        function showErrorNotification() {
+            notificationManager.show({
+                type: 'error',
+                title: '连接失败',
+                message: '无法连接到智能体服务器，请检查网络连接或稍后重试',
+                duration: 7000
+            });
+        }
+
+        function showAgentNotification() {
+            notificationManager.showAgentMessage(
+                '田中先生',
+                '您的语法练习表现很好！建议下次练习时加强敬语的使用。',
+                '田'
+            );
+        }
+
+        function showLearningReminder() {
+            notificationManager.showLearningReminder(
+                '该学习日语了！今天的目标是掌握5个新的动词活用形式。'
+            );
+        }
+
+        function showAchievementNotification() {
+            notificationManager.showAchievement(
+                '语法大师',
+                '您已连续7天完成语法练习，获得"语法大师"称号！'
+            );
+        }
+
+        function showSystemAlert() {
+            notificationManager.showSystemStatus(
+                '智能体服务器负载过高，响应可能会有轻微延迟',
+                true
+            );
+        }
+
+        function clearAllNotifications() {
+            notificationManager.clear();
+        }
+
+        // 演示批量通知
+        function showBatchNotifications() {
+            const notifications = [
+                {
+                    type: 'info',
+                    title: '会话开始',
+                    message: '与智能体的学习会话已开始'
+                },
+                {
+                    type: 'agent',
+                    title: '小美说：',
+                    message: '今天我们来练习日常对话吧！',
+                    avatar: '美'
+                },
+                {
+                    type: 'success',
+                    title: '词汇学会',
+                    message: '恭喜掌握新词汇"頑張って"'
+                }
+            ];
+
+            notificationManager.showBatch(notifications);
+        }
+
+        // 模拟实时通知
+        function simulateRealTimeNotifications() {
+            const agentMessages = [
+                { agent: '田中先生', avatar: '田', message: '您的助词使用有误，应该用「を」而不是「が」' },
+                { agent: '小美', avatar: '美', message: '哇，您的发音进步很快呢！' },
+                { agent: '山田老师', avatar: '山', message: '这个表达在关西地区比较常用哦' },
+                { agent: 'アイ', avatar: 'AI', message: '根据您的学习数据，建议重点复习动词变位' }
+            ];
+
+            let index = 0;
+            const interval = setInterval(() => {
+                if (index < agentMessages.length) {
+                    const msg = agentMessages[index];
+                    notificationManager.showAgentMessage(msg.agent, msg.message, msg.avatar);
+                    index++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 2000);
+        }
+
+        // 页面加载完成后显示欢迎通知
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                notificationManager.show({
+                    type: 'info',
+                    title: '欢迎使用通知系统',
+                    message: '点击不同按钮体验各种通知效果',
+                    duration: 4000
+                });
+            }, 500);
+        });
+
+        // 键盘快捷键支持
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                notificationManager.clear();
+            }
+        });
+
+        // 添加一些额外的演示按钮
+        const extraButtons = document.createElement('div');
+        extraButtons.className = 'demo-buttons';
+        extraButtons.style.marginTop = '20px';
+        extraButtons.innerHTML = `
+            <button class="demo-btn btn-info" onclick="showBatchNotifications()">📚 批量通知</button>
+            <button class="demo-btn btn-warning" onclick="simulateRealTimeNotifications()">⚡ 模拟实时通知</button>
+        `;
+        document.querySelector('.demo-container').appendChild(extraButtons);
+    </script>
+</body>
+</html>

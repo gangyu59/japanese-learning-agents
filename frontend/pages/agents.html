@@ -1,0 +1,757 @@
+<!-- agents.html -->
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 智能体管理 - 日语学习系统</title>
+
+    <!-- 引入CSS文件 -->
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/agents.css">
+    <link rel="stylesheet" href="../assets/css/animations.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 页面标题 -->
+        <header class="page-header">
+            <h1>🤖 智能体管理中心</h1>
+            <p>管理和配置你的AI学习伙伴</p>
+        </header>
+
+        <!-- 智能体状态概览 -->
+        <div class="agents-overview">
+            <div class="overview-card">
+                <div class="overview-icon">🟢</div>
+                <div class="overview-info">
+                    <div class="overview-number" id="active-agents">2</div>
+                    <div class="overview-label">活跃智能体</div>
+                </div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-icon">💬</div>
+                <div class="overview-info">
+                    <div class="overview-number" id="total-conversations">147</div>
+                    <div class="overview-label">总对话数</div>
+                </div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-icon">⏱️</div>
+                <div class="overview-info">
+                    <div class="overview-number" id="session-time">42分</div>
+                    <div class="overview-label">今日会话时长</div>
+                </div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-icon">⭐</div>
+                <div class="overview-info">
+                    <div class="overview-number" id="avg-rating">4.8</div>
+                    <div class="overview-label">平均评分</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快速操作按钮 -->
+        <div class="quick-actions">
+            <button class="action-btn" onclick="activateAllAgents()">
+                <span class="btn-icon">⚡</span>
+                <span class="btn-text">激活全部</span>
+            </button>
+            <button class="action-btn" onclick="deactivateAllAgents()">
+                <span class="btn-icon">⏸️</span>
+                <span class="btn-text">停用全部</span>
+            </button>
+            <button class="action-btn" onclick="showAgentStats()">
+                <span class="btn-icon">📊</span>
+                <span class="btn-text">查看统计</span>
+            </button>
+        </div>
+
+        <!-- 智能体网格 -->
+        <div class="agents-grid">
+            <!-- 田中先生 - 语法专家 -->
+            <div class="agent-card agent-tanaka" data-agent="tanaka">
+                <div class="agent-header">
+                    <div class="agent-avatar">
+                        <span class="avatar-text">田</span>
+                        <div class="agent-mood">😐</div>
+                    </div>
+                    <div class="agent-info">
+                        <h3>田中先生</h3>
+                        <span class="agent-role">语法专家</span>
+                        <div class="agent-status">
+                            <span class="status-dot inactive"></span>
+                            <span class="status-text">离线</span>
+                        </div>
+                    </div>
+                    <div class="agent-controls">
+                        <button class="control-btn activate-btn" data-agent="tanaka">激活</button>
+                    </div>
+                </div>
+
+                <div class="agent-description">
+                    <p>严格的语法老师，专门纠正语法错误，提供详细的语法解释和练习建议。</p>
+                </div>
+
+                <div class="agent-features">
+                    <span class="feature-tag">语法纠错</span>
+                    <span class="feature-tag">例句生成</span>
+                    <span class="feature-tag">练习出题</span>
+                </div>
+            </div>
+
+            <!-- 小美 - 对话伙伴 -->
+            <div class="agent-card agent-koumi active" data-agent="koumi">
+                <div class="agent-header">
+                    <div class="agent-avatar">
+                        <span class="avatar-text">美</span>
+                        <div class="agent-mood">😊</div>
+                    </div>
+                    <div class="agent-info">
+                        <h3>小美</h3>
+                        <span class="agent-role">对话伙伴</span>
+                        <div class="agent-status">
+                            <span class="status-dot active"></span>
+                            <span class="status-text">在线</span>
+                        </div>
+                    </div>
+                    <div class="agent-controls">
+                        <button class="control-btn deactivate-btn" data-agent="koumi">停用</button>
+                    </div>
+                </div>
+
+                <div class="agent-description">
+                    <p>活泼的对话伙伴，喜欢用年轻人的语言，帮助练习日常对话和口语表达。</p>
+                </div>
+
+                <div class="agent-features">
+                    <span class="feature-tag">日常对话</span>
+                    <span class="feature-tag">流行语</span>
+                    <span class="feature-tag">情感支持</span>
+                </div>
+            </div>
+
+            <!-- アイ - AI分析师 -->
+            <div class="agent-card agent-ai" data-agent="ai">
+                <div class="agent-header">
+                    <div class="agent-avatar">
+                        <span class="avatar-text">AI</span>
+                        <div class="agent-mood">🤔</div>
+                    </div>
+                    <div class="agent-info">
+                        <h3>アイ</h3>
+                        <span class="agent-role">数据分析师</span>
+                        <div class="agent-status">
+                            <span class="status-dot inactive"></span>
+                            <span class="status-text">待机</span>
+                        </div>
+                    </div>
+                    <div class="agent-controls">
+                        <button class="control-btn activate-btn" data-agent="ai">激活</button>
+                    </div>
+                </div>
+
+                <div class="agent-description">
+                    <p>智能数据分析师，分析学习数据，提供个性化学习建议和进度报告。</p>
+                </div>
+
+                <div class="agent-features">
+                    <span class="feature-tag">数据分析</span>
+                    <span class="feature-tag">学习建议</span>
+                    <span class="feature-tag">进度追踪</span>
+                </div>
+            </div>
+
+            <!-- 山田 - 文化专家 -->
+            <div class="agent-card agent-yamada" data-agent="yamada">
+                <div class="agent-header">
+                    <div class="agent-avatar">
+                        <span class="avatar-text">山</span>
+                        <div class="agent-mood">😄</div>
+                    </div>
+                    <div class="agent-info">
+                        <h3>山田</h3>
+                        <span class="agent-role">文化专家</span>
+                        <div class="agent-status">
+                            <span class="status-dot inactive"></span>
+                            <span class="status-text">离线</span>
+                        </div>
+                    </div>
+                    <div class="agent-controls">
+                        <button class="control-btn activate-btn" data-agent="yamada">激活</button>
+                    </div>
+                </div>
+
+                <div class="agent-description">
+                    <p>日本文化专家，讲解文化背景，分享有趣的日本历史和传统故事。</p>
+                </div>
+
+                <div class="agent-features">
+                    <span class="feature-tag">文化讲解</span>
+                    <span class="feature-tag">历史故事</span>
+                    <span class="feature-tag">传统习俗</span>
+                </div>
+            </div>
+
+            <!-- 佐藤 - 考试教练 -->
+            <div class="agent-card agent-sato active" data-agent="sato">
+                <div class="agent-header">
+                    <div class="agent-avatar">
+                        <span class="avatar-text">佐</span>
+                        <div class="agent-mood">💪</div>
+                    </div>
+                    <div class="agent-info">
+                        <h3>佐藤</h3>
+                        <span class="agent-role">考试教练</span>
+                        <div class="agent-status">
+                            <span class="status-dot active"></span>
+                            <span class="status-text">在线</span>
+                        </div>
+                    </div>
+                    <div class="agent-controls">
+                        <button class="control-btn deactivate-btn" data-agent="sato">停用</button>
+                    </div>
+                </div>
+
+                <div class="agent-description">
+                    <p>JLPT考试专家，制定学习计划，提供考试技巧和模拟练习。</p>
+                </div>
+
+                <div class="agent-features">
+                    <span class="feature-tag">JLPT备考</span>
+                    <span class="feature-tag">模拟测试</span>
+                    <span class="feature-tag">学习计划</span>
+                </div>
+            </div>
+
+            <!-- MemBot - 记忆管家 -->
+            <div class="agent-card agent-membot" data-agent="membot">
+                <div class="agent-header">
+                    <div class="agent-avatar">
+                        <span class="avatar-text">🧠</span>
+                        <div class="agent-mood">🤖</div>
+                    </div>
+                    <div class="agent-info">
+                        <h3>MemBot</h3>
+                        <span class="agent-role">记忆管家</span>
+                        <div class="agent-status">
+                            <span class="status-dot inactive"></span>
+                            <span class="status-text">休眠</span>
+                        </div>
+                    </div>
+                    <div class="agent-controls">
+                        <button class="control-btn activate-btn" data-agent="membot">激活</button>
+                    </div>
+                </div>
+
+                <div class="agent-description">
+                    <p>智能记忆助手，跟踪学习进度，安排复习计划，提醒重要学习点。</p>
+                </div>
+
+                <div class="agent-features">
+                    <span class="feature-tag">记忆追踪</span>
+                    <span class="feature-tag">复习提醒</span>
+                    <span class="feature-tag">进度管理</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/agents.js"></script>
+    <script src="../assets/js/animations.js"></script>
+
+    <script>
+        // 智能体管理页面的JavaScript逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAgentControls();
+            updateAgentOverview();
+
+            console.log('🤖 智能体管理页面已初始化');
+        });
+
+        function initializeAgentControls() {
+            // 绑定激活/停用按钮
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('activate-btn')) {
+                    const agentId = e.target.dataset.agent;
+                    activateAgent(agentId);
+                } else if (e.target.classList.contains('deactivate-btn')) {
+                    const agentId = e.target.dataset.agent;
+                    deactivateAgent(agentId);
+                }
+            });
+
+            // 智能体卡片悬停效果
+            const agentCards = document.querySelectorAll('.agent-card');
+            agentCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.classList.add('hovered');
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.classList.remove('hovered');
+                });
+            });
+        }
+
+        function activateAgent(agentId) {
+            const card = document.querySelector(`[data-agent="${agentId}"]`);
+            const statusDot = card.querySelector('.status-dot');
+            const statusText = card.querySelector('.status-text');
+            const button = card.querySelector('.activate-btn');
+
+            // 更新UI状态
+            card.classList.add('active');
+            statusDot.classList.remove('inactive');
+            statusDot.classList.add('active');
+            statusText.textContent = '在线';
+
+            button.textContent = '停用';
+            button.classList.remove('activate-btn');
+            button.classList.add('deactivate-btn');
+
+            // 更新情绪
+            updateAgentMood(agentId, 'happy');
+
+            // 显示通知
+            showNotification(`🤖 ${getAgentName(agentId)} 已激活`, 'success');
+
+            // 更新概览统计
+            updateAgentOverview();
+
+            console.log(`🤖 智能体已激活: ${agentId}`);
+        }
+
+        function deactivateAgent(agentId) {
+            const card = document.querySelector(`[data-agent="${agentId}"]`);
+            const statusDot = card.querySelector('.status-dot');
+            const statusText = card.querySelector('.status-text');
+            const button = card.querySelector('.deactivate-btn');
+
+            // 更新UI状态
+            card.classList.remove('active');
+            statusDot.classList.remove('active');
+            statusDot.classList.add('inactive');
+            statusText.textContent = '离线';
+
+            button.textContent = '激活';
+            button.classList.remove('deactivate-btn');
+            button.classList.add('activate-btn');
+
+            // 更新情绪
+            updateAgentMood(agentId, 'neutral');
+
+            // 显示通知
+            showNotification(`🤖 ${getAgentName(agentId)} 已停用`, 'info');
+
+            // 更新概览统计
+            updateAgentOverview();
+
+            console.log(`🤖 智能体已停用: ${agentId}`);
+        }
+
+        function updateAgentMood(agentId, mood) {
+            const moodEmojis = {
+                happy: '😊',
+                neutral: '😐',
+                thinking: '🤔',
+                excited: '😄',
+                sleeping: '😴'
+            };
+
+            const moodElement = document.querySelector(`[data-agent="${agentId}"] .agent-mood`);
+            if (moodElement) {
+                moodElement.textContent = moodEmojis[mood] || '😐';
+            }
+        }
+
+        function getAgentName(agentId) {
+            const names = {
+                tanaka: '田中先生',
+                koumi: '小美',
+                ai: 'アイ',
+                yamada: '山田',
+                sato: '佐藤',
+                membot: 'MemBot'
+            };
+            return names[agentId] || agentId;
+        }
+
+        function updateAgentOverview() {
+            const activeAgents = document.querySelectorAll('.agent-card.active').length;
+            const totalConversations = 147 + Math.floor(Math.random() * 10);
+
+            document.getElementById('active-agents').textContent = activeAgents;
+            document.getElementById('total-conversations').textContent = totalConversations;
+        }
+
+        // 全局控制函数
+        function activateAllAgents() {
+            const inactiveButtons = document.querySelectorAll('.activate-btn');
+            inactiveButtons.forEach(btn => {
+                btn.click();
+            });
+            showNotification('⚡ 所有智能体已激活', 'success');
+        }
+
+        function deactivateAllAgents() {
+            const activeButtons = document.querySelectorAll('.deactivate-btn');
+            activeButtons.forEach(btn => {
+                btn.click();
+            });
+            showNotification('⏸️ 所有智能体已停用', 'info');
+        }
+
+        function showAgentStats() {
+            const activeAgents = document.querySelectorAll('.agent-card.active').length;
+            const totalAgents = document.querySelectorAll('.agent-card').length;
+
+            alert(`智能体统计:\n总数: ${totalAgents}\n活跃: ${activeAgents}\n今日对话: 42分钟\n平均评分: 4.8/5.0`);
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // CSS动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+    <!-- 智能体页面样式 -->
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 概览卡片 */
+        .agents-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .overview-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .overview-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .overview-icon {
+            font-size: 2.5rem;
+        }
+
+        .overview-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .overview-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* 快速操作 */
+        .quick-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-icon {
+            font-size: 1.2rem;
+        }
+
+        /* 智能体网格 */
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .agent-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border-left: 5px solid #ddd;
+        }
+
+        .agent-card.active {
+            border-left-color: #4CAF50;
+        }
+
+        .agent-card.hovered {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .agent-avatar {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .agent-tanaka .agent-avatar { background: linear-gradient(45deg, #2196F3, #1976D2); }
+        .agent-koumi .agent-avatar { background: linear-gradient(45deg, #E91E63, #C2185B); }
+        .agent-ai .agent-avatar { background: linear-gradient(45deg, #9C27B0, #7B1FA2); }
+        .agent-yamada .agent-avatar { background: linear-gradient(45deg, #FF9800, #F57C00); }
+        .agent-sato .agent-avatar { background: linear-gradient(45deg, #4CAF50, #388E3C); }
+        .agent-membot .agent-avatar { background: linear-gradient(45deg, #607D8B, #455A64); }
+
+        .agent-mood {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .agent-info {
+            flex: 1;
+        }
+
+        .agent-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .agent-role {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .agent-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+
+        .status-dot.active {
+            background: #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .agent-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            min-width: 70px;
+        }
+
+        .activate-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .deactivate-btn {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .agent-description {
+            margin-bottom: 15px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .agent-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .feature-tag {
+            padding: 4px 12px;
+            background: #f0f4ff;
+            color: #667eea;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            border: 1px solid #e0e8ff;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .agents-overview {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .overview-card {
+                padding: 20px;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .quick-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-btn {
+                width: 80%;
+                justify-content: center;
+            }
+
+            .agents-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .agent-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</body>
+</html>

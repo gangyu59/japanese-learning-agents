@@ -1,0 +1,335 @@
+<!-- voice-recorder.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>语音录制组件 - components/voice-recorder.html</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .voice-recorder-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .recorder-header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .recorder-header p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        /* 录音按钮 */
+        .record-button {
+            width: 120px;
+            height: 120px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            margin: 20px auto;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .record-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(255, 107, 107, 0.5);
+        }
+
+        .record-button.recording {
+            background: linear-gradient(45deg, #fd79a8, #e84393);
+            animation: pulse 1.5s ease-in-out infinite;
+            box-shadow: 0 8px 25px rgba(253, 121, 168, 0.4);
+        }
+
+        .record-button.processing {
+            background: linear-gradient(45deg, #74b9ff, #0984e3);
+            animation: processing 2s linear infinite;
+            box-shadow: 0 8px 25px rgba(116, 185, 255, 0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes processing {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.05); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        /* 录音状态指示器 */
+        .recording-indicator {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+
+        .recording-indicator.active {
+            display: flex;
+        }
+
+        .recording-dot {
+            width: 8px;
+            height: 8px;
+            background: #e17055;
+            border-radius: 50%;
+            animation: recordingDot 1.4s ease-in-out infinite both;
+        }
+
+        .recording-dot:nth-child(1) { animation-delay: -0.32s; }
+        .recording-dot:nth-child(2) { animation-delay: -0.16s; }
+        .recording-dot:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes recordingDot {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .recording-time {
+            font-size: 1.2em;
+            color: #e17055;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        /* 音频波形可视化 */
+        .waveform-container {
+            height: 80px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .waveform-container.active {
+            opacity: 1;
+        }
+
+        .waveform-bar {
+            width: 4px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 2px;
+            transition: height 0.1s ease;
+            min-height: 5px;
+        }
+
+        /* 录音结果显示 */
+        .recording-result {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .recording-result.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .transcription {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            color: #2c3e50;
+        }
+
+        .pronunciation-score {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .score-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            position: relative;
+        }
+
+        .score-excellent { background: linear-gradient(45deg, #00b894, #00cec9); }
+        .score-good { background: linear-gradient(45deg, #fdcb6e, #e17055); }
+        .score-needs-work { background: linear-gradient(45deg, #fd79a8, #e84393); }
+
+        .score-details {
+            flex: 1;
+        }
+
+        .score-text {
+            font-size: 1.1em;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .score-suggestion {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        /* 控制按钮 */
+        .control-buttons {
+            margin-top: 25px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .control-buttons.show {
+            opacity: 1;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-replay { background: linear-gradient(45deg, #74b9ff, #0984e3); }
+        .btn-save { background: linear-gradient(45deg, #00b894, #00cec9); }
+        .btn-share { background: linear-gradient(45deg, #fd79a8, #e84393); }
+
+        /* 录音权限提示 */
+        .permission-request {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .permission-request.show {
+            display: block;
+        }
+
+        .permission-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        /* 错误状态 */
+        .error-state {
+            background: #ffe8e8;
+            border: 1px solid #ff7675;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #d63031;
+            display: none;
+        }
+
+        .error-state.show {
+            display: block;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 480px) {
+            .voice-recorder-container {
+                padding: 25px;
+            }
+
+            .record-button {
+                width: 100px;
+                height: 100px;
+                font-size: 20px;
+            }
+
+            .control-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="voice-recorder-container">
+        <div class="recorder-header">
+            <h1>🎤 语音录制器</h1>
+            <p>练习日语发音，获得智能体实时反馈</p>
+        </div>
+
+        <!-- 权限请求提示 -->
+        <div class="permission-request" id="permissionRequest">
+            <div class="permission-icon">🎤</div>
+            <div>
+                <strong>需要麦克风权限</strong><br>
+                请允许访问您的麦克风以开始录音功能
+            </div>
+        </div>
+
+        <!-- 错误状态提示 -->
+        <div class="error-state" id="errorState">
+            <div>
+                <strong>⚠️ 录音功能不可用</strong><br>
+                <span id="errorMessage

@@ -1,0 +1,438 @@
+
+/* themes.css */
+/* 🎨 日语学习Multi-Agent系统 - 主题系统 */
+
+/* ================================
+   🌈 CSS自定义属性 (CSS Variables)
+   ================================ */
+
+:root {
+    /* 🎯 主品牌色彩 */
+    --primary-color: #4A90E2;
+    --primary-hover: #357ABD;
+    --primary-light: #E3F2FD;
+    --primary-dark: #1976D2;
+
+    /* 🌸 日式配色方案 */
+    --sakura-pink: #FFB3C1;
+    --sakura-light: #FFE1E6;
+    --matcha-green: #7CB342;
+    --matcha-light: #DCEDC8;
+    --fuji-purple: #7B1FA2;
+    --ocean-blue: #1976D2;
+
+    /* 🎭 智能体专属颜色 */
+    --tanaka-color-start: #2196F3;
+    --tanaka-color-end: #1976D2;
+    --koumi-color-start: #E91E63;
+    --koumi-color-end: #C2185B;
+    --ai-color-start: #9C27B0;
+    --ai-color-end: #7B1FA2;
+    --yamada-color-start: #FF9800;
+    --yamada-color-end: #F57C00;
+    --sato-color-start: #4CAF50;
+    --sato-color-end: #388E3C;
+    --membot-color-start: #607D8B;
+    --membot-color-end: #455A64;
+
+    /* 🌓 明暗主题基础色 */
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F8F9FA;
+    --bg-tertiary: #E9ECEF;
+    --text-primary: #212529;
+    --text-secondary: #6C757D;
+    --text-muted: #ADB5BD;
+
+    /* 🎨 功能性颜色 */
+    --success-color: #28A745;
+    --warning-color: #FFC107;
+    --error-color: #DC3545;
+    --info-color: #17A2B8;
+
+    /* 🎯 智能体默认颜色变量 */
+    --agent-color-start: var(--primary-color);
+    --agent-color-end: var(--primary-hover);
+
+    /* 📏 间距和尺寸 */
+    --border-radius: 12px;
+    --border-radius-sm: 8px;
+    --border-radius-lg: 16px;
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.15);
+    --shadow-lg: 0 8px 25px rgba(0,0,0,0.2);
+
+    /* ⚡ 动画变量 */
+    --target-width: 100%;
+    --animation-speed: 0.3s;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* 📱 响应式断点 */
+    --mobile-width: 768px;
+    --tablet-width: 1024px;
+    --desktop-width: 1200px;
+}
+
+/* ================================
+   🌙 暗色主题
+   ================================ */
+
+[data-theme="dark"] {
+    --bg-primary: #1A1A1A;
+    --bg-secondary: #2D2D2D;
+    --bg-tertiary: #3A3A3A;
+    --text-primary: #FFFFFF;
+    --text-secondary: #B0B0B0;
+    --text-muted: #808080;
+
+    /* 暗色主题下的智能体颜色调整 */
+    --tanaka-color-start: #42A5F5;
+    --tanaka-color-end: #1E88E5;
+    --koumi-color-start: #F48FB1;
+    --koumi-color-end: #E91E63;
+    --ai-color-start: #BA68C8;
+    --ai-color-end: #9C27B0;
+    --yamada-color-start: #FFB74D;
+    --yamada-color-end: #FF9800;
+    --sato-color-start: #81C784;
+    --sato-color-end: #4CAF50;
+    --membot-color-start: #90A4AE;
+    --membot-color-end: #607D8B;
+}
+
+/* ================================
+   🌸 日式主题 (Sakura Theme)
+   ================================ */
+
+[data-theme="sakura"] {
+    --primary-color: var(--sakura-pink);
+    --primary-hover: #FF8A9B;
+    --primary-light: var(--sakura-light);
+    --bg-primary: #FFFBFC;
+    --bg-secondary: var(--sakura-light);
+    --bg-tertiary: #FFE1E6;
+
+    /* 日式主题智能体颜色 */
+    --tanaka-color-start: #FF6B9D;
+    --tanaka-color-end: #FF1744;
+    --koumi-color-start: #FFB3C1;
+    --koumi-color-end: #E91E63;
+    --ai-color-start: #CE93D8;
+    --ai-color-end: #9C27B0;
+    --yamada-color-start: #FFCC02;
+    --yamada-color-end: #FF8F00;
+    --sato-color-start: #A5D6A7;
+    --sato-color-end: #4CAF50;
+    --membot-color-start: #B0BEC5;
+    --membot-color-end: #607D8B;
+}
+
+/* ================================
+   🍃 抹茶主题 (Matcha Theme)
+   ================================ */
+
+[data-theme="matcha"] {
+    --primary-color: var(--matcha-green);
+    --primary-hover: #689F38;
+    --primary-light: var(--matcha-light);
+    --bg-primary: #F1F8E9;
+    --bg-secondary: var(--matcha-light);
+    --bg-tertiary: #C8E6C9;
+
+    /* 抹茶主题智能体颜色 */
+    --tanaka-color-start: #66BB6A;
+    --tanaka-color-end: #4CAF50;
+    --koumi-color-start: #81C784;
+    --koumi-color-end: #388E3C;
+    --ai-color-start: #A5D6A7;
+    --ai-color-end: #2E7D32;
+    --yamada-color-start: #FFF176;
+    --yamada-color-end: #F57F17;
+    --sato-color-start: #4DB6AC;
+    --sato-color-end: #00695C;
+    --membot-color-start: #90A4AE;
+    --membot-color-end: #37474F;
+}
+
+/* ================================
+   🌊 海洋主题 (Ocean Theme)
+   ================================ */
+
+[data-theme="ocean"] {
+    --primary-color: var(--ocean-blue);
+    --primary-hover: #1565C0;
+    --primary-light: #E3F2FD;
+    --bg-primary: #E1F5FE;
+    --bg-secondary: #B3E5FC;
+    --bg-tertiary: #81D4FA;
+
+    /* 海洋主题智能体颜色 */
+    --tanaka-color-start: #42A5F5;
+    --tanaka-color-end: #1976D2;
+    --koumi-color-start: #29B6F6;
+    --koumi-color-end: #0277BD;
+    --ai-color-start: #26C6DA;
+    --ai-color-end: #00838F;
+    --yamada-color-start: #66BB6A;
+    --yamada-color-end: #2E7D32;
+    --sato-color-start: #AB47BC;
+    --sato-color-end: #6A1B9A;
+    --membot-color-start: #78909C;
+    --membot-color-end: #455A64;
+}
+
+/* ================================
+   🎌 传统日式主题 (Traditional)
+   ================================ */
+
+[data-theme="traditional"] {
+    --primary-color: #8E24AA;
+    --primary-hover: #7B1FA2;
+    --primary-light: #F3E5F5;
+    --bg-primary: #FFFDE7;
+    --bg-secondary: #FFF8E1;
+    --bg-tertiary: #FFECB3;
+
+    /* 传统色智能体颜色 */
+    --tanaka-color-start: #5D4037;
+    --tanaka-color-end: #3E2723;
+    --koumi-color-start: #E91E63;
+    --koumi-color-end: #AD1457;
+    --ai-color-start: #673AB7;
+    --ai-color-end: #4527A0;
+    --yamada-color-start: #FF9800;
+    --yamada-color-end: #E65100;
+    --sato-color-start: #4CAF50;
+    --sato-color-end: #1B5E20;
+    --membot-color-start: #546E7A;
+    --membot-color-end: #263238;
+}
+
+/* ================================
+   📱 高对比度主题 (Accessibility)
+   ================================ */
+
+[data-theme="high-contrast"] {
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F0F0F0;
+    --bg-tertiary: #E0E0E0;
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --text-muted: #666666;
+
+    --primary-color: #0066CC;
+    --primary-hover: #0052A3;
+    --success-color: #006600;
+    --warning-color: #CC6600;
+    --error-color: #CC0000;
+
+    /* 高对比度智能体颜色 */
+    --tanaka-color-start: #0066CC;
+    --tanaka-color-end: #003D7A;
+    --koumi-color-start: #CC0066;
+    --koumi-color-end: #990033;
+    --ai-color-start: #6600CC;
+    --ai-color-end: #4D0099;
+    --yamada-color-start: #CC6600;
+    --yamada-color-end: #994D00;
+    --sato-color-start: #006600;
+    --sato-color-end: #004D00;
+    --membot-color-start: #666666;
+    --membot-color-end: #333333;
+}
+
+/* ================================
+   🎮 游戏化主题切换动画
+   ================================ */
+
+* {
+    transition: var(--transition-smooth);
+}
+
+/* 主题切换时的平滑过渡 */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* 卡片组件主题适配 */
+.card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* 按钮主题适配 */
+.btn {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.btn:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+/* ================================
+   🎨 主题选择器样式
+   ================================ */
+
+.theme-selector {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    margin-bottom: 24px;
+}
+
+.theme-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    position: relative;
+}
+
+.theme-option:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-md);
+}
+
+.theme-option.active {
+    border-color: var(--primary-color);
+    transform: scale(1.2);
+}
+
+/* 主题预览色块 */
+.theme-option.light { background: linear-gradient(135deg, #4A90E2, #FFFFFF); }
+.theme-option.dark { background: linear-gradient(135deg, #1A1A1A, #42A5F5); }
+.theme-option.sakura { background: linear-gradient(135deg, #FFB3C1, #FFE1E6); }
+.theme-option.matcha { background: linear-gradient(135deg, #7CB342, #DCEDC8); }
+.theme-option.ocean { background: linear-gradient(135deg, #1976D2, #E3F2FD); }
+.theme-option.traditional { background: linear-gradient(135deg, #8E24AA, #FFFDE7); }
+.theme-option.high-contrast { background: linear-gradient(135deg, #000000, #FFFFFF); }
+
+/* 主题选择器标签 */
+.theme-label {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    opacity: 0;
+    transition: var(--transition-smooth);
+}
+
+.theme-option:hover .theme-label {
+    opacity: 1;
+}
+
+/* ================================
+   🎯 智能体特定主题类
+   ================================ */
+
+.agent-tanaka {
+    --agent-color-start: var(--tanaka-color-start);
+    --agent-color-end: var(--tanaka-color-end);
+}
+
+.agent-koumi {
+    --agent-color-start: var(--koumi-color-start);
+    --agent-color-end: var(--koumi-color-end);
+}
+
+.agent-ai {
+    --agent-color-start: var(--ai-color-start);
+    --agent-color-end: var(--ai-color-end);
+}
+
+.agent-yamada {
+    --agent-color-start: var(--yamada-color-start);
+    --agent-color-end: var(--yamada-color-end);
+}
+
+.agent-sato {
+    --agent-color-start: var(--sato-color-start);
+    --agent-color-end: var(--sato-color-end);
+}
+
+.agent-membot {
+    --agent-color-start: var(--membot-color-start);
+    --agent-color-end: var(--membot-color-end);
+}
+
+/* ================================
+   🌈 主题切换JavaScript接口
+   ================================ */
+
+/* 预留的主题切换数据属性 */
+[data-theme-transitioning="true"] {
+    pointer-events: none;
+}
+
+/* 主题加载状态 */
+.theme-loading {
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+/* ================================
+   🎨 主题色调试工具（开发用）
+   ================================ */
+
+.theme-debug {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: var(--bg-primary);
+    border: 1px solid var(--bg-tertiary);
+    padding: 10px;
+    border-radius: var(--border-radius-sm);
+    font-size: 12px;
+    color: var(--text-secondary);
+    z-index: 9999;
+}
+
+.theme-debug.hidden {
+    display: none;
+}
+
+/* ================================
+   📱 主题适配媒体查询
+   ================================ */
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+        --bg-primary: #1A1A1A;
+        --bg-secondary: #2D2D2D;
+        --bg-tertiary: #3A3A3A;
+        --text-primary: #FFFFFF;
+        --text-secondary: #B0B0B0;
+        --text-muted: #808080;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ================================
+   🎯 主题自动切换逻辑
+   ================================ */
+
+.auto-theme-switch {
+    --theme-transition: background-color 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                       color 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: var(--theme-transition);
+}
+

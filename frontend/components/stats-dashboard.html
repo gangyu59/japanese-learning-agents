@@ -1,0 +1,1371 @@
+<!-- stats-dashboard.html -->
+<!-- Stats Dashboard Component -->
+<template id="stats-dashboard-template">
+    <div class="stats-dashboard" data-period="week">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="header-info">
+                <h2 class="dashboard-title">学習統計ダッシュボード</h2>
+                <p class="dashboard-subtitle">あなたの学習進捗を詳しく分析</p>
+            </div>
+
+            <div class="dashboard-controls">
+                <div class="period-selector">
+                    <button class="period-btn active" data-period="today">今日</button>
+                    <button class="period-btn" data-period="week">今週</button>
+                    <button class="period-btn" data-period="month">今月</button>
+                    <button class="period-btn" data-period="year">今年</button>
+                </div>
+
+                <button class="refresh-btn" data-action="refresh" title="更新">
+                    <span class="btn-icon">🔄</span>
+                </button>
+
+                <button class="export-btn" data-action="export" title="エクスポート">
+                    <span class="btn-icon">📊</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Key Metrics Cards -->
+        <div class="key-metrics">
+            <div class="metric-card primary">
+                <div class="metric-icon">⏱️</div>
+                <div class="metric-content">
+                    <div class="metric-value" data-metric="study-time">0</div>
+                    <div class="metric-unit">分</div>
+                    <div class="metric-label">学習時間</div>
+                    <div class="metric-change">
+                        <span class="change-indicator positive">↗</span>
+                        <span class="change-value">+15分</span>
+                        <span class="change-period">vs 昨日</span>
+                    </div>
+                </div>
+                <div class="metric-progress">
+                    <div class="progress-ring">
+                        <svg class="progress-circle" viewBox="0 0 36 36">
+                            <path class="circle-bg" d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <path class="circle-progress" stroke-dasharray="75, 100" d="M18 2.0845
+                                a 15.9155 15.9155 0 0 1 0 31.831
+                                a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        </svg>
+                        <div class="progress-percentage">75%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card success">
+                <div class="metric-icon">💯</div>
+                <div class="metric-content">
+                    <div class="metric-value" data-metric="accuracy">0</div>
+                    <div class="metric-unit">%</div>
+                    <div class="metric-label">正答率</div>
+                    <div class="metric-change">
+                        <span class="change-indicator positive">↗</span>
+                        <span class="change-value">+3%</span>
+                        <span class="change-period">vs 先週</span>
+                    </div>
+                </div>
+                <div class="metric-trend">
+                    <div class="trend-line">
+                        <svg class="trend-chart" viewBox="0 0 60 20">
+                            <polyline points="0,15 10,12 20,8 30,5 40,7 50,4 60,2"
+                                     stroke="currentColor"
+                                     fill="none"
+                                     stroke-width="2"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card warning">
+                <div class="metric-icon">📚</div>
+                <div class="metric-content">
+                    <div class="metric-value" data-metric="vocabulary">0</div>
+                    <div class="metric-unit">語</div>
+                    <div class="metric-label">習得語彙</div>
+                    <div class="metric-change">
+                        <span class="change-indicator positive">↗</span>
+                        <span class="change-value">+25語</span>
+                        <span class="change-period">vs 先週</span>
+                    </div>
+                </div>
+                <div class="metric-milestone">
+                    <div class="milestone-progress">
+                        <div class="milestone-bar">
+                            <div class="milestone-fill" style="width: 82%"></div>
+                        </div>
+                        <div class="milestone-text">次のマイルストーンまで 180語</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metric-card info">
+                <div class="metric-icon">🔥</div>
+                <div class="metric-content">
+                    <div class="metric-value" data-metric="streak">0</div>
+                    <div class="metric-unit">日</div>
+                    <div class="metric-label">連続学習</div>
+                    <div class="metric-change">
+                        <span class="change-indicator neutral">→</span>
+                        <span class="change-value">継続中</span>
+                        <span class="change-period">最長記録: 45日</span>
+                    </div>
+                </div>
+                <div class="streak-calendar">
+                    <div class="calendar-mini">
+                        <div class="day completed"></div>
+                        <div class="day completed"></div>
+                        <div class="day completed"></div>
+                        <div class="day completed"></div>
+                        <div class="day completed"></div>
+                        <div class="day today"></div>
+                        <div class="day future"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Chart Section -->
+        <div class="chart-section">
+            <div class="section-header">
+                <h3>活動チャート</h3>
+                <div class="chart-controls">
+                    <div class="chart-type-selector">
+                        <button class="chart-type-btn active" data-chart="time">時間</button>
+                        <button class="chart-type-btn" data-chart="accuracy">正答率</button>
+                        <button class="chart-type-btn" data-chart="vocabulary">語彙</button>
+                        <button class="chart-type-btn" data-chart="sessions">セッション</button>
+                    </div>
+
+                    <button class="fullscreen-btn" data-action="fullscreen" title="フルスクリーン">
+                        <span class="btn-icon">⛶</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="activity-chart" width="800" height="300"></canvas>
+                <div class="chart-loading hidden">
+                    <div class="loading-spinner"></div>
+                    <span class="loading-text">チャートを読み込み中...</span>
+                </div>
+            </div>
+
+            <div class="chart-insights">
+                <div class="insight-item">
+                    <div class="insight-icon">📈</div>
+                    <div class="insight-text">今週は先週より23%多く学習しました</div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon">🎯</div>
+                    <div class="insight-text">最も生産的な時間帯: 19:00-21:00</div>
+                </div>
+                <div class="insight-item">
+                    <div class="insight-icon">⭐</div>
+                    <div class="insight-text">月曜日の学習効率が最も高いです</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills Breakdown -->
+        <div class="skills-section">
+            <div class="section-header">
+                <h3>スキル分析</h3>
+                <div class="skills-controls">
+                    <select class="skills-filter">
+                        <option value="all">すべてのスキル</option>
+                        <option value="strong">強いスキル</option>
+                        <option value="weak">弱いスキル</option>
+                        <option value="improving">向上中</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="skills-grid">
+                <div class="skill-card excellent">
+                    <div class="skill-header">
+                        <div class="skill-icon">📖</div>
+                        <div class="skill-info">
+                            <h4 class="skill-name">語彙力</h4>
+                            <div class="skill-level excellent">優秀</div>
+                        </div>
+                        <div class="skill-score">94%</div>
+                    </div>
+
+                    <div class="skill-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill excellent" style="width: 94%"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-stats">
+                        <div class="stat">
+                            <span class="stat-label">学習語数:</span>
+                            <span class="stat-value">1,247語</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">正答率:</span>
+                            <span class="stat-value">94%</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-trend">
+                        <div class="trend-indicator up">↗</div>
+                        <span class="trend-text">+5% この週</span>
+                    </div>
+                </div>
+
+                <div class="skill-card good">
+                    <div class="skill-header">
+                        <div class="skill-icon">📝</div>
+                        <div class="skill-info">
+                            <h4 class="skill-name">文法</h4>
+                            <div class="skill-level good">良好</div>
+                        </div>
+                        <div class="skill-score">78%</div>
+                    </div>
+
+                    <div class="skill-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill good" style="width: 78%"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-stats">
+                        <div class="stat">
+                            <span class="stat-label">習得項目:</span>
+                            <span class="stat-value">145項目</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">正答率:</span>
+                            <span class="stat-value">78%</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-trend">
+                        <div class="trend-indicator up">↗</div>
+                        <span class="trend-text">+2% この週</span>
+                    </div>
+                </div>
+
+                <div class="skill-card average">
+                    <div class="skill-header">
+                        <div class="skill-icon">👂</div>
+                        <div class="skill-info">
+                            <h4 class="skill-name">リスニング</h4>
+                            <div class="skill-level average">普通</div>
+                        </div>
+                        <div class="skill-score">65%</div>
+                    </div>
+
+                    <div class="skill-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill average" style="width: 65%"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-stats">
+                        <div class="stat">
+                            <span class="stat-label">練習時間:</span>
+                            <span class="stat-value">23時間</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">正答率:</span>
+                            <span class="stat-value">65%</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-trend">
+                        <div class="trend-indicator neutral">→</div>
+                        <span class="trend-text">変動なし</span>
+                    </div>
+                </div>
+
+                <div class="skill-card weak">
+                    <div class="skill-header">
+                        <div class="skill-icon">📰</div>
+                        <div class="skill-info">
+                            <h4 class="skill-name">読解</h4>
+                            <div class="skill-level weak">要改善</div>
+                        </div>
+                        <div class="skill-score">52%</div>
+                    </div>
+
+                    <div class="skill-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill weak" style="width: 52%"></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-stats">
+                        <div class="stat">
+                            <span class="stat-label">読了数:</span>
+                            <span class="stat-value">67記事</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">正答率:</span>
+                            <span class="stat-value">52%</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-trend">
+                        <div class="trend-indicator down">↘</div>
+                        <span class="trend-text">-3% この週</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Goals Progress -->
+        <div class="goals-section">
+            <div class="section-header">
+                <h3>今日の目標</h3>
+                <div class="goals-summary">
+                    <span class="completed-goals">3/5</span>
+                    <span class="goals-text">完了</span>
+                </div>
+            </div>
+
+            <div class="goals-list">
+                <div class="goal-item completed">
+                    <div class="goal-icon">💬</div>
+                    <div class="goal-content">
+                        <h4 class="goal-title">エージェントと会話</h4>
+                        <p class="goal-description">10回の会話を完了する</p>
+                        <div class="goal-progress">
+                            <div class="progress-bar mini">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                            <span class="progress-text">12/10 完了</span>
+                        </div>
+                    </div>
+                    <div class="goal-status completed">✓</div>
+                </div>
+
+                <div class="goal-item completed">
+                    <div class="goal-icon">📚</div>
+                    <div class="goal-content">
+                        <h4 class="goal-title">新しい語彙学習</h4>
+                        <p class="goal-description">5個の新しい単語を覚える</p>
+                        <div class="goal-progress">
+                            <div class="progress-bar mini">
+                                <div class="progress-fill" style="width: 100%"></div>
+                            </div>
+                            <span class="progress-text">8/5 完了</span>
+                        </div>
+                    </div>
+                    <div class="goal-status completed">✓</div>
+                </div>
+
+                <div class="goal-item in-progress">
+                    <div class="goal-icon">📝</div>
+                    <div class="goal-content">
+                        <h4 class="goal-title">文法練習</h4>
+                        <p class="goal-description">3つの文法ポイントを練習</p>
+                        <div class="goal-progress">
+                            <div class="progress-bar mini">
+                                <div class="progress-fill" style="width: 67%"></div>
+                            </div>
+                            <span class="progress-text">2/3 完了</span>
+                        </div>
+                    </div>
+                    <div class="goal-status in-progress">⏳</div>
+                </div>
+
+                <div class="goal-item pending">
+                    <div class="goal-icon">🎌</div>
+                    <div class="goal-content">
+                        <h4 class="goal-title">文化学習</h4>
+                        <p class="goal-description">日本文化について質問する</p>
+                        <div class="goal-progress">
+                            <div class="progress-bar mini">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/2 完了</span>
+                        </div>
+                    </div>
+                    <div class="goal-status pending">○</div>
+                </div>
+
+                <div class="goal-item pending">
+                    <div class="goal-icon">🔄</div>
+                    <div class="goal-content">
+                        <h4 class="goal-title">復習完了</h4>
+                        <p class="goal-description">予定されている復習を完了</p>
+                        <div class="goal-progress">
+                            <div class="progress-bar mini">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/5 完了</span>
+                        </div>
+                    </div>
+                    <div class="goal-status pending">○</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent Interaction Stats -->
+        <div class="agents-section">
+            <div class="section-header">
+                <h3>エージェント利用統計</h3>
+                <div class="agents-controls">
+                    <select class="agents-filter">
+                        <option value="all">全エージェント</option>
+                        <option value="most-used">最も使用</option>
+                        <option value="recent">最近使用</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="agents-stats">
+                <div class="agent-stat-item">
+                    <div class="agent-mini-avatar koumi">小</div>
+                    <div class="agent-stat-info">
+                        <h4 class="agent-stat-name">小美ちゃん</h4>
+                        <div class="agent-stat-details">
+                            <span class="usage-count">289回使用</span>
+                            <span class="separator">•</span>
+                            <span class="satisfaction-rate">97%満足度</span>
+                        </div>
+                    </div>
+                    <div class="agent-stat-chart">
+                        <div class="usage-bar">
+                            <div class="usage-fill" style="width: 95%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-stat-item">
+                    <div class="agent-mini-avatar tanaka">田</div>
+                    <div class="agent-stat-info">
+                        <h4 class="agent-stat-name">田中先生</h4>
+                        <div class="agent-stat-details">
+                            <span class="usage-count">156回使用</span>
+                            <span class="separator">•</span>
+                            <span class="satisfaction-rate">94%満足度</span>
+                        </div>
+                    </div>
+                    <div class="agent-stat-chart">
+                        <div class="usage-bar">
+                            <div class="usage-fill" style="width: 78%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-stat-item">
+                    <div class="agent-mini-avatar yamada">山</div>
+                    <div class="agent-stat-info">
+                        <h4 class="agent-stat-name">山田先生</h4>
+                        <div class="agent-stat-details">
+                            <span class="usage-count">78回使用</span>
+                            <span class="separator">•</span>
+                            <span class="satisfaction-rate">96%満足度</span>
+                        </div>
+                    </div>
+                    <div class="agent-stat-chart">
+                        <div class="usage-bar">
+                            <div class="usage-fill" style="width: 65%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-stat-item">
+                    <div class="agent-mini-avatar ai">AI</div>
+                    <div class="agent-stat-info">
+                        <h4 class="agent-stat-name">アナライザーAI</h4>
+                        <div class="agent-stat-details">
+                            <span class="usage-count">45回使用</span>
+                            <span class="separator">•</span>
+                            <span class="satisfaction-rate">91%満足度</span>
+                        </div>
+                    </div>
+                    <div class="agent-stat-chart">
+                        <div class="usage-bar">
+                            <div class="usage-fill" style="width: 32%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weekly Summary -->
+        <div class="summary-section">
+            <div class="section-header">
+                <h3>週間サマリー</h3>
+                <div class="summary-date">
+                    <span class="date-range">1月22日 - 1月28日</span>
+                </div>
+            </div>
+
+            <div class="summary-content">
+                <div class="summary-highlights">
+                    <div class="highlight-item achievement">
+                        <div class="highlight-icon">🎉</div>
+                        <div class="highlight-text">
+                            <strong>素晴らしい週でした！</strong><br>
+                            目標の120%を達成し、新記録を更新しました。
+                        </div>
+                    </div>
+
+                    <div class="highlight-item improvement">
+                        <div class="highlight-icon">📈</div>
+                        <div class="highlight-text">
+                            <strong>大きな向上が見られます</strong><br>
+                            文法の正答率が先週より15%向上しました。
+                        </div>
+                    </div>
+
+                    <div class="highlight-item suggestion">
+                        <div class="highlight-icon">💡</div>
+                        <div class="highlight-text">
+                            <strong>リスニング練習を増やしましょう</strong><br>
+                            他のスキルに比べて進歩が緩やかです。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-stats">
+                    <div class="summary-stat">
+                        <div class="stat-number">7日</div>
+                        <div class="stat-label">学習日数</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="stat-number">3.2時間</div>
+                        <div class="stat-label">平均/日</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="stat-number">89%</div>
+                        <div class="stat-label">目標達成率</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="stat-number">+12%</div>
+                        <div class="stat-label">先週比</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style>
+/* Stats Dashboard Component Styles */
+.stats-dashboard {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-lg);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.header-info {
+    flex: 1;
+}
+
+.dashboard-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-bottom: 0.5rem;
+    font-family: var(--font-japanese);
+}
+
+.dashboard-subtitle {
+    font-size: 1rem;
+    color: var(--gray-600);
+}
+
+.dashboard-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.period-selector {
+    display: flex;
+    background: var(--gray-100);
+    border-radius: var(--radius-lg);
+    padding: 0.25rem;
+}
+
+.period-btn {
+    padding: 0.5rem 1rem;
+    background: none;
+    border: none;
+    border-radius: var(--radius-md);
+    color: var(--gray-600);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.period-btn.active {
+    background: white;
+    color: var(--primary-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.refresh-btn, .export-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    background: var(--gray-100);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-size: 1rem;
+}
+
+.refresh-btn:hover, .export-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Key Metrics */
+.key-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.metric-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+}
+
+.metric-card.success::before {
+    background: var(--gradient-matcha);
+}
+
+.metric-card.warning::before {
+    background: var(--gradient-sakura);
+}
+
+.metric-card.info::before {
+    background: linear-gradient(135deg, #ff9a8b, #fad0c4);
+}
+
+.metric-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.metric-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.metric-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.metric-content {
+    flex: 1;
+}
+
+.metric-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    line-height: 1;
+    display: inline;
+}
+
+.metric-unit {
+    font-size: 1rem;
+    color: var(--gray-500);
+    margin-left: 0.25rem;
+}
+
+.metric-label {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    margin: 0.25rem 0;
+}
+
+.metric-change {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+}
+
+.change-indicator {
+    font-weight: 600;
+}
+
+.change-indicator.positive {
+    color: var(--success);
+}
+
+.change-indicator.negative {
+    color: var(--error);
+}
+
+.change-indicator.neutral {
+    color: var(--gray-500);
+}
+
+.change-value {
+    font-weight: 600;
+    color: inherit;
+}
+
+.change-period {
+    color: var(--gray-500);
+}
+
+.metric-progress, .metric-trend, .metric-milestone, .streak-calendar {
+    flex-shrink: 0;
+}
+
+.progress-ring {
+    width: 4rem;
+    height: 4rem;
+    position: relative;
+}
+
+.progress-circle {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.circle-bg {
+    fill: none;
+    stroke: var(--gray-200);
+    stroke-width: 3;
+}
+
+.circle-progress {
+    fill: none;
+    stroke: var(--primary-color);
+    stroke-width: 3;
+    stroke-linecap: round;
+    transition: stroke-dasharray 0.3s ease;
+}
+
+.progress-percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+/* Chart Section */
+.chart-section {
+    margin-bottom: 2rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-header h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--gray-800);
+}
+
+.chart-controls, .skills-controls, .goals-controls, .agents-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.chart-type-selector {
+    display: flex;
+    background: var(--gray-100);
+    border-radius: var(--radius-md);
+    padding: 0.125rem;
+}
+
+.chart-type-btn {
+    padding: 0.375rem 0.75rem;
+    background: none;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--gray-600);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.chart-type-btn.active {
+    background: white;
+    color: var(--primary-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.chart-container {
+    position: relative;
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1rem;
+}
+
+.chart-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius-lg);
+}
+
+.chart-insights {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.insight-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--gray-50);
+    border-radius: var(--radius-md);
+    flex: 1;
+    min-width: 200px;
+}
+
+.insight-icon {
+    font-size: 1.25rem;
+}
+
+.insight-text {
+    font-size: 0.875rem;
+    color: var(--gray-700);
+}
+
+/* Skills Section */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.skill-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+}
+
+.skill-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.skill-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.skill-icon {
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
+}
+
+.skill-info {
+    flex: 1;
+}
+
+.skill-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 0.25rem;
+}
+
+.skill-level {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: var(--radius-full);
+    font-weight: 500;
+}
+
+.skill-level.excellent {
+    background: #10b981;
+    color: white;
+}
+
+.skill-level.good {
+    background: #3b82f6;
+    color: white;
+}
+
+.skill-level.average {
+    background: #f59e0b;
+    color: white;
+}
+
+.skill-level.weak {
+    background: #ef4444;
+    color: white;
+}
+
+.skill-score {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-800);
+}
+
+.skill-progress {
+    margin-bottom: 1rem;
+}
+
+.progress-bar {
+    height: 8px;
+    background: var(--gray-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.progress-bar.mini {
+    height: 4px;
+}
+
+.progress-fill {
+    height: 100%;
+    transition: width var(--transition-slow);
+}
+
+.progress-fill.excellent {
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.progress-fill.good {
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+
+.progress-fill.average {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.progress-fill.weak {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.skill-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.skill-stats .stat {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+}
+
+.stat-label {
+    color: var(--gray-600);
+}
+
+.stat-value {
+    color: var(--gray-800);
+    font-weight: 500;
+}
+
+.skill-trend {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.trend-indicator {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.trend-indicator.up {
+    color: var(--success);
+}
+
+.trend-indicator.down {
+    color: var(--error);
+}
+
+.trend-indicator.neutral {
+    color: var(--gray-500);
+}
+
+.trend-text {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+}
+
+/* Goals Section */
+.goals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.goal-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+}
+
+.goal-item:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.goal-item.completed {
+    border-left: 4px solid var(--success);
+}
+
+.goal-item.in-progress {
+    border-left: 4px solid var(--warning);
+}
+
+.goal-item.pending {
+    border-left: 4px solid var(--gray-300);
+}
+
+.goal-icon {
+    font-size: 1.5rem;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-100);
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+}
+
+.goal-content {
+    flex: 1;
+}
+
+.goal-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 0.25rem;
+}
+
+.goal-description {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    margin-bottom: 0.75rem;
+}
+
+.goal-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.progress-text {
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    min-width: 4rem;
+}
+
+.goal-status {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
+    flex-shrink: 0;
+}
+
+.goal-status.completed {
+    background: var(--success);
+    color: white;
+}
+
+.goal-status.in-progress {
+    background: var(--warning);
+    color: white;
+}
+
+.goal-status.pending {
+    background: var(--gray-200);
+    color: var(--gray-500);
+}
+
+/* Agent Stats */
+.agents-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.agent-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.agent-mini-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.agent-mini-avatar.koumi {
+    background: var(--gradient-sakura);
+}
+
+.agent-mini-avatar.tanaka {
+    background: var(--gradient-primary);
+}
+
+.agent-mini-avatar.yamada {
+    background: var(--gradient-matcha);
+}
+
+.agent-mini-avatar.ai {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.agent-stat-info {
+    flex: 1;
+}
+
+.agent-stat-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 0.25rem;
+}
+
+.agent-stat-details {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.separator {
+    color: var(--gray-400);
+}
+
+.agent-stat-chart {
+    width: 6rem;
+}
+
+.usage-bar {
+    height: 6px;
+    background: var(--gray-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.usage-fill {
+    height: 100%;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-full);
+    transition: width var(--transition-normal);
+}
+
+/* Summary Section */
+.summary-content {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: start;
+}
+
+.summary-highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.highlight-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+}
+
+.highlight-item.achievement {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.highlight-item.improvement {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.highlight-item.suggestion {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.highlight-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.highlight-text {
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.summary-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 150px;
+}
+
+.summary-stat {
+    text-align: center;
+    padding: 1rem;
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .key-metrics {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .summary-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .summary-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-dashboard {
+        padding: 1rem;
+    }
+
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+
+    .key-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .metric-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .skills-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+</style>

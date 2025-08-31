@@ -1,0 +1,2153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📖 协作小说创作 - 日语学习系统</title>
+
+    <!-- 引入CSS文件 -->
+    <link rel="stylesheet" href="../assets/css/main.css">
+    <link rel="stylesheet" href="../assets/css/novel.css">
+    <link rel="stylesheet" href="../assets/css/animations.css">
+    <link rel="stylesheet" href="../assets/css/responsive.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 页面标题 -->
+        <header class="page-header">
+            <h1>📖 协作小说创作</h1>
+            <p>与智能体一起创造精彩的日语故事</p>
+        </header>
+
+        <!-- 创作状态栏 -->
+        <div class="creation-status">
+            <div class="status-item">
+                <div class="status-icon">📝</div>
+                <div class="status-info">
+                    <div class="status-label">当前项目</div>
+                    <div class="status-value">春天的邂逅</div>
+                </div>
+            </div>
+            <div class="status-item">
+                <div class="status-icon">👥</div>
+                <div class="status-info">
+                    <div class="status-label">参与智能体</div>
+                    <div class="status-value">3个</div>
+                </div>
+            </div>
+            <div class="status-item">
+                <div class="status-icon">📊</div>
+                <div class="status-info">
+                    <div class="status-label">进度</div>
+                    <div class="status-value">第2章</div>
+                </div>
+            </div>
+            <div class="status-item">
+                <div class="status-icon">💬</div>
+                <div class="status-info">
+                    <div class="status-label">字数</div>
+                    <div class="status-value">1,247</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 项目选择和创建 -->
+        <div class="project-controls">
+            <div class="project-selector">
+                <select class="project-select" id="current-project">
+                    <option value="spring-encounter" selected>春天的邂逅</option>
+                    <option value="tokyo-nights">东京夜话</option>
+                    <option value="school-festival">学园祭的回忆</option>
+                </select>
+            </div>
+            <div class="project-actions">
+                <button class="project-btn" onclick="createNewProject()">
+                    <span class="btn-icon">➕</span>
+                    <span class="btn-text">新建项目</span>
+                </button>
+                <button class="project-btn" onclick="saveProject()">
+                    <span class="btn-icon">💾</span>
+                    <span class="btn-text">保存</span>
+                </button>
+                <button class="project-btn" onclick="exportNovel()">
+                    <span class="btn-icon">📤</span>
+                    <span class="btn-text">导出</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 主创作区域 -->
+        <div class="creation-workspace">
+            <!-- 左侧：智能体面板 -->
+            <div class="agents-panel">
+                <div class="panel-header">
+                    <h3>🤖 协作智能体</h3>
+                    <button class="panel-toggle" onclick="toggleAgentsPanel()">›</button>
+                </div>
+
+                <div class="participating-agents">
+                    <div class="agent-item active" data-agent="koumi">
+                        <div class="agent-avatar koumi">美</div>
+                        <div class="agent-info">
+                            <div class="agent-name">小美</div>
+                            <div class="agent-role">情感描写</div>
+                            <div class="agent-status">正在思考...</div>
+                        </div>
+                        <div class="agent-mood">😊</div>
+                    </div>
+
+                    <div class="agent-item active" data-agent="yamada">
+                        <div class="agent-avatar yamada">山</div>
+                        <div class="agent-info">
+                            <div class="agent-name">山田</div>
+                            <div class="agent-role">文化背景</div>
+                            <div class="agent-status">在线</div>
+                        </div>
+                        <div class="agent-mood">😄</div>
+                    </div>
+
+                    <div class="agent-item active" data-agent="tanaka">
+                        <div class="agent-avatar tanaka">田</div>
+                        <div class="agent-info">
+                            <div class="agent-name">田中先生</div>
+                            <div class="agent-role">语言润色</div>
+                            <div class="agent-status">待命</div>
+                        </div>
+                        <div class="agent-mood">😐</div>
+                    </div>
+                </div>
+
+                <div class="agent-controls">
+                    <button class="control-btn" onclick="inviteMoreAgents()">邀请更多智能体</button>
+                    <button class="control-btn" onclick="startBrainstorm()">开始头脑风暴</button>
+                </div>
+            </div>
+
+            <!-- 中间：故事内容 -->
+            <div class="story-content">
+                <div class="story-header">
+                    <h2>📚 春天的邂逅</h2>
+                    <div class="story-meta">
+                        <span class="genre-tag">浪漫</span>
+                        <span class="genre-tag">校园</span>
+                        <span class="genre-tag">青春</span>
+                    </div>
+                </div>
+
+                <div class="chapters-list">
+                    <!-- 第一章 -->
+                    <div class="chapter-section">
+                        <div class="chapter-header">
+                            <h3>第一章：桜散る頃</h3>
+                            <div class="chapter-meta">
+                                <span class="word-count">486字</span>
+                                <span class="author-tag">小美主导</span>
+                            </div>
+                        </div>
+                        <div class="chapter-content">
+                            <div class="paragraph" data-author="koumi">
+                                <div class="author-indicator">小美</div>
+                                <div class="text-content">
+                                    <p class="japanese-text">
+                                        桜の花びらが舞い散る四月の午後、私は新しい学期の始まりに胸を躍らせていた。
+                                        東京の小さな大学のキャンパスは、淡いピンク色に染まり、まるで絵本の中の世界のようだった。
+                                    </p>
+                                    <p class="translation">
+                                        樱花花瓣飞舞的四月午后，我为新学期的开始而心潮澎湃。
+                                        东京这所小大学的校园被淡淡的粉色染满，宛如绘本中的世界。
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="paragraph" data-author="yamada">
+                                <div class="author-indicator">山田</div>
+                                <div class="text-content">
+                                    <p class="japanese-text">
+                                        この時期の日本では、新入生たちが希望に満ちた表情で校門をくぐる。
+                                        桜は日本人にとって、新しい始まりの象徴なのだ。
+                                        私もその一人として、文学部の建物に向かって歩いていた。
+                                    </p>
+                                    <p class="translation">
+                                        在日本的这个时期，新生们带着充满希望的表情跨进校门。
+                                        樱花对日本人来说，是新开始的象征。
+                                        我也作为其中一员，朝着文学部的建筑走去。
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="paragraph" data-author="koumi">
+                                <div class="author-indicator">小美</div>
+                                <div class="text-content">
+                                    <p class="japanese-text">
+                                        その時、強い風が吹いて、私の書類が飛ばされてしまった。
+                                        「あっ！」と叫んで追いかけようとした瞬間、
+                                        一人の男子学生が私の書類を拾ってくれた。
+                                    </p>
+                                    <p class="translation">
+                                        就在那时，一阵强风吹来，我的文件被吹走了。
+                                        "啊！"我叫着想要追上去的瞬间，
+                                        一个男学生帮我捡起了文件。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第二章（正在创作中） -->
+                    <div class="chapter-section current">
+                        <div class="chapter-header">
+                            <h3>第二章：運命の出会い</h3>
+                            <div class="chapter-meta">
+                                <span class="word-count">正在创作...</span>
+                                <span class="status-tag">进行中</span>
+                            </div>
+                        </div>
+                        <div class="chapter-content">
+                            <div class="collaboration-area">
+                                <div class="collab-header">
+                                    <div class="collab-icon">🤝</div>
+                                    <div class="collab-text">智能体正在协作创作下一段落...</div>
+                                </div>
+                                <div class="collab-participants">
+                                    <div class="participant active koumi">小美</div>
+                                    <div class="participant thinking yamada">山田</div>
+                                    <div class="participant waiting tanaka">田中先生</div>
+                                </div>
+                            </div>
+
+                            <!-- 当前创作段落 -->
+                            <div class="current-writing">
+                                <div class="writing-prompt">
+                                    <h4>💭 创作提示</h4>
+                                    <p>请继续描写主人公与男学生的第一次相遇。小美负责情感描写，山田补充文化背景，田中先生进行语言润色。</p>
+                                </div>
+
+                                <div class="draft-content">
+                                    <div class="paragraph draft" data-author="koumi">
+                                        <div class="author-indicator">小美 (草稿)</div>
+                                        <div class="text-content">
+                                            <p class="japanese-text">
+                                                「ありがとうございます」と私は照れながら言った。
+                                                彼は爽やかな笑顔で「どういたしまして」と答えてくれた。
+                                                その瞬間、時間が止まったような気がした...
+                                            </p>
+                                            <div class="draft-actions">
+                                                <button class="draft-btn" onclick="approveDraft(this)">✓ 采用</button>
+                                                <button class="draft-btn" onclick="reviseDraft(this)">✏️ 修改</button>
+                                                <button class="draft-btn" onclick="rejectDraft(this)">✗ 重写</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 用户参与区域 -->
+                <div class="user-input-area">
+                    <h4>💬 你的创意输入</h4>
+                    <div class="input-controls">
+                        <select class="input-type" id="input-type">
+                            <option value="suggestion">创作建议</option>
+                            <option value="dialogue">对话内容</option>
+                            <option value="description">场景描述</option>
+                            <option value="plot">情节发展</option>
+                        </select>
+                        <button class="voice-btn" onclick="toggleVoiceInput()">🎤</button>
+                    </div>
+                    <textarea class="user-input" placeholder="输入你的创作想法或建议..."></textarea>
+                    <div class="input-actions">
+                        <button class="input-btn primary" onclick="submitUserInput()">💡 提交想法</button>
+                        <button class="input-btn secondary" onclick="requestAIHelp()">🤖 请求AI协助</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：工具面板 -->
+            <div class="tools-panel">
+                <div class="panel-header">
+                    <h3>🛠️ 创作工具</h3>
+                </div>
+
+                <!-- 故事大纲 -->
+                <div class="tool-section">
+                    <h4>📋 故事大纲</h4>
+                    <div class="outline-content">
+                        <div class="outline-item completed">
+                            <div class="outline-icon">✓</div>
+                            <div class="outline-text">第一章：相遇</div>
+                        </div>
+                        <div class="outline-item current">
+                            <div class="outline-icon">📝</div>
+                            <div class="outline-text">第二章：初次对话</div>
+                        </div>
+                        <div class="outline-item">
+                            <div class="outline-icon">📖</div>
+                            <div class="outline-text">第三章：逐渐了解</div>
+                        </div>
+                        <div class="outline-item">
+                            <div class="outline-icon">💕</div>
+                            <div class="outline-text">第四章：情感萌芽</div>
+                        </div>
+                        <div class="outline-item">
+                            <div class="outline-icon">🌸</div>
+                            <div class="outline-text">结局：樱花再开时</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 角色设定 -->
+                <div class="tool-section">
+                    <h4>👥 角色设定</h4>
+                    <div class="characters-list">
+                        <div class="character-card">
+                            <div class="char-avatar">👧</div>
+                            <div class="char-info">
+                                <div class="char-name">美咲 (みさき)</div>
+                                <div class="char-desc">文学部二年级，喜欢读书</div>
+                            </div>
+                        </div>
+                        <div class="character-card">
+                            <div class="char-avatar">👦</div>
+                            <div class="char-info">
+                                <div class="char-name">拓也 (たくや)</div>
+                                <div class="char-desc">工学部三年级，温柔体贴</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="tool-btn" onclick="addCharacter()">+ 添加角色</button>
+                </div>
+
+                <!-- 词汇助手 -->
+                <div class="tool-section">
+                    <h4>📚 词汇助手</h4>
+                    <div class="vocab-tools">
+                        <input type="text" class="vocab-input" placeholder="输入单词查找...">
+                        <button class="vocab-btn" onclick="lookupWord()">🔍</button>
+                    </div>
+                    <div class="recent-words">
+                        <h5>最近使用</h5>
+                        <div class="word-list">
+                            <span class="word-tag">桜 (さくら)</span>
+                            <span class="word-tag">出会い (であい)</span>
+                            <span class="word-tag">運命 (うんめい)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 写作统计 -->
+                <div class="tool-section">
+                    <h4>📊 写作统计</h4>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">1,247</div>
+                            <div class="stat-label">总字数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">章节数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">15</div>
+                            <div class="stat-label">段落数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">85%</div>
+                            <div class="stat-label">完成度</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/novel.js"></script>
+    <script src="../assets/js/animations.js"></script>
+
+    <script>
+        // 协作小说创作页面的JavaScript逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNovelPage();
+            startCollaborationAnimation();
+
+            console.log('📖 协作小说创作页面已初始化');
+        });
+
+        function initializeNovelPage() {
+            // 初始化智能体状态
+            updateAgentStatus();
+
+            // 绑定用户输入事件
+            const userInput = document.querySelector('.user-input');
+            userInput.addEventListener('input', function() {
+                const charCount = this.value.length;
+                updateCharCount(charCount);
+            });
+        }
+
+        function startCollaborationAnimation() {
+            // 智能体协作状态动画
+            setInterval(() => {
+                const participants = document.querySelectorAll('.participant');
+                participants.forEach((participant, index) => {
+                    setTimeout(() => {
+                        participant.classList.add('pulse');
+                        setTimeout(() => {
+                            participant.classList.remove('pulse');
+                        }, 500);
+                    }, index * 300);
+                });
+            }, 3000);
+        }
+
+        function updateAgentStatus() {
+            const agents = document.querySelectorAll('.agent-item');
+            const statuses = ['正在思考...', '准备中...', '等待中...', '创作中...'];
+
+            setInterval(() => {
+                agents.forEach(agent => {
+                    if (agent.classList.contains('active')) {
+                        const statusEl = agent.querySelector('.agent-status');
+                        const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                        statusEl.textContent = randomStatus;
+                    }
+                });
+            }, 5000);
+        }
+
+        // 用户交互功能
+        function submitUserInput() {
+            const inputType = document.getElementById('input-type').value;
+            const userInput = document.querySelector('.user-input').value;
+
+            if (userInput.trim() === '') {
+                showNotification('⚠️ 请输入创作内容', 'warning');
+                return;
+            }
+
+            // 模拟提交用户想法
+            showNotification('💡 你的创意已提交给智能体团队', 'success');
+
+            // 清空输入框
+            document.querySelector('.user-input').value = '';
+
+            // 模拟智能体响应
+            setTimeout(() => {
+                showAgentResponse(inputType, userInput);
+            }, 2000);
+        }
+
+        function showAgentResponse(type, input) {
+            const responses = {
+                suggestion: '小美：这个想法很不错！我会在下一段中体现出来。',
+                dialogue: '山田：这段对话很有日本文化特色，我来完善一下背景。',
+                description: '田中先生：场景描述很生动，让我润色一下语言表达。',
+                plot: '小美：这个情节发展很有趣！会让故事更加精彩。'
+            };
+
+            showNotification(`🤖 ${responses[type] || '智能体正在处理你的建议...'}`, 'info');
+        }
+
+        function requestAIHelp() {
+            showNotification('🤖 AI正在分析当前情节，准备提供建议...', 'info');
+
+            setTimeout(() => {
+                const suggestions = [
+                    '建议增加更多细节描写来丰富场景',
+                    '可以加入一些心理活动描述',
+                    '建议使用更多日语习惯表达',
+                    '可以考虑增加文化背景元素'
+                ];
+
+                const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+                showNotification(`💡 AI建议：${randomSuggestion}`, 'success');
+            }, 1500);
+        }
+
+        function approveDraft(button) {
+            const paragraph = button.closest('.paragraph');
+            paragraph.classList.remove('draft');
+            paragraph.classList.add('approved');
+
+            // 移除草稿控制按钮
+            const actions = paragraph.querySelector('.draft-actions');
+            actions.remove();
+
+            showNotification('✓ 段落已采用', 'success');
+
+            // 触发下一段落创作
+            setTimeout(() => {
+                generateNextParagraph();
+            }, 1000);
+        }
+
+        function reviseDraft(button) {
+            showNotification('✏️ 已请求智能体修改这段内容', 'info');
+
+            setTimeout(() => {
+                showNotification('🤖 智能体正在重新创作...', 'info');
+            }, 1000);
+        }
+
+        function rejectDraft(button) {
+            const paragraph = button.closest('.paragraph');
+            paragraph.style.opacity = '0.5';
+
+            showNotification('✗ 段落已删除，智能体将重新创作', 'warning');
+
+            setTimeout(() => {
+                paragraph.remove();
+                generateNextParagraph();
+            }, 1000);
+        }
+
+        function generateNextParagraph() {
+            // 模拟生成下一段落
+            showNotification('🤖 智能体开始创作下一段落...', 'info');
+        }
+
+        // 工具面板功能
+        function toggleAgentsPanel() {
+            const panel = document.querySelector('.agents-panel');
+            const toggle = document.querySelector('.panel-toggle');
+
+            panel.classList.toggle('collapsed');
+            toggle.textContent = panel.classList.contains('collapsed') ? '‹' : '›';
+        }
+
+        function createNewProject() {
+            const projectName = prompt('请输入新项目名称：');
+            if (projectName) {
+                showNotification(`📝 新项目"${projectName}"已创建`, 'success');
+            }
+        }
+
+        function saveProject() {
+            showNotification('💾 项目已保存', 'success');
+        }
+
+        function exportNovel() {
+            showNotification('📤 小说正在导出...', 'info');
+
+            setTimeout(() => {
+                showNotification('✓ 小说已导出完成', 'success');
+            }, 2000);
+        }
+
+        function inviteMoreAgents() {
+            showNotification('📧 邀请已发送给其他智能体', 'info');
+        }
+
+        function startBrainstorm() {
+            showNotification('💭 头脑风暴会议已开始', 'success');
+        }
+
+        function addCharacter() {
+            const charName = prompt('请输入角色名称：');
+            if (charName) {
+                showNotification(`👤 角色"${charName}"已添加`, 'success');
+            }
+        }
+
+        function lookupWord() {
+            const word = document.querySelector('.vocab-input').value;
+            if (word.trim()) {
+                showNotification(`📚 正在查找"${word}"的含义...`, 'info');
+            }
+        }
+
+        function toggleVoiceInput() {
+            showNotification('🎤 语音输入功能开发中...', 'info');
+        }
+
+        function updateCharCount(count) {
+            // 可以在这里更新字符计数显示
+            console.log(`当前输入字符数: ${count}`);
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : type === 'warning' ? '#FF9800' : '#2196F3'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+                max-width: 300px;
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // CSS动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            .pulse {
+                animation: pulse 0.5s ease;
+            }
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+    <!-- 协作小说页面样式 -->
+    <style>
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 创作状态栏 */
+        .creation-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .status-item {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-icon {
+            font-size: 2rem;
+        }
+
+        .status-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .status-value {
+            color: #333;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* 项目控制 */
+        .project-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .project-select {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            min-width: 200px;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .project-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .project-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        /* 创作工作区 */
+        .creation-workspace {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            gap: 20px;
+            min-height: 600px;
+        }
+
+        /* 智能体面板 */
+        .agents-panel {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .panel-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .panel-toggle:hover {
+            color: #333;
+        }
+
+        .participating-agents {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .agent-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .agent-item.active {
+            background: #e3f2fd;
+            border-left: 3px solid #2196F3;
+        }
+
+        .agent-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .agent-avatar.koumi { background: linear-gradient(45deg, #E91E63, #C2185B); }
+        .agent-avatar.yamada { background: linear-gradient(45deg, #FF9800, #F57C00); }
+        .agent-avatar.tanaka { background: linear-gradient(45deg, #2196F3, #1976D2); }
+
+        .agent-info {
+            flex: 1;
+        }
+
+        .agent-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+
+
+        <div class="status-item">
+                <div class="status-icon">💬</div>
+                <div class="status-info">
+                    <div class="status-label">字数</div>
+                    <div class="status-value">1,247</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 项目选择和创建 -->
+        <div class="project-controls">
+            <div class="project-selector">
+                <select class="project-select" id="current-project">
+                    <option value="spring-encounter" selected>春天的邂逅</option>
+                    <option value="tokyo-nights">东京夜话</option>
+                    <option value="school-festival">学园祭的回忆</option>
+                </select>
+            </div>
+            <div class="project-actions">
+                <button class="project-btn" onclick="createNewProject()">
+                    <span class="btn-icon">➕</span>
+                    <span class="btn-text">新建项目</span>
+                </button>
+                <button class="project-btn" onclick="saveProject()">
+                    <span class="btn-icon">💾</span>
+                    <span class="btn-text">保存</span>
+                </button>
+                <button class="project-btn" onclick="exportNovel()">
+                    <span class="btn-icon">📤</span>
+                    <span class="btn-text">导出</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 主创作区域 -->
+        <div class="creation-workspace">
+            <!-- 左侧：智能体面板 -->
+            <div class="agents-panel">
+                <div class="panel-header">
+                    <h3>🤖 协作智能体</h3>
+                    <button class="panel-toggle" onclick="toggleAgentsPanel()">›</button>
+                </div>
+
+                <div class="participating-agents">
+                    <div class="agent-item active" data-agent="koumi">
+                        <div class="agent-avatar koumi">美</div>
+                        <div class="agent-info">
+                            <div class="agent-name">小美</div>
+                            <div class="agent-role">情感描写</div>
+                            <div class="agent-status">正在思考...</div>
+                        </div>
+                        <div class="agent-mood">😊</div>
+                    </div>
+
+                    <div class="agent-item active" data-agent="yamada">
+                        <div class="agent-avatar yamada">山</div>
+                        <div class="agent-info">
+                            <div class="agent-name">山田</div>
+                            <div class="agent-role">文化背景</div>
+                            <div class="agent-status">在线</div>
+                        </div>
+                        <div class="agent-mood">😄</div>
+                    </div>
+
+                    <div class="agent-item active" data-agent="tanaka">
+                        <div class="agent-avatar tanaka">田</div>
+                        <div class="agent-info">
+                            <div class="agent-name">田中先生</div>
+                            <div class="agent-role">语言润色</div>
+                            <div class="agent-status">待命</div>
+                        </div>
+                        <div class="agent-mood">😐</div>
+                    </div>
+                </div>
+
+                <div class="agent-controls">
+                    <button class="control-btn" onclick="inviteMoreAgents()">邀请更多智能体</button>
+                    <button class="control-btn" onclick="startBrainstorm()">开始头脑风暴</button>
+                </div>
+            </div>
+
+            <!-- 中间：故事内容 -->
+            <div class="story-content">
+                <div class="story-header">
+                    <h2>📚 春天的邂逅</h2>
+                    <div class="story-meta">
+                        <span class="genre-tag">浪漫</span>
+                        <span class="genre-tag">校园</span>
+                        <span class="genre-tag">青春</span>
+                    </div>
+                </div>
+
+                <div class="chapters-list">
+                    <!-- 第一章 -->
+                    <div class="chapter-section">
+                        <div class="chapter-header">
+                            <h3>第一章：桜散る頃</h3>
+                            <div class="chapter-meta">
+                                <span class="word-count">486字</span>
+                                <span class="author-tag">小美主导</span>
+                            </div>
+                        </div>
+                        <div class="chapter-content">
+                            <div class="paragraph" data-author="koumi">
+                                <div class="author-indicator">小美</div>
+                                <div class="text-content">
+                                    <p class="japanese-text">
+                                        桜の花びらが舞い散る四月の午後、私は新しい学期の始まりに胸を躍らせていた。
+                                        東京の小さな大学のキャンパスは、淡いピンク色に染まり、まるで絵本の中の世界のようだった。
+                                    </p>
+                                    <p class="translation">
+                                        樱花花瓣飞舞的四月午后，我为新学期的开始而心潮澎湃。
+                                        东京这所小大学的校园被淡淡的粉色染满，宛如绘本中的世界。
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="paragraph" data-author="yamada">
+                                <div class="author-indicator">山田</div>
+                                <div class="text-content">
+                                    <p class="japanese-text">
+                                        この時期の日本では、新入生たちが希望に満ちた表情で校門をくぐる。
+                                        桜は日本人にとって、新しい始まりの象徴なのだ。
+                                        私もその一人として、文学部の建物に向かって歩いていた。
+                                    </p>
+                                    <p class="translation">
+                                        在日本的这个时期，新生们带着充满希望的表情跨进校门。
+                                        樱花对日本人来说，是新开始的象征。
+                                        我也作为其中一员，朝着文学部的建筑走去。
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="paragraph" data-author="koumi">
+                                <div class="author-indicator">小美</div>
+                                <div class="text-content">
+                                    <p class="japanese-text">
+                                        その時、強い風が吹いて、私の書類が飛ばされてしまった。
+                                        「あっ！」と叫んで追いかけようとした瞬間、
+                                        一人の男子学生が私の書類を拾ってくれた。
+                                    </p>
+                                    <p class="translation">
+                                        就在那时，一阵强风吹来，我的文件被吹走了。
+                                        "啊！"我叫着想要追上去的瞬间，
+                                        一个男学生帮我捡起了文件。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第二章（正在创作中） -->
+                    <div class="chapter-section current">
+                        <div class="chapter-header">
+                            <h3>第二章：運命の出会い</h3>
+                            <div class="chapter-meta">
+                                <span class="word-count">正在创作...</span>
+                                <span class="status-tag">进行中</span>
+                            </div>
+                        </div>
+                        <div class="chapter-content">
+                            <div class="collaboration-area">
+                                <div class="collab-header">
+                                    <div class="collab-icon">🤝</div>
+                                    <div class="collab-text">智能体正在协作创作下一段落...</div>
+                                </div>
+                                <div class="collab-participants">
+                                    <div class="participant active koumi">小美</div>
+                                    <div class="participant thinking yamada">山田</div>
+                                    <div class="participant waiting tanaka">田中先生</div>
+                                </div>
+                            </div>
+
+                            <!-- 当前创作段落 -->
+                            <div class="current-writing">
+                                <div class="writing-prompt">
+                                    <h4>💭 创作提示</h4>
+                                    <p>请继续描写主人公与男学生的第一次相遇。小美负责情感描写，山田补充文化背景，田中先生进行语言润色。</p>
+                                </div>
+
+                                <div class="draft-content">
+                                    <div class="paragraph draft" data-author="koumi">
+                                        <div class="author-indicator">小美 (草稿)</div>
+                                        <div class="text-content">
+                                            <p class="japanese-text">
+                                                「ありがとうございます」と私は照れながら言った。
+                                                彼は爽やかな笑顔で「どういたしまして」と答えてくれた。
+                                                その瞬間、時間が止まったような気がした...
+                                            </p>
+                                            <div class="draft-actions">
+                                                <button class="draft-btn" onclick="approveDraft(this)">✓ 采用</button>
+                                                <button class="draft-btn" onclick="reviseDraft(this)">✏️ 修改</button>
+                                                <button class="draft-btn" onclick="rejectDraft(this)">✗ 重写</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 用户参与区域 -->
+                <div class="user-input-area">
+                    <h4>💬 你的创意输入</h4>
+                    <div class="input-controls">
+                        <select class="input-type" id="input-type">
+                            <option value="suggestion">创作建议</option>
+                            <option value="dialogue">对话内容</option>
+                            <option value="description">场景描述</option>
+                            <option value="plot">情节发展</option>
+                        </select>
+                        <button class="voice-btn" onclick="toggleVoiceInput()">🎤</button>
+                    </div>
+                    <textarea class="user-input" placeholder="输入你的创作想法或建议..."></textarea>
+                    <div class="input-actions">
+                        <button class="input-btn primary" onclick="submitUserInput()">💡 提交想法</button>
+                        <button class="input-btn secondary" onclick="requestAIHelp()">🤖 请求AI协助</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：工具面板 -->
+            <div class="tools-panel">
+                <div class="panel-header">
+                    <h3>🛠️ 创作工具</h3>
+                </div>
+
+                <!-- 故事大纲 -->
+                <div class="tool-section">
+                    <h4>📋 故事大纲</h4>
+                    <div class="outline-content">
+                        <div class="outline-item completed">
+                            <div class="outline-icon">✓</div>
+                            <div class="outline-text">第一章：相遇</div>
+                        </div>
+                        <div class="outline-item current">
+                            <div class="outline-icon">📝</div>
+                            <div class="outline-text">第二章：初次对话</div>
+                        </div>
+                        <div class="outline-item">
+                            <div class="outline-icon">📖</div>
+                            <div class="outline-text">第三章：逐渐了解</div>
+                        </div>
+                        <div class="outline-item">
+                            <div class="outline-icon">💕</div>
+                            <div class="outline-text">第四章：情感萌芽</div>
+                        </div>
+                        <div class="outline-item">
+                            <div class="outline-icon">🌸</div>
+                            <div class="outline-text">结局：樱花再开时</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 角色设定 -->
+                <div class="tool-section">
+                    <h4>👥 角色设定</h4>
+                    <div class="characters-list">
+                        <div class="character-card">
+                            <div class="char-avatar">👧</div>
+                            <div class="char-info">
+                                <div class="char-name">美咲 (みさき)</div>
+                                <div class="char-desc">文学部二年级，喜欢读书</div>
+                            </div>
+                        </div>
+                        <div class="character-card">
+                            <div class="char-avatar">👦</div>
+                            <div class="char-info">
+                                <div class="char-name">拓也 (たくや)</div>
+                                <div class="char-desc">工学部三年级，温柔体贴</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="tool-btn" onclick="addCharacter()">+ 添加角色</button>
+                </div>
+
+                <!-- 词汇助手 -->
+                <div class="tool-section">
+                    <h4>📚 词汇助手</h4>
+                    <div class="vocab-tools">
+                        <input type="text" class="vocab-input" placeholder="输入单词查找...">
+                        <button class="vocab-btn" onclick="lookupWord()">🔍</button>
+                    </div>
+                    <div class="recent-words">
+                        <h5>最近使用</h5>
+                        <div class="word-list">
+                            <span class="word-tag">桜 (さくら)</span>
+                            <span class="word-tag">出会い (であい)</span>
+                            <span class="word-tag">運命 (うんめい)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 写作统计 -->
+                <div class="tool-section">
+                    <h4>📊 写作统计</h4>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number">1,247</div>
+                            <div class="stat-label">总字数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">章节数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">15</div>
+                            <div class="stat-label">段落数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">85%</div>
+                            <div class="stat-label">完成度</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/novel.js"></script>
+    <script src="../assets/js/animations.js"></script>
+
+    <script>
+        // 协作小说创作页面的JavaScript逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNovelPage();
+            startCollaborationAnimation();
+
+            console.log('📖 协作小说创作页面已初始化');
+        });
+
+        function initializeNovelPage() {
+            // 初始化智能体状态
+            updateAgentStatus();
+
+            // 绑定用户输入事件
+            const userInput = document.querySelector('.user-input');
+            userInput.addEventListener('input', function() {
+                const charCount = this.value.length;
+                updateCharCount(charCount);
+            });
+        }
+
+        function startCollaborationAnimation() {
+            // 智能体协作状态动画
+            setInterval(() => {
+                const participants = document.querySelectorAll('.participant');
+                participants.forEach((participant, index) => {
+                    setTimeout(() => {
+                        participant.classList.add('pulse');
+                        setTimeout(() => {
+                            participant.classList.remove('pulse');
+                        }, 500);
+                    }, index * 300);
+                });
+            }, 3000);
+        }
+
+        function updateAgentStatus() {
+            const agents = document.querySelectorAll('.agent-item');
+            const statuses = ['正在思考...', '准备中...', '等待中...', '创作中...'];
+
+            setInterval(() => {
+                agents.forEach(agent => {
+                    if (agent.classList.contains('active')) {
+                        const statusEl = agent.querySelector('.agent-status');
+                        const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                        statusEl.textContent = randomStatus;
+                    }
+                });
+            }, 5000);
+        }
+
+        // 用户交互功能
+        function submitUserInput() {
+            const inputType = document.getElementById('input-type').value;
+            const userInput = document.querySelector('.user-input').value;
+
+            if (userInput.trim() === '') {
+                showNotification('⚠️ 请输入创作内容', 'warning');
+                return;
+            }
+
+            // 模拟提交用户想法
+            showNotification('💡 你的创意已提交给智能体团队', 'success');
+
+            // 清空输入框
+            document.querySelector('.user-input').value = '';
+
+            // 模拟智能体响应
+            setTimeout(() => {
+                showAgentResponse(inputType, userInput);
+            }, 2000);
+        }
+
+        function showAgentResponse(type, input) {
+            const responses = {
+                suggestion: '小美：这个想法很不错！我会在下一段中体现出来。',
+                dialogue: '山田：这段对话很有日本文化特色，我来完善一下背景。',
+                description: '田中先生：场景描述很生动，让我润色一下语言表达。',
+                plot: '小美：这个情节发展很有趣！会让故事更加精彩。'
+            };
+
+            showNotification(`🤖 ${responses[type] || '智能体正在处理你的建议...'}`, 'info');
+        }
+
+        function requestAIHelp() {
+            showNotification('🤖 AI正在分析当前情节，准备提供建议...', 'info');
+
+            setTimeout(() => {
+                const suggestions = [
+                    '建议增加更多细节描写来丰富场景',
+                    '可以加入一些心理活动描述',
+                    '建议使用更多日语习惯表达',
+                    '可以考虑增加文化背景元素'
+                ];
+
+                const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+                showNotification(`💡 AI建议：${randomSuggestion}`, 'success');
+            }, 1500);
+        }
+
+        function approveDraft(button) {
+            const paragraph = button.closest('.paragraph');
+            paragraph.classList.remove('draft');
+            paragraph.classList.add('approved');
+
+            // 移除草稿控制按钮
+            const actions = paragraph.querySelector('.draft-actions');
+            actions.remove();
+
+            showNotification('✓ 段落已采用', 'success');
+
+            // 触发下一段落创作
+            setTimeout(() => {
+                generateNextParagraph();
+            }, 1000);
+        }
+
+        function reviseDraft(button) {
+            showNotification('✏️ 已请求智能体修改这段内容', 'info');
+
+            setTimeout(() => {
+                showNotification('🤖 智能体正在重新创作...', 'info');
+            }, 1000);
+        }
+
+        function rejectDraft(button) {
+            const paragraph = button.closest('.paragraph');
+            paragraph.style.opacity = '0.5';
+
+            showNotification('✗ 段落已删除，智能体将重新创作', 'warning');
+
+            setTimeout(() => {
+                paragraph.remove();
+                generateNextParagraph();
+            }, 1000);
+        }
+
+        function generateNextParagraph() {
+            // 模拟生成下一段落
+            showNotification('🤖 智能体开始创作下一段落...', 'info');
+        }
+
+        // 工具面板功能
+        function toggleAgentsPanel() {
+            const panel = document.querySelector('.agents-panel');
+            const toggle = document.querySelector('.panel-toggle');
+
+            panel.classList.toggle('collapsed');
+            toggle.textContent = panel.classList.contains('collapsed') ? '‹' : '›';
+        }
+
+        function createNewProject() {
+            const projectName = prompt('请输入新项目名称：');
+            if (projectName) {
+                showNotification(`📝 新项目"${projectName}"已创建`, 'success');
+            }
+        }
+
+        function saveProject() {
+            showNotification('💾 项目已保存', 'success');
+        }
+
+        function exportNovel() {
+            showNotification('📤 小说正在导出...', 'info');
+
+            setTimeout(() => {
+                showNotification('✓ 小说已导出完成', 'success');
+            }, 2000);
+        }
+
+        function inviteMoreAgents() {
+            showNotification('📧 邀请已发送给其他智能体', 'info');
+        }
+
+        function startBrainstorm() {
+            showNotification('💭 头脑风暴会议已开始', 'success');
+        }
+
+        function addCharacter() {
+            const charName = prompt('请输入角色名称：');
+            if (charName) {
+                showNotification(`👤 角色"${charName}"已添加`, 'success');
+            }
+        }
+
+        function lookupWord() {
+            const word = document.querySelector('.vocab-input').value;
+            if (word.trim()) {
+                showNotification(`📚 正在查找"${word}"的含义...`, 'info');
+            }
+        }
+
+        function toggleVoiceInput() {
+            showNotification('🎤 语音输入功能开发中...', 'info');
+        }
+
+        function updateCharCount(count) {
+            // 可以在这里更新字符计数显示
+            console.log(`当前输入字符数: ${count}`);
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : type === 'warning' ? '#FF9800' : '#2196F3'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+                max-width: 300px;
+            `;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // CSS动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+            .pulse {
+                animation: pulse 0.5s ease;
+            }
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+    <!-- 协作小说页面样式 -->
+    <style>
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 创作状态栏 */
+        .creation-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .status-item {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-icon {
+            font-size: 2rem;
+        }
+
+        .status-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .status-value {
+            color: #333;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* 项目控制 */
+        .project-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .project-select {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            min-width: 200px;
+        }
+
+        .project-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .project-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .project-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        /* 创作工作区 */
+        .creation-workspace {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            gap: 20px;
+            min-height: 600px;
+        }
+
+        /* 智能体面板 */
+        .agents-panel {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .panel-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .panel-toggle:hover {
+            color: #333;
+        }
+
+        .participating-agents {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .agent-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .agent-item.active {
+            background: #e3f2fd;
+            border-left: 3px solid #2196F3;
+        }
+
+        .agent-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .agent-avatar.koumi { background: linear-gradient(45deg, #E91E63, #C2185B); }
+        .agent-avatar.yamada { background: linear-gradient(45deg, #FF9800, #F57C00); }
+        .agent-avatar.tanaka { background: linear-gradient(45deg, #2196F3, #1976D2); }
+
+        .agent-info {
+            flex: 1;
+        }
+
+        .agent-role {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .agent-status {
+            color: #888;
+            font-size: 0.75rem;
+        }
+
+        .agent-mood {
+            font-size: 1.2rem;
+        }
+
+        .agent-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .control-btn:hover {
+            background: #e0e0e0;
+        }
+
+        /* 故事内容区 */
+        .story-content {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .story-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .story-meta {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .genre-tag {
+            padding: 4px 12px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .chapters-list {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .chapter-section {
+            border: 1px solid #f0f0f0;
+            border-radius: 10px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .chapter-section.current {
+            border-color: #4ECDC4;
+            background: #f9ffff;
+        }
+
+        .chapter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .chapter-meta {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .word-count {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .author-tag {
+            background: #f0f4ff;
+            color: #667eea;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .status-tag {
+            background: #fff3e0;
+            color: #ff9800;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .chapter-content {
+            line-height: 1.8;
+        }
+
+        .paragraph {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #fafafa;
+            position: relative;
+        }
+
+        .paragraph.draft {
+            background: #fff8e1;
+            border-left: 4px solid #ffc107;
+        }
+
+        .paragraph.approved {
+            background: #f1f8e9;
+            border-left: 4px solid #4caf50;
+        }
+
+        .author-indicator {
+            position: absolute;
+            top: -8px;
+            left: 15px;
+            background: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+
+        .text-content {
+            margin-top: 10px;
+        }
+
+        .japanese-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .translation {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #666;
+            font-style: italic;
+            padding-left: 15px;
+            border-left: 2px solid #e0e0e0;
+        }
+
+        .draft-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .draft-btn {
+            padding: 5px 12px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .draft-btn:nth-child(1) {
+            background: #4caf50;
+            color: white;
+        }
+
+        .draft-btn:nth-child(2) {
+            background: #ff9800;
+            color: white;
+        }
+
+        .draft-btn:nth-child(3) {
+            background: #f44336;
+            color: white;
+        }
+
+        .draft-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* 协作区域 */
+        .collaboration-area {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .collab-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .collab-icon {
+            font-size: 1.5rem;
+        }
+
+        .collab-text {
+            color: #666;
+            font-style: italic;
+        }
+
+        .collab-participants {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .participant {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 2px solid transparent;
+        }
+
+        .participant.active {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .participant.thinking {
+            background: #ff9800;
+            color: white;
+            border-color: #ff9800;
+            animation: pulse 1s infinite;
+        }
+
+        .participant.waiting {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        /* 用户输入区域 */
+        .user-input-area {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f9f9f9;
+            border-radius: 15px;
+        }
+
+        .input-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .input-type {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .voice-btn {
+            padding: 8px 15px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .voice-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .user-input {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+            line-height: 1.5;
+            resize: vertical;
+            margin-bottom: 15px;
+        }
+
+        .user-input:focus {
+            border-color: #4ECDC4;
+            outline: none;
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .input-btn.primary {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+            color: white;
+        }
+
+        .input-btn.secondary {
+            background: #f5f5f5;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+
+        .input-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* 工具面板 */
+        .tools-panel {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .tool-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .tool-section:last-child {
+            border-bottom: none;
+        }
+
+        .tool-section h4 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* 故事大纲 */
+        .outline-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .outline-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .outline-item.completed {
+            background: #f1f8e9;
+        }
+
+        .outline-item.current {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+        }
+
+        .outline-item:hover {
+            background: #f5f5f5;
+        }
+
+        .outline-icon {
+            font-size: 1.2rem;
+        }
+
+        .outline-text {
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        /* 角色设定 */
+        .characters-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .character-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .char-avatar {
+            font-size: 1.5rem;
+        }
+
+        .char-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .char-desc {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .tool-btn {
+            width: 100%;
+            padding: 8px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tool-btn:hover {
+            background: #e0e0e0;
+        }
+
+        /* 词汇助手 */
+        .vocab-tools {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .vocab-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .vocab-btn {
+            padding: 8px 12px;
+            background: #4ECDC4;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .recent-words h5 {
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .word-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .word-tag {
+            padding: 3px 8px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .word-tag:hover {
+            background: #bbdefb;
+        }
+
+        /* 写作统计 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4ECDC4;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .creation-workspace {
+                grid-template-columns: 200px 1fr 250px;
+                gap: 15px;
+            }
+
+            .agents-panel,
+            .tools-panel {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .creation-workspace {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .agents-panel.collapsed {
+                display: none;
+            }
+
+            .project-controls {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+
+            .project-actions {
+                flex-wrap: wrap;
+            }
+
+            .creation-status {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .status-item {
+                padding: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+    </style>
+</body>
+</html><!DOCTYPE html>
