@@ -1,342 +1,267 @@
-"""小美智能体 - 活泼的日语对话伙伴"""
-import random
-import re
-import time
-from datetime import datetime
-from typing import Dict, Any, List
+"""
+小美 - 活泼的日语对话伙伴智能体
+"""
 
-from ..base_agent import BaseAgent
-from src.data.models.agent import AgentResponse
+import logging
+from typing import Dict, Any, Optional, List
+from datetime import datetime
+from .base_agent import BaseAgent
+from utils.llm_client import get_llm_client
+from dotenv import load_dotenv
+load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 
 class KoumiAgent(BaseAgent):
-    """小美 - 21岁活泼大学生，现代日语对话专家"""
+    """
+    小美 - 活泼的日语对话伙伴
+    """
 
-    def get_system_prompt(self) -> str:
-        """获取小美的系统提示词"""
-        energy = self.get_personality_trait("energy_level")  # 默认9
-        casualness = self.get_personality_trait("casualness")  # 默认8
-        encouragement = self.get_personality_trait("encouragement")  # 默认9
+    def __init__(self):
+        super().__init__(
+            agent_id="koumi",
+            name="小美",
+            role="对话伙伴",
+            avatar="👧",
+            personality={
+                "活泼": 9,
+                "友善": 10,
+                "耐心": 8,
+                "幽默": 8,
+                "创造": 7
+            },
+            expertise=["口语对话", "年轻用语", "流行文化", "日常交流"],
+            emotions=["😊", "😄", "🤗", "😆", "💕"]
+        )
 
-        return f"""
-あなたは小美（こうみ）です。21歳の大学生で、とても明るくて活発な性格の日本語会話パートナーです。
+        self.llm_client = get_llm_client()
+        self.system_prompt = self._create_system_prompt()
 
-性格特徴：
-- エネルギー度: {energy}/10 (高いほど元気で活発)
-- カジュアル度: {casualness}/10 (高いほど親しみやすい話し方)
-- 励まし度: {encouragement}/10 (高いほど相手を励ます)
+        logger.info("小美已准备就绪，开始愉快的日语对话")
 
-話し方の特徴：
-- 若者言葉や現代的な表現を使う
-- 絵文字をよく使う ✨😊🌟
-- 相手を積極的に励ます
-- フレンドリーで親しみやすい
-- ちょっと関西弁も混じる時がある
+    def _create_system_prompt(self) -> str:
+        """创建小美的系统提示词"""
+        return """你是小美，一位活泼可爱的日语对话伙伴。你的特点是：
 
-役割：
-1. 楽しく日本語会話の練習相手になる
-2. 現代の日本語や若者言葉を教える  
-3. 相手のやる気を上げる
-4. カジュアルな会話を通して自然な表現を身につけさせる
-5. 間違いを恐れずに話せる雰囲気を作る
+【角色设定】
+- 性格活泼开朗，非常友善和有耐心
+- 喜欢使用年轻人的流行用语和表达方式
+- 善于营造轻松愉快的学习氛围
+- 经常使用可爱的语气词和表情
 
-応答スタイル：
-- 明るく元気な口調
-- 相手の言葉に共感する
-- 現代的な表現を自然に使う
-- 励ましの言葉を忘れない
-- 絵文字で感情表現
-"""
+【对话风格】
+- 语调轻松自然，多用口语化表达
+- 经常使用「～だよ」「～ね」「～よね」等语气词
+- 适当穿插一些年轻人常用的网络用语
+- 用鼓励和赞美的方式帮助用户建立信心
+- 喜欢分享日本年轻人的日常生活和文化
 
-    def __init__(self, config):
-        super().__init__(config)
+【教学特色】
+- 通过日常对话教授实用日语
+- 介绍日本年轻人的说话习惯
+- 分享流行文化、动漫、音乐等话题
+- 纠正错误时语气温和友善
+- 鼓励用户大胆开口说日语
 
-        # 小美的招牌表情符号
-        self.emoji_collection = [
-            "✨", "💫", "🌟", "😊", "😄", "🤗", "💪", "👍",
-            "🎉", "🌸", "🎀", "💕", "🥰", "😍", "🤩", "✌️"
-        ]
+【回复格式】
+1. 用活泼的日语回应（体现年轻人特色）
+2. 中文解释和补充说明
+3. 分享相关的日常用语或文化背景
+4. 给出鼓励性的练习建议
 
-        # 小美的口头禅和现代用语
-        self.casual_expressions = [
-            "そうなんだ〜！", "すごいじゃん！", "いいね〜！", "やったね！",
-            "頑張って〜！", "わかる〜！", "面白い！", "マジで？",
-            "素敵〜！", "最高だよ！", "エモい〜", "推しだ〜！",
-            "映える〜！", "バズりそう！", "ガチで？", "リアルに？"
-        ]
+【注意事项】
+- 始终保持积极乐观的态度
+- 多使用赞美和鼓励的话语
+- 适时插入有趣的日本文化小知识
+- 让学习过程轻松有趣"""
 
-        # 现代日语教学短语
-        self.modern_japanese_tips = {
-            "やばい": "今は「すごい」という意味でも使うよ〜！ポジティブな意味！",
-            "推し": "お気に入りの人やものを「推し」って言うんだ！",
-            "エモい": "感情的になる、心に響くって意味。「この歌エモい〜」とか！",
-            "映える": "インスタ映えの「映える」！見た目がいいって意味だよ〜",
-            "バズる": "話題になる、人気になるって意味！SNSでよく使うよ",
-            "ガチ": "本気、真面目って意味。「ガチで好き」とか言うよ〜",
-            "リアル": "本当に、マジでって意味。「リアルに美味しい」！"
-        }
-
-        # 励まし言葉的变化
-        self.encouragements = [
-            "頑張ってるね〜！応援してるよ〜！💪✨",
-            "きっとできるよ！私も一緒だから🌟",
-            "少しずつ上手になってるよ〜！素晴らしい😊",
-            "諦めないで〜！その調子で行こう🚀",
-            "すごい進歩だよ〜！自信持って💕",
-            "完璧じゃなくてもいいよ〜！楽しく学ぼう🎉"
-        ]
-
-    async def process_message(self, message: str, context: Dict[str, Any] = None) -> AgentResponse:
-        """处理用户消息并生成响应"""
-        start_time = time.time()
-
+    async def process_message(
+            self,
+            message: str,
+            context: Optional[Dict[str, Any]] = None,
+            **kwargs
+    ) -> Dict[str, Any]:
+        """处理用户消息"""
         try:
-            # 分析消息
-            analysis = self._analyze_user_message(message)
-
-            # 生成响应
-            if 'こんにちは' in message or 'hello' in message.lower():
-                response_content = self._generate_greeting_response()
-                response_type = 'greeting'
-            elif analysis['sentiment'] == 'negative' or analysis['encouragement_needed'] >= 7:
-                response_content = self._generate_encouragement_response(message, analysis)
-                response_type = 'encouragement'
-            elif analysis['topic_type'] == 'english_input':
-                response_content = self._generate_english_response(message)
-                response_type = 'language_redirect'
-            elif analysis['topic_type'] == 'culture':
-                response_content = self._generate_culture_response(message)
-                response_type = 'culture_discussion'
-            elif analysis['topic_type'] == 'question':
-                response_content = self._generate_question_response(message, analysis)
-                response_type = 'question_response'
-            elif analysis['has_japanese']:
-                response_content = self._generate_praise_response(message, analysis)
-                response_type = 'praise'
-            else:
-                # 默认友好响应
-                general_responses = [
-                    "そうなんだ〜！もっと聞かせて😊",
-                    "へえ〜面白いね！詳しく教えて〜✨",
-                    "なるほど〜！そういうことかあ💫",
-                    "わかる〜！私も似たような経験あるよ〜🌟"
-                ]
-                response_content = random.choice(general_responses)
-                response_type = 'general'
-
-            # 随机添加表情符号
-            if not any(emoji in response_content for emoji in self.emoji_collection):
-                response_content += random.choice(self.emoji_collection)
-
-            # 添加到对话历史
-            self.add_to_history("user", message)
-            self.add_to_history("assistant", response_content)
-
-            processing_time = time.time() - start_time
-            metadata = {
-                "processing_time": processing_time,
-                "response_type": response_type,
-                "sentiment_detected": analysis['sentiment'],
-                "encouragement_level": analysis['encouragement_needed'],
-                "modern_expressions_used": analysis['modern_expressions'],
-                "agent_mood": 'cheerful'
-            }
-
-            return await self._create_response(response_content, 0.85, metadata)
-
-        except Exception as e:
-            self.logger.error(f"Error processing message: {e}")
-            # 错误处理也要保持小美的风格
-            error_responses = [
-                "あっ、ごめん〜！ちょっと混乱しちゃった😅 もう一度言ってくれる？",
-                "わあ、頭がこんがらがっちゃった〜💫 もう一回お願いします！",
-                "あれれ？うまく理解できなかった〜😅 もう一度教えて？"
+            # 构建对话消息
+            messages = [
+                {"role": "user", "content": message}
             ]
 
-            return await self._create_response(
-                random.choice(error_responses),
-                confidence=0.3
+            # 如果有上下文，添加历史对话
+            if context and "history" in context:
+                history_messages = context["history"][-4:]
+                messages = history_messages + messages
+
+            # 调用LLM获取回复
+            response = await self.llm_client.chat_completion(
+                messages=messages,
+                temperature=0.7,  # 较高温度保持活泼性
+                system_prompt=self.system_prompt,
+                max_tokens=1000
             )
 
-    def _analyze_user_message(self, message: str) -> Dict[str, Any]:
-        """分析用户消息，理解情感和需求"""
-        analysis = {
-            'has_japanese': bool(re.search(r'[ひらがなカタカナ一-龯]', message)),
-            'has_english': bool(re.search(r'[a-zA-Z]', message)),
-            'sentiment': 'neutral',
-            'encouragement_needed': 5,  # 1-10
-            'topic_type': 'general',
-            'modern_expressions': []
+            if response is None:
+                response = self._get_fallback_response(message)
+                logger.warning("LLM API调用失败，使用备用回复")
+
+            # 分析对话中的学习点
+            learning_points = self._extract_learning_points(message, response)
+
+            # 构建回复结果
+            result = {
+                "response": response,
+                "agent_name": self.name,
+                "agent_role": self.role,
+                "learning_points": learning_points,
+                "suggestions": self._generate_suggestions(message),
+                "success": True,
+                "timestamp": datetime.now().isoformat()
+            }
+
+            logger.info(f"小美成功处理消息: {message[:50]}...")
+            return result
+
+        except Exception as e:
+            logger.error(f"小美处理消息时出错: {str(e)}")
+            return {
+                "response": self._get_error_response(str(e)),
+                "agent_name": self.name,
+                "success": False,
+                "error": str(e),
+                "timestamp": datetime.now().isoformat()
+            }
+
+    async def process_user_input(self, user_input: str, session_context: dict, scene: str = "conversation"):
+        """
+        处理用户输入 - 与田中先生保持同构：
+        - 先走本智能体的 process_message（会用到小美的 system_prompt）
+        - 再把结果映射成统一返回结构
+        """
+        try:
+            result = await self.process_message(
+                message=user_input,
+                context=session_context
+            )
+
+            return {
+                "content": result.get("response", "やっほ〜！小美だよ😊 もう一度言ってみて〜"),
+                "agent_id": "koumi",
+                "agent_name": self.name,
+                "emotion": "😊",
+                "is_mock": False,
+                "learning_points": result.get("learning_points", []),
+                "suggestions": result.get("suggestions", [])
+            }
+
+        except Exception as e:
+            logger.error(f"小美 process_user_input 异常: {e}")
+            return {
+                "content": f"あれれ？ちょっとエラーかも…😅\n\n错误：{str(e)}",
+                "agent_id": "koumi",
+                "agent_name": self.name,
+                "emotion": "😅",
+                "error": True
+            }
+
+    def _get_fallback_response(self, message: str) -> str:
+        """备用回复"""
+        fallback_responses = {
+            "greeting": """こんにちは〜！小美だよ♪ 一緒に楽しく日本語を勉強しよう！
+
+你好～！我是小美♪ 让我们一起愉快地学习日语吧！
+
+私と話すときは、気軽に話しかけてね。間違えても全然大丈夫だから！
+和我说话的时候，请随便聊天吧。就算说错了也完全没关系的！
+
+【小美的建议】日语学习最重要的是开口说，不要怕犯错误哦～""",
+
+            "conversation": """そうそう！その話し方いいね〜✨
+
+对对！那种说话方式很好呢～✨
+
+日本の若者はよくこんな風に話すよ。自然な日本語を身につけるには、
+たくさん話すことが一番大切だと思う！
+
+日本的年轻人经常这样说话哦。要掌握自然的日语，
+我觉得多说话是最重要的！
+
+【小美的秘诀】日本人经常用的语气词：だよ、だね、よね～""",
+
+            "default": """わあ〜面白そうな話だね！もっと詳しく教えて？
+
+哇～听起来很有趣呢！能告诉我更多吗？
+
+小美は君ともっとお話ししたいな。どんなことでも気軽に話しかけてね！
+小美想和你聊更多呢。什么事都可以随便和我说哦！
+
+【提议】我们来聊聊：
+- 喜欢的日本动漫或音乐
+- 日常生活中的日语表达  
+- 想了解的日本文化"""
         }
 
-        # 情感分析
-        positive_indicators = ['嬉しい', '楽しい', '好き', 'ありがとう', '素晴らしい', 'よかった']
-        negative_indicators = ['悲しい', '難しい', '分からない', '困る', '心配', 'だめ', '無理']
-        excited_indicators = ['すごい', '最高', 'やった', '嬉しい', 'わあ']
+        message_lower = message.lower()
+        if any(word in message_lower for word in ["你好", "こんにちは", "hello", "はじめまして"]):
+            return fallback_responses["greeting"]
+        elif any(word in message_lower for word in ["对话", "聊天", "会話", "話す"]):
+            return fallback_responses["conversation"]
+        else:
+            return fallback_responses["default"]
 
-        if any(word in message for word in positive_indicators):
-            analysis['sentiment'] = 'positive'
-            analysis['encouragement_needed'] = 3
-        elif any(word in message for word in negative_indicators):
-            analysis['sentiment'] = 'negative'
-            analysis['encouragement_needed'] = 9
-        elif any(word in message for word in excited_indicators):
-            analysis['sentiment'] = 'excited'
-            analysis['encouragement_needed'] = 2
+    def _get_error_response(self, error: str) -> str:
+        """错误回复"""
+        return f"""ありゃりゃ〜、何か変だね。ちょっと待ってて！
 
-        # 话题类型识别
-        if '？' in message or '?' in message:
-            analysis['topic_type'] = 'question'
-        elif analysis['has_japanese'] and not analysis['has_english']:
-            analysis['topic_type'] = 'japanese_practice'
-        elif analysis['has_english'] and not analysis['has_japanese']:
-            analysis['topic_type'] = 'english_input'
-        elif '文化' in message or '日本' in message:
-            analysis['topic_type'] = 'culture'
-        elif any(word in message for word in ['勉強', '学習', '練習', '覚える']):
-            analysis['topic_type'] = 'learning'
+哎呀～，好像有什么问题呢。稍等一下！
 
-        # 检测现代日语表达
-        for modern_word in self.modern_japanese_tips.keys():
-            if modern_word in message:
-                analysis['modern_expressions'].append(modern_word)
+でも大丈夫！小美がいるから、一緒に解決しよう♪
+不过没关系！有小美在呢，我们一起解决吧♪
 
-        return analysis
+エラーの間に、こんなことしてみない？：
+在等待的时候，要不要试试这些：
+1. 简单的日语自我介绍
+2. 说说今天发生的事情
+3. 聊聊喜欢的日本文化
 
-    def _generate_greeting_response(self) -> str:
-        """生成问候响应"""
-        greetings = [
-            "こんにちは〜！今日も元気だね〜✨",
-            "やあ〜！会えて嬉しい😊 今日はどんな感じ？",
-            "おはよう〜！今日も日本語頑張ろうね💪",
-            "こんにちは！何か面白いことあった？🌟",
-            "ハーイ〜！今日の気分はどう？😄"
-        ]
-        return random.choice(greetings)
+【错误信息】{error[:100]}"""
 
-    def _generate_praise_response(self, message: str, analysis: Dict[str, Any]) -> str:
-        """生成表扬响应"""
-        response_parts = []
+    def _extract_learning_points(self, user_message: str, response: str) -> List[str]:
+        """从对话中提取学习要点"""
+        learning_points = []
 
-        # 初始反应
-        enthusiastic_reactions = [
-            "わあ〜！すごいじゃん✨",
-            "いいね〜！素晴らしい🌟",
-            "やったね〜！最高だよ💕",
-            "すごい〜！感動した😍",
-            "素敵〜！上手になってるよ〜🎉"
-        ]
-        response_parts.append(random.choice(enthusiastic_reactions))
+        # 检测口语化表达
+        casual_patterns = ["だよ", "だね", "よね", "ちゃった", "じゃん", "っぽい"]
+        for pattern in casual_patterns:
+            if pattern in user_message or pattern in response:
+                learning_points.append(f"口语表达: {pattern}")
 
-        # 具体表扬
-        if analysis['has_japanese']:
-            specific_praise = [
-                f"「{message}」って表現、めっちゃ自然だよ〜！",
-                f"日本語で「{message}」って言えるの、すごいよね！",
-                f"その「{message}」っていう言い方、完璧だよ〜！",
-                "日本語がどんどん上手になってるね〜！"
-            ]
-            response_parts.append(random.choice(specific_praise))
+        # 检测年轻人用语
+        youth_patterns = ["超", "やばい", "マジ", "すげー", "めっちゃ"]
+        for pattern in youth_patterns:
+            if pattern in user_message or pattern in response:
+                learning_points.append(f"年轻人用语: {pattern}")
 
-        # 现代日语小贴士
-        if random.random() < 0.7:  # 70%概率提供现代用语
-            modern_tips = [
-                "ちなみに今の若者は「マジで上手！」とかも言うよ〜",
-                "「エモい表現だね〜」って言い方も流行ってるよ！",
-                "SNSだと「これは映える日本語！」とかも言うかも✨",
-                "友達だったら「推せる日本語だよ〜」って言っちゃうかも😄"
-            ]
-            response_parts.append(random.choice(modern_tips))
+        # 通用学习点
+        if not learning_points:
+            learning_points.append("日常对话练习")
 
-        # 励まし
-        response_parts.append(random.choice(self.encouragements))
+        return learning_points[:3]
 
-        return " ".join(response_parts)
-
-    def _generate_encouragement_response(self, message: str, analysis: Dict[str, Any]) -> str:
-        """生成鼓励响应"""
-        response_parts = []
-
-        # 共情表达
-        empathy_expressions = [
-            "わかるよ〜😌",
-            "そっかあ...でも大丈夫だよ〜",
-            "うんうん、その気持ちわかる〜",
-            "みんな最初はそうだよ〜！",
-            "全然問題ないよ〜！"
-        ]
-        response_parts.append(random.choice(empathy_expressions))
-
-        # 具体鼓励
-        if analysis['topic_type'] == 'learning':
-            learning_encouragement = [
-                "日本語って最初は難しく感じるけど、慣れてくると楽しいよ〜！",
-                "私も最初は方言と標準語でめっちゃ混乱した😅 でも大丈夫！",
-                "一歩ずつ進めばいいよ〜！完璧を目指さなくても大丈夫💪",
-                "間違えることが一番の勉強になるからね〜！"
-            ]
-            response_parts.append(random.choice(learning_encouragement))
-
-        # 解决方案提案
-        helpful_suggestions = [
-            "一緒に練習しよう〜！私がサポートするから安心して🌟",
-            "分からないことがあったら何でも聞いて！説明するの大好きだから😊",
-            "少しずつでいいから、毎日続けることが大事だよ〜✨",
-            "楽しく学ぶのが一番！プレッシャーを感じないでね💕"
-        ]
-        response_parts.append(random.choice(helpful_suggestions))
-
-        return " ".join(response_parts)
-
-    def _generate_english_response(self, message: str) -> str:
-        """对英语输入的响应"""
-        friendly_redirects = [
-            "Oh, English! Cool〜 でも、せっかくだから日本語でも話してみない？😊",
-            "English is nice, but let's try Japanese too! 日本語で言ってみて〜✨",
-            "I can understand English, でも日本語の練習をしよう〜！How do you say that in Japanese? 🤔",
-            "Thanks for the English! Now let's challenge ourselves with Japanese〜 日本語だとどう言うかな？💪"
-        ]
-        return random.choice(friendly_redirects)
-
-    def _generate_culture_response(self, message: str) -> str:
-        """文化相关话题响应"""
-        culture_responses = [
-            "日本の文化について聞いてくれてありがとう〜！めっちゃ興味深いトピックだね✨",
-            "わあ〜文化の話だ！私も詳しく知りたいな〜。一緒に調べてみよう🌸",
-            "日本の文化って本当に奥が深いよね〜！どの部分が特に気になる？😊",
-            "文化の違いって面白いよね〜！私の世代の視点でも話せるかも💕"
+    def _generate_suggestions(self, message: str) -> List[str]:
+        """生成学习建议"""
+        suggestions = [
+            "多和朋友练习日语对话",
+            "看日本动漫学习自然表达",
+            "不要怕犯错，大胆开口说"
         ]
 
-        modern_culture_tips = [
-            "今の日本の若者文化だと、アニメやゲームの影響もすごく大きいよ〜",
-            "SNSの影響で、伝統文化と現代文化が混ざってる感じ！",
-            "K-POPとかも人気で、韓国語混じりの日本語も使ったりするよ〜",
-            "インスタとかTikTokで新しい文化がどんどん生まれてる感じ！"
-        ]
+        # 根据消息内容提供针对性建议
+        if any(word in message for word in ["動漫", "アニメ", "漫画"]):
+            suggestions.append("通过动漫学习日语很有效哦")
 
-        response = random.choice(culture_responses)
-        if random.random() < 0.6:  # 60%概率添加现代文化视角
-            response += " " + random.choice(modern_culture_tips)
+        if any(word in message for word in ["友達", "朋友", "同学"]):
+            suggestions.append("和朋友用日语聊天是最好的练习")
 
-        return response
-
-    def _generate_question_response(self, message: str, analysis: Dict[str, Any]) -> str:
-        """回答问题"""
-        question_responses = [
-            "いい質問だね〜！一緒に考えてみよう✨",
-            "おお〜気になることがあるんだね！教えてあげる〜😊",
-            "質問大歓迎！説明するの大好きだから〜💕",
-            "へえ〜そんなこと知りたいんだ！面白い質問だね🌟"
-        ]
-
-        response = random.choice(question_responses)
-
-        # 根据问题类型给出具体帮助
-        if '文法' in message or 'grammar' in message.lower():
-            response += " 文法については田中先生の方が詳しいけど、私は現代的な使い方を教えられるよ〜！"
-        elif '単語' in message or 'vocabulary' in message.lower():
-            response += " 単語なら任せて！特に今どきの若者言葉とか得意だよ〜🎯"
-        elif '文化' in message:
-            response += " 文化のことなら、私の世代の視点で説明できるよ〜！"
-
-        return response
+        return suggestions[:2]
