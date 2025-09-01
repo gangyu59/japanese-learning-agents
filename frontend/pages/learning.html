@@ -1,3 +1,340 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="zh-CN">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>日语学习 - Learning Page</title>-->
+<!--    <style>-->
+<!--        * {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            box-sizing: border-box;-->
+<!--        }-->
+
+<!--        body {-->
+<!--            font-family: 'Microsoft YaHei', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;-->
+<!--            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);-->
+<!--            min-height: 100vh;-->
+<!--            color: #333;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            max-width: 1200px;-->
+<!--            margin: 0 auto;-->
+<!--            padding: 20px;-->
+<!--        }-->
+
+<!--        .header {-->
+<!--            background: rgba(255, 255, 255, 0.95);-->
+<!--            backdrop-filter: blur(10px);-->
+<!--            border-radius: 20px;-->
+<!--            padding: 30px;-->
+<!--            margin-bottom: 30px;-->
+<!--            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .header h1 {-->
+<!--            font-size: 2.5em;-->
+<!--            background: linear-gradient(45deg, #667eea, #764ba2);-->
+<!--            -webkit-background-clip: text;-->
+<!--            -webkit-text-fill-color: transparent;-->
+<!--            margin-bottom: 10px;-->
+<!--        }-->
+
+<!--        .header p {-->
+<!--            color: #666;-->
+<!--            font-size: 1.1em;-->
+<!--        }-->
+
+<!--        .main-content {-->
+<!--            display: grid;-->
+<!--            grid-template-columns: 1fr 300px;-->
+<!--            gap: 30px;-->
+<!--        }-->
+
+<!--        .chat-area {-->
+<!--            background: rgba(255, 255, 255, 0.95);-->
+<!--            border-radius: 20px;-->
+<!--            padding: 25px;-->
+<!--            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);-->
+<!--            min-height: 600px;-->
+<!--            display: flex;-->
+<!--            flex-direction: column;-->
+<!--        }-->
+
+<!--        .agents-panel {-->
+<!--            background: rgba(255, 255, 255, 0.95);-->
+<!--            border-radius: 20px;-->
+<!--            padding: 25px;-->
+<!--            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);-->
+<!--            height: fit-content;-->
+<!--        }-->
+
+<!--        .agents-title {-->
+<!--            font-size: 1.3em;-->
+<!--            margin-bottom: 20px;-->
+<!--            color: #2c3e50;-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .agent-card {-->
+<!--            background: #f8f9fa;-->
+<!--            border-radius: 15px;-->
+<!--            padding: 15px;-->
+<!--            margin-bottom: 15px;-->
+<!--            cursor: pointer;-->
+<!--            transition: all 0.3s ease;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            gap: 15px;-->
+<!--        }-->
+
+<!--        .agent-card:hover {-->
+<!--            background: #e9ecef;-->
+<!--            transform: translateY(-2px);-->
+<!--            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
+
+<!--        .agent-avatar {-->
+<!--            width: 50px;-->
+<!--            height: 50px;-->
+<!--            border-radius: 50%;-->
+<!--            display: flex;-->
+<!--            align-items: center;-->
+<!--            justify-content: center;-->
+<!--            color: white;-->
+<!--            font-weight: bold;-->
+<!--            font-size: 18px;-->
+<!--        }-->
+
+<!--        .tanaka { background: linear-gradient(45deg, #2196F3, #1976D2); }-->
+<!--        .koumi { background: linear-gradient(45deg, #E91E63, #C2185B); }-->
+<!--        .ai { background: linear-gradient(45deg, #9C27B0, #7B1FA2); }-->
+
+<!--        .agent-info {-->
+<!--            flex: 1;-->
+<!--        }-->
+
+<!--        .agent-name {-->
+<!--            font-weight: 600;-->
+<!--            margin-bottom: 3px;-->
+<!--            color: #2c3e50;-->
+<!--        }-->
+
+<!--        .agent-role {-->
+<!--            font-size: 0.9em;-->
+<!--            color: #666;-->
+<!--        }-->
+
+<!--        .chat-messages {-->
+<!--            flex: 1;-->
+<!--            overflow-y: auto;-->
+<!--            margin-bottom: 20px;-->
+<!--            padding: 20px;-->
+<!--            background: #f8f9fa;-->
+<!--            border-radius: 15px;-->
+<!--            min-height: 400px;-->
+<!--        }-->
+
+<!--        .message {-->
+<!--            margin-bottom: 15px;-->
+<!--            padding: 15px;-->
+<!--            border-radius: 15px;-->
+<!--            max-width: 80%;-->
+<!--        }-->
+
+<!--        .user-message {-->
+<!--            background: #667eea;-->
+<!--            color: white;-->
+<!--            margin-left: auto;-->
+<!--        }-->
+
+<!--        .agent-message {-->
+<!--            background: white;-->
+<!--            border: 1px solid #e9ecef;-->
+<!--        }-->
+
+<!--        .chat-input {-->
+<!--            display: flex;-->
+<!--            gap: 10px;-->
+<!--        }-->
+
+<!--        .input-field {-->
+<!--            flex: 1;-->
+<!--            padding: 12px 15px;-->
+<!--            border: 2px solid #e9ecef;-->
+<!--            border-radius: 25px;-->
+<!--            font-size: 16px;-->
+<!--        }-->
+
+<!--        .send-button {-->
+<!--            padding: 12px 20px;-->
+<!--            background: linear-gradient(45deg, #667eea, #764ba2);-->
+<!--            color: white;-->
+<!--            border: none;-->
+<!--            border-radius: 25px;-->
+<!--            cursor: pointer;-->
+<!--            font-size: 16px;-->
+<!--        }-->
+
+<!--        .send-button:hover {-->
+<!--            transform: translateY(-2px);-->
+<!--            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);-->
+<!--        }-->
+
+<!--        @media (max-width: 768px) {-->
+<!--            .main-content {-->
+<!--                grid-template-columns: 1fr;-->
+<!--            }-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div class="container">-->
+<!--        <div class="header">-->
+<!--            <h1>📚 日语学习系统</h1>-->
+<!--            <p>与智能体老师一起学习日语</p>-->
+<!--        </div>-->
+
+<!--        <div class="main-content">-->
+<!--            <div class="chat-area">-->
+<!--                <div class="chat-messages" id="chatMessages">-->
+<!--                    <div class="message agent-message">-->
+<!--                        <strong>田中先生：</strong> こんにちは！日本語の勉強を始めましょう！-->
+<!--                    </div>-->
+<!--                    <div class="message user-message">-->
+<!--                        你好！我想学习日语基础语法-->
+<!--                    </div>-->
+<!--                    <div class="message agent-message">-->
+<!--                        <strong>田中先生：</strong> 很好！我们从最基础的「です・ます」敬语开始。这是日语中最重要的礼貌表达方式。-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div class="chat-input">-->
+<!--                    <input type="text" class="input-field" placeholder="输入您的消息..." id="messageInput">-->
+<!--                    <button class="send-button" onclick="sendMessage()">发送</button>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="agents-panel">-->
+<!--                <h3 class="agents-title">选择智能体老师</h3>-->
+
+<!--                <div class="agent-card" onclick="selectAgent('tanaka')">-->
+<!--                    <div class="agent-avatar tanaka">田</div>-->
+<!--                    <div class="agent-info">-->
+<!--                        <div class="agent-name">田中先生</div>-->
+<!--                        <div class="agent-role">语法专家</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div class="agent-card" onclick="selectAgent('koumi')">-->
+<!--                    <div class="agent-avatar koumi">美</div>-->
+<!--                    <div class="agent-info">-->
+<!--                        <div class="agent-name">小美</div>-->
+<!--                        <div class="agent-role">对话伙伴</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--                <div class="agent-card" onclick="selectAgent('ai')">-->
+<!--                    <div class="agent-avatar ai">AI</div>-->
+<!--                    <div class="agent-info">-->
+<!--                        <div class="agent-name">アイ助手</div>-->
+<!--                        <div class="agent-role">学习分析</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script>-->
+<!--        let currentAgent = 'tanaka';-->
+
+<!--        function selectAgent(agentId) {-->
+<!--            currentAgent = agentId;-->
+
+<!--            const agents = {-->
+<!--                'tanaka': '田中先生',-->
+<!--                'koumi': '小美',-->
+<!--                'ai': 'アイ助手'-->
+<!--            };-->
+
+<!--            showNotification(`已选择 ${agents[agentId]} 作为对话对象`);-->
+<!--        }-->
+
+<!--        function sendMessage() {-->
+<!--            const input = document.getElementById('messageInput');-->
+<!--            const message = input.value.trim();-->
+
+<!--            if (message) {-->
+<!--                addMessage(message, 'user');-->
+<!--                input.value = '';-->
+
+<!--                // 模拟智能体回复-->
+<!--                setTimeout(() => {-->
+<!--                    const responses = [-->
+<!--                        '很好的问题！让我来详细解释...',-->
+<!--                        '这个语法点确实比较难，我们一步步学习',-->
+<!--                        'あなたの日本語はとても上手ですね！',-->
+<!--                        '我建议您多练习这类句型'-->
+<!--                    ];-->
+<!--                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];-->
+<!--                    addMessage(randomResponse, 'agent');-->
+<!--                }, 1000);-->
+<!--            }-->
+<!--        }-->
+
+<!--        function addMessage(content, sender) {-->
+<!--            const chatMessages = document.getElementById('chatMessages');-->
+<!--            const messageDiv = document.createElement('div');-->
+<!--            messageDiv.className = `message ${sender}-message`;-->
+
+<!--            if (sender === 'agent') {-->
+<!--                const agents = {-->
+<!--                    'tanaka': '田中先生',-->
+<!--                    'koumi': '小美',-->
+<!--                    'ai': 'アイ助手'-->
+<!--                };-->
+<!--                messageDiv.innerHTML = `<strong>${agents[currentAgent]}：</strong> ${content}`;-->
+<!--            } else {-->
+<!--                messageDiv.textContent = content;-->
+<!--            }-->
+
+<!--            chatMessages.appendChild(messageDiv);-->
+<!--            chatMessages.scrollTop = chatMessages.scrollHeight;-->
+<!--        }-->
+
+<!--        function showNotification(message) {-->
+<!--            const notification = document.createElement('div');-->
+<!--            notification.style.cssText = `-->
+<!--                position: fixed;-->
+<!--                top: 20px;-->
+<!--                right: 20px;-->
+<!--                padding: 15px 25px;-->
+<!--                background: #667eea;-->
+<!--                color: white;-->
+<!--                border-radius: 10px;-->
+<!--                box-shadow: 0 5px 15px rgba(0,0,0,0.3);-->
+<!--                z-index: 10000;-->
+<!--            `;-->
+<!--            notification.textContent = message;-->
+
+<!--            document.body.appendChild(notification);-->
+
+<!--            setTimeout(() => notification.remove(), 3000);-->
+<!--        }-->
+
+<!--        // 回车发送消息-->
+<!--        document.getElementById('messageInput').addEventListener('keypress', function(e) {-->
+<!--            if (e.key === 'Enter') {-->
+<!--                sendMessage();-->
+<!--            }-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -88,12 +425,28 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            border: 2px solid transparent;
+            position: relative;
         }
 
         .agent-card:hover {
             background: #e9ecef;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .agent-card.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .agent-card.active::after {
+            content: '✓';
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            color: #667eea;
+            font-weight: bold;
         }
 
         .agent-avatar {
@@ -111,6 +464,9 @@
         .tanaka { background: linear-gradient(45deg, #2196F3, #1976D2); }
         .koumi { background: linear-gradient(45deg, #E91E63, #C2185B); }
         .ai { background: linear-gradient(45deg, #9C27B0, #7B1FA2); }
+        .yamada { background: linear-gradient(45deg, #FF9800, #F57C00); }
+        .sato { background: linear-gradient(45deg, #4CAF50, #388E3C); }
+        .membot { background: linear-gradient(45deg, #607D8B, #455A64); }
 
         .agent-info {
             flex: 1;
@@ -125,6 +481,11 @@
         .agent-role {
             font-size: 0.9em;
             color: #666;
+        }
+
+        .agent-emotion {
+            font-size: 1.2em;
+            margin-left: auto;
         }
 
         .chat-messages {
@@ -142,17 +503,64 @@
             padding: 15px;
             border-radius: 15px;
             max-width: 80%;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .user-message {
             background: #667eea;
             color: white;
             margin-left: auto;
+            border-radius: 15px 15px 5px 15px;
         }
 
         .agent-message {
             background: white;
             border: 1px solid #e9ecef;
+            border-radius: 15px 15px 15px 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .agent-avatar-small {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 8px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .learning-points {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f0f8ff;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .suggestions {
+            margin-top: 8px;
+            padding: 8px;
+            background: #f0fff0;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+            font-size: 0.9em;
         }
 
         .chat-input {
@@ -166,6 +574,12 @@
             border: 2px solid #e9ecef;
             border-radius: 25px;
             font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
         }
 
         .send-button {
@@ -176,11 +590,38 @@
             border-radius: 25px;
             cursor: pointer;
             font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 60px;
         }
 
         .send-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         @media (max-width: 768px) {
@@ -194,93 +635,200 @@
     <div class="container">
         <div class="header">
             <h1>📚 日语学习系统</h1>
-            <p>与智能体老师一起学习日语</p>
+            <p>与AI智能体老师一起学习日语</p>
         </div>
 
         <div class="main-content">
             <div class="chat-area">
                 <div class="chat-messages" id="chatMessages">
                     <div class="message agent-message">
-                        <strong>田中先生：</strong> こんにちは！日本語の勉強を始めましょう！
-                    </div>
-                    <div class="message user-message">
-                        你好！我想学习日语基础语法
-                    </div>
-                    <div class="message agent-message">
-                        <strong>田中先生：</strong> 很好！我们从最基础的「です・ます」敬语开始。这是日语中最重要的礼貌表达方式。
+                        <div class="agent-header">
+                            <div class="agent-avatar-small tanaka">田</div>
+                            <span>田中先生：</span>
+                            <span class="agent-emotion">😊</span>
+                        </div>
+                        <div>こんにちは！日本語の勉強を始めましょう！我是田中老师，专门负责语法教学。请选择您想要激活的智能体老师们。</div>
                     </div>
                 </div>
 
                 <div class="chat-input">
                     <input type="text" class="input-field" placeholder="输入您的消息..." id="messageInput">
-                    <button class="send-button" onclick="sendMessage()">发送</button>
+                    <button class="send-button" onclick="sendMessage()" id="sendButton">发送</button>
                 </div>
             </div>
 
             <div class="agents-panel">
                 <h3 class="agents-title">选择智能体老师</h3>
 
-                <div class="agent-card" onclick="selectAgent('tanaka')">
+                <div class="agent-card" onclick="selectAgent('tanaka')" id="card-tanaka">
                     <div class="agent-avatar tanaka">田</div>
                     <div class="agent-info">
                         <div class="agent-name">田中先生</div>
                         <div class="agent-role">语法专家</div>
                     </div>
+                    <div class="agent-emotion" id="emotion-tanaka">😐</div>
                 </div>
 
-                <div class="agent-card" onclick="selectAgent('koumi')">
+                <div class="agent-card" onclick="selectAgent('koumi')" id="card-koumi">
                     <div class="agent-avatar koumi">美</div>
                     <div class="agent-info">
                         <div class="agent-name">小美</div>
                         <div class="agent-role">对话伙伴</div>
                     </div>
+                    <div class="agent-emotion" id="emotion-koumi">😊</div>
                 </div>
 
-                <div class="agent-card" onclick="selectAgent('ai')">
+                <div class="agent-card" onclick="selectAgent('ai')" id="card-ai">
                     <div class="agent-avatar ai">AI</div>
                     <div class="agent-info">
                         <div class="agent-name">アイ助手</div>
-                        <div class="agent-role">学习分析</div>
+                        <div class="agent-role">数据分析师</div>
                     </div>
+                    <div class="agent-emotion" id="emotion-ai">🔍</div>
+                </div>
+
+                <div class="agent-card" onclick="selectAgent('yamada')" id="card-yamada">
+                    <div class="agent-avatar yamada">山</div>
+                    <div class="agent-info">
+                        <div class="agent-name">山田先生</div>
+                        <div class="agent-role">文化专家</div>
+                    </div>
+                    <div class="agent-emotion" id="emotion-yamada">😌</div>
+                </div>
+
+                <div class="agent-card" onclick="selectAgent('sato')" id="card-sato">
+                    <div class="agent-avatar sato">佐</div>
+                    <div class="agent-info">
+                        <div class="agent-name">佐藤教练</div>
+                        <div class="agent-role">考试专家</div>
+                    </div>
+                    <div class="agent-emotion" id="emotion-sato">💪</div>
+                </div>
+
+                <div class="agent-card" onclick="selectAgent('membot')" id="card-membot">
+                    <div class="agent-avatar membot">M</div>
+                    <div class="agent-info">
+                        <div class="agent-name">MemBot</div>
+                        <div class="agent-role">记忆管家</div>
+                    </div>
+                    <div class="agent-emotion" id="emotion-membot">🧠</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let currentAgent = 'tanaka';
+        const API_BASE_URL = 'http://localhost:8000';
+
+        const agents = {
+            'tanaka': { name: '田中先生', role: '语法专家', emotions: ['😐', '🤔', '😤', '😊', '👍'] },
+            'koumi': { name: '小美', role: '对话伙伴', emotions: ['😊', '😄', '🤗', '😆', '💕'] },
+            'ai': { name: 'アイ助手', role: '数据分析师', emotions: ['🔍', '📊', '💡', '⚡', '🎯'] },
+            'yamada': { name: '山田先生', role: '文化专家', emotions: ['😌', '🎎', '⛩️', '🍃', '📿'] },
+            'sato': { name: '佐藤教练', role: '考试专家', emotions: ['🎯', '💪', '📈', '⏰', '🏆'] },
+            'membot': { name: 'MemBot', role: '记忆管家', emotions: ['🧠', '📚', '⏰', '💾', '📈'] }
+        };
+
+        let currentAgents = new Set();
+        let sessionId = 'session_' + Date.now();
+        let isProcessing = false;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        });
 
         function selectAgent(agentId) {
-            currentAgent = agentId;
+            const card = document.getElementById(`card-${agentId}`);
 
-            const agents = {
-                'tanaka': '田中先生',
-                'koumi': '小美',
-                'ai': 'アイ助手'
-            };
-
-            showNotification(`已选择 ${agents[agentId]} 作为对话对象`);
+            if (currentAgents.has(agentId)) {
+                currentAgents.delete(agentId);
+                card.classList.remove('active');
+                showNotification(`${agents[agentId].name} 已停用`);
+            } else {
+                currentAgents.add(agentId);
+                card.classList.add('active');
+                showNotification(`${agents[agentId].name} 已激活`);
+                addAgentMessage(agentId, `こんにちは！${agents[agentId].name}です。よろしくお願いします！`, [], [], getRandomEmotion(agentId));
+            }
         }
 
-        function sendMessage() {
+        async function sendMessage() {
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
 
-            if (message) {
-                addMessage(message, 'user');
-                input.value = '';
+            if (!message || isProcessing) return;
 
-                // 模拟智能体回复
-                setTimeout(() => {
-                    const responses = [
-                        '很好的问题！让我来详细解释...',
-                        '这个语法点确实比较难，我们一步步学习',
-                        'あなたの日本語はとても上手ですね！',
-                        '我建议您多练习这类句型'
-                    ];
-                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                    addMessage(randomResponse, 'agent');
-                }, 1000);
+            if (currentAgents.size === 0) {
+                showNotification('请先选择至少一个智能体老师！');
+                return;
+            }
+
+            addMessage(message, 'user');
+            input.value = '';
+            setProcessing(true);
+
+            try {
+                await processMessageWithAPI(message);
+            } catch (error) {
+                console.error('消息处理错误:', error);
+                addSystemMessage('抱歉，系统出现错误，请稍后重试。');
+            } finally {
+                setProcessing(false);
+            }
+        }
+
+        async function processMessageWithAPI(userMessage) {
+            const activeAgentsList = Array.from(currentAgents);
+
+            for (const [idx, agentId] of activeAgentsList.entries()) {
+                try {
+                    if (idx > 0) {
+                        await new Promise(resolve => setTimeout(resolve, 1500));
+                    }
+
+                    const requestBody = {
+                        message: String(userMessage),
+                        user_id: 'demo_user',
+                        session_id: sessionId,
+                        agent_name: agents[agentId].name,
+                        scene_context: 'general'
+                    };
+
+                    console.log(`发送给 ${agents[agentId].name}:`, requestBody);
+
+                    const response = await fetch(`${API_BASE_URL}/api/v1/chat/send`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json; charset=utf-8',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log(`${agents[agentId].name} 响应:`, data);
+
+                        if (data.success && data.response) {
+                            const emotion = data.emotion || getRandomEmotion(agentId);
+                            updateAgentEmotion(agentId, emotion);
+                            addAgentMessage(agentId, data.response, data.learning_points || [], data.suggestions || [], emotion);
+                        } else {
+                            addAgentMessage(agentId, data.response || '抱歉，我无法理解您的问题。', [], [], '😅');
+                        }
+                    } else {
+                        console.error(`API请求失败 (${agents[agentId].name}):`, response.status);
+                        addAgentMessage(agentId, '抱歉，我现在无法回答，请稍后再试。', [], [], '😵');
+                    }
+                } catch (error) {
+                    console.error(`请求 ${agents[agentId].name} 时出错:`, error);
+                    addAgentMessage(agentId, '连接出现问题，请检查网络连接。', [], [], '😵');
+                }
             }
         }
 
@@ -288,20 +836,86 @@
             const chatMessages = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}-message`;
+            messageDiv.textContent = content;
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+        }
 
-            if (sender === 'agent') {
-                const agents = {
-                    'tanaka': '田中先生',
-                    'koumi': '小美',
-                    'ai': 'アイ助手'
-                };
-                messageDiv.innerHTML = `<strong>${agents[currentAgent]}：</strong> ${content}`;
-            } else {
-                messageDiv.textContent = content;
+        function addAgentMessage(agentId, content, learningPoints, suggestions, emotion) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message agent-message';
+
+            let html = `
+                <div class="agent-header">
+                    <div class="agent-avatar-small ${agentId}">${getAgentAvatar(agentId)}</div>
+                    <span>${agents[agentId].name}：</span>
+                    <span class="agent-emotion">${emotion}</span>
+                </div>
+                <div>${content}</div>
+            `;
+
+            if (learningPoints && learningPoints.length > 0) {
+                html += `<div class="learning-points"><strong>📚 学习点：</strong> ${learningPoints.join(' • ')}</div>`;
             }
 
+            if (suggestions && suggestions.length > 0) {
+                html += `<div class="suggestions"><strong>💡 建议：</strong> ${suggestions.join(' • ')}</div>`;
+            }
+
+            messageDiv.innerHTML = html;
             chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            scrollToBottom();
+        }
+
+        function addSystemMessage(content) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message agent-message';
+            messageDiv.innerHTML = `
+                <div class="agent-header">
+                    <span style="color: #666;">🔔 系统：</span>
+                </div>
+                <div>${content}</div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function getAgentAvatar(agentId) {
+            const avatars = {
+                'tanaka': '田', 'koumi': '美', 'ai': 'AI',
+                'yamada': '山', 'sato': '佐', 'membot': 'M'
+            };
+            return avatars[agentId] || '?';
+        }
+
+        function updateAgentEmotion(agentId, emotion) {
+            const emotionElement = document.getElementById(`emotion-${agentId}`);
+            if (emotionElement) {
+                emotionElement.textContent = emotion;
+            }
+        }
+
+        function getRandomEmotion(agentId) {
+            const emotions = agents[agentId].emotions;
+            return emotions[Math.floor(Math.random() * emotions.length)];
+        }
+
+        function setProcessing(processing) {
+            isProcessing = processing;
+            const sendButton = document.getElementById('sendButton');
+            const input = document.getElementById('messageInput');
+
+            if (processing) {
+                sendButton.innerHTML = '<div class="loading"></div>';
+                sendButton.disabled = true;
+                input.disabled = true;
+            } else {
+                sendButton.innerHTML = '发送';
+                sendButton.disabled = false;
+                input.disabled = false;
+            }
         }
 
         function showNotification(message) {
@@ -316,20 +930,17 @@
                 border-radius: 10px;
                 box-shadow: 0 5px 15px rgba(0,0,0,0.3);
                 z-index: 10000;
+                animation: slideIn 0.3s ease-out;
             `;
             notification.textContent = message;
-
             document.body.appendChild(notification);
-
             setTimeout(() => notification.remove(), 3000);
         }
 
-        // 回车发送消息
-        document.getElementById('messageInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
     </script>
 </body>
 </html>
