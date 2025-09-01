@@ -134,26 +134,102 @@ class ServiceManager:
             except Exception as e:
                 print_colored(f"⚠️ 终止进程时出错: {e}", Colors.YELLOW)
 
-    def start_backend(self):
-        """启动后端服务"""
-        print_colored("🚀 启动后端API服务...", Colors.BLUE)
-        print_colored("💡 请在新的命令行窗口中手动运行以下命令：", Colors.YELLOW)
-        print_colored("   python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload", Colors.CYAN + Colors.BOLD)
-        print_colored("⏳ 等待您手动启动后端服务...", Colors.BLUE)
+    # def start_backend(self):
+    #     """启动后端服务"""
+    #     print_colored("🚀 启动后端API服务...", Colors.BLUE)
+    #     print_colored("💡 请在新的命令行窗口中手动运行以下命令：", Colors.YELLOW)
+    #     print_colored("   python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload", Colors.CYAN + Colors.BOLD)
+    #     print_colored("⏳ 等待您手动启动后端服务...", Colors.BLUE)
+    #
+    #     backend_port = 8000
+    #
+    #     # 等待用户手动启动后端
+    #     for i in range(30):  # 等待30秒
+    #         if check_port(backend_port):
+    #             print_colored(f"✅ 检测到后端服务: http://localhost:{backend_port}", Colors.GREEN)
+    #             return True, backend_port
+    #         time.sleep(1)
+    #         if i % 5 == 0:  # 每5秒提醒一次
+    #             print_colored(f"⏳ 还在等待后端启动... ({30 - i}秒)", Colors.BLUE)
+    #
+    #     print_colored("⚠️ 未检测到后端服务，前端将以模拟模式运行", Colors.YELLOW)
+    #     return False, backend_port
 
-        backend_port = 8000
+    def start_backend(self, port: int = 8000):
+        """自动启动后端服务（稳健版）"""
+        print_colored("🚀 启动后端API服务（自动）...", Colors.BLUE)
 
-        # 等待用户手动启动后端
-        for i in range(30):  # 等待30秒
-            if check_port(backend_port):
-                print_colored(f"✅ 检测到后端服务: http://localhost:{backend_port}", Colors.GREEN)
-                return True, backend_port
-            time.sleep(1)
-            if i % 5 == 0:  # 每5秒提醒一次
-                print_colored(f"⏳ 还在等待后端启动... ({30 - i}秒)", Colors.BLUE)
+        import http.client
+        import contextlib
 
-        print_colored("⚠️ 未检测到后端服务，前端将以模拟模式运行", Colors.YELLOW)
-        return False, backend_port
+        def http_ready():
+            # 优先探测 /health，其次 /docs
+            for path in ["/health", "/docs", "/openapi.json", "/"]:
+                try:
+                    conn = http.client.HTTPConnection("127.0.0.1", port, timeout=1.5)
+                    conn.request("GET", path)
+                    resp = conn.getresponse()
+                    if 200 <= resp.status < 500:
+                        return True
+                except Exception:
+                    pass
+                finally:
+                    with contextlib.suppress(Exception):
+                        conn.close()
+            return False
+
+        if check_port(port) or http_ready():
+            print_colored(f"✅ 检测到已有后端服务: http://localhost:{port}", Colors.GREEN)
+            return True, port
+
+        # 两套启动参数：先稳定版（无 --reload），失败再尝试带 --reload
+        candidate_cmds = [
+            [sys.executable, "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", str(port)],
+            [sys.executable, "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", str(port), "--reload"],
+        ]
+
+        for idx, cmd in enumerate(candidate_cmds, start=1):
+            mode = "稳定模式" if "--reload" not in cmd else "开发热重载模式"
+            print_colored(f"⏳ 正在拉起后端（{mode}）: {' '.join(cmd)}", Colors.BLUE)
+
+            try:
+                # 关键点：不再用 PIPE，直接继承父进程的 stdout/stderr，避免卡死
+                proc = subprocess.Popen(cmd, creationflags=0)
+                self.processes.append(proc)
+
+                # 等待就绪（最多 90 秒），期间若进程退出则立即失败并切换下一种模式
+                for sec in range(90):
+                    if http_ready() or check_port(port):
+                        print_colored(f"✅ 后端已就绪: http://localhost:{port}", Colors.GREEN)
+                        return True, port
+                    if proc.poll() is not None:
+                        print_colored("❌ 后端进程提前退出（请查看上方 Uvicorn 日志）", Colors.RED)
+                        break
+                    if sec % 10 == 0:
+                        print_colored(f"⏳ 等待后端启动中...（剩余 {90 - sec} 秒）", Colors.BLUE)
+                    time.sleep(1)
+
+                # 这一种模式超时/失败，先杀掉，再试下一种
+                try:
+                    proc.terminate()
+                    proc.wait(timeout=5)
+                except Exception:
+                    with contextlib.suppress(Exception):
+                        proc.kill()
+
+                if idx < len(candidate_cmds):
+                    print_colored("🔁 切换另一种启动模式重试...", Colors.YELLOW)
+
+            except FileNotFoundError:
+                print_colored("❌ 未找到 uvicorn，可执行: pip install uvicorn", Colors.RED)
+                return False, port
+            except Exception as e:
+                print_colored(f"❌ 启动后端失败: {e}", Colors.RED)
+                # 尝试下一种模式
+                continue
+
+        print_colored("⚠️ 后端启动失败，请查看上方 Uvicorn 输出诊断", Colors.YELLOW)
+        return False, port
 
     def start_frontend(self):
         """启动前端服务"""
