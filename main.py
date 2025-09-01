@@ -10,6 +10,7 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 from datetime import datetime
 from typing import Dict, List, Any, Optional
+
 from pydantic import BaseModel
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
@@ -26,6 +27,26 @@ from utils.llm_client import get_llm_client
 
 # 首先设置日志和创建logger
 from utils.logger import setup_logging
+
+import logging
+logger = logging.getLogger(__name__)
+
+# 导入智能体系统（全部真实类）
+AGENTS_AVAILABLE = False
+try:
+    from src.core.agents.core_agents.tanaka_sensei import TanakaSensei
+    from src.core.agents.core_agents.koumi import KoumiAgent
+    from src.core.agents.core_agents.yamada_sensei import YamadaSensei
+    from src.core.agents.core_agents.sato_coach import SatoCoach
+    from src.core.agents.core_agents.mem_bot import MemBot
+    from src.core.agents.core_agents.ai_analyzer import AIAnalyzer
+
+    AGENTS_AVAILABLE = True
+    logger.info("✅ 智能体已加载：田中 / 小美 / 山田 / 佐藤 / 记忆管家 / アイ")
+except ImportError as e:
+    logger.warning(f"⚠️  智能体模块部分可用: {e}")
+    AGENTS_AVAILABLE = False
+
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -174,26 +195,24 @@ async def init_agents_system():
     global agents_system, collaboration_manager
 
     if AGENTS_AVAILABLE:
-        # 初始化智能体 - 田中先生使用真实实现，其他使用模拟
+        # ✅ 全部使用真实智能体
         agents_system = {
-            'tanaka': TanakaSensei(),  # 真实的田中先生
-            'koumi': MockAgent('koumi', '小美', '对话伙伴', '👧'),
-            'ai': MockAgent('ai', 'アイ', '分析师', '🤖'),
-            'yamada': MockAgent('yamada', '山田先生', '文化专家', '🎌'),
-            'sato': MockAgent('sato', '佐藤教练', '考试专家', '🎯'),
-            'membot': MockAgent('membot', '记忆管家', '学习记录', '🧠')
+            'tanaka': TanakaSensei(),
+            'koumi': KoumiAgent(),
+            'yamada': YamadaSensei(),
+            'sato':   SatoCoach(),
+            'membot': MemBot(),
+            'ai':     AIAnalyzer(),
         }
 
-        # 初始化协作管理器
         collaboration_manager = MixedCollaborationManager(agents_system)
-
-        logger.info("🤖 混合智能体系统初始化完成（田中先生：真实AI，其他：模拟）")
+        logger.info("🤖 智能体系统初始化完成（全部真实 AI）")
     else:
-        # 使用模拟智能体系统
+        # 仅当导入失败时才退回 Mock
         agents_system = await create_mock_agents()
-        # collaboration_manager = MockCollaborationManager(agents_system)
+        collaboration_manager = MixedCollaborationManager(agents_system)
+        logger.info("🎭 模拟智能体系统初始化完成（导入失败回退）")
 
-        logger.info("🎭 模拟智能体系统初始化完成")
 
 
 async def create_mock_agents():

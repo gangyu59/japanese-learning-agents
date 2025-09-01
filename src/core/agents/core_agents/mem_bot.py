@@ -151,7 +151,7 @@ class MemBot(BaseAgent):
 
     async def process_user_input(self, user_input: str, session_context: dict, scene: str = "memory"):
         """
-        处理用户输入 - 实现抽象方法
+        与田中同构：走 process_message + 统一映射
         """
         try:
             result = await self.process_message(
@@ -170,14 +170,15 @@ class MemBot(BaseAgent):
             }
 
         except Exception as e:
-            logger.error(f"MemBot处理用户输入时出错: {str(e)}")
+            logger.error(f"MemBot process_user_input エラー: {e}")
             return {
-                "content": f"メモリシステムエラー detected.\n\n记忆系统错误：{str(e)}",
+                "content": f"記録処理中にエラーが発生しました。\n\n处理错误：{str(e)}",
                 "agent_id": "membot",
                 "agent_name": self.name,
-                "emotion": "⚠️",
+                "emotion": "⏰",
                 "error": True
             }
+
 
     def _get_fallback_response(self, message: str) -> str:
         """备用回复"""

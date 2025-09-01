@@ -144,7 +144,9 @@ class YamadaSensei(BaseAgent):
 
     async def process_user_input(self, user_input: str, session_context: dict, scene: str = "culture"):
         """
-        与田中同构：统一经由本智能体的 process_message（含山田的 system_prompt）
+        与田中同构：
+        - 先走本智能体的 process_message（会用到山田的 system_prompt）
+        - 再把结果映射成统一返回结构
         """
         try:
             result = await self.process_message(
@@ -153,24 +155,25 @@ class YamadaSensei(BaseAgent):
             )
 
             return {
-                "content": result.get("response", "申し訳ない、うまく語れませんでした…"),
+                "content": result.get("response", "文化解説の処理中に問題が発生しました。\n\n文化解释处理时出现问题。"),
                 "agent_id": "yamada",
                 "agent_name": self.name,
-                "emotion": "😌",
+                "emotion": "🎎",
                 "is_mock": False,
                 "learning_points": result.get("learning_points", []),
                 "suggestions": result.get("suggestions", [])
             }
 
         except Exception as e:
-            logger.error(f"山田先生 process_user_input 异常: {e}")
+            logger.error(f"山田先生 process_user_input エラー: {e}")
             return {
-                "content": f"少し考えさせてください…⚠️\n\n错误：{str(e)}",
+                "content": f"文化解説の処理でエラーが発生しました。\n\n发生错误：{str(e)}",
                 "agent_id": "yamada",
                 "agent_name": self.name,
-                "emotion": "😅",
+                "emotion": "😌",
                 "error": True
             }
+
 
     def _get_fallback_response(self, message: str) -> str:
         """备用回复"""

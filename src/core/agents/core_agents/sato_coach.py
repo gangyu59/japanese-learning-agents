@@ -151,7 +151,7 @@ class SatoCoach(BaseAgent):
 
     async def process_user_input(self, user_input: str, session_context: dict, scene: str = "exam"):
         """
-        处理用户输入 - 实现抽象方法（与田中同构）
+        与田中同构：走 process_message + 统一映射
         """
         try:
             result = await self.process_message(
@@ -170,7 +170,7 @@ class SatoCoach(BaseAgent):
             }
 
         except Exception as e:
-            logger.error(f"佐藤教练处理用户输入时出错: {str(e)}")
+            logger.error(f"佐藤教练 process_user_input エラー: {e}")
             return {
                 "content": f"システムトラブル発生！でも諦めない！\n\n系统出现问题！但我们不放弃！{str(e)}",
                 "agent_id": "sato",
