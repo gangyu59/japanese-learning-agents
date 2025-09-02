@@ -31,6 +31,9 @@ from utils.logger import setup_logging
 import logging
 logger = logging.getLogger(__name__)
 
+DEMO_MODE = False
+
+
 # 导入智能体系统（全部真实类）
 AGENTS_AVAILABLE = False
 try:
@@ -85,17 +88,6 @@ try:
 except ImportError:
     print("⚠️  API路由模块尚未实现，将只启动基础服务")
 
-# 导入智能体系统 (现在田中先生已实现)
-AGENTS_AVAILABLE = False
-try:
-    from src.core.agents.core_agents.tanaka_sensei import TanakaSensei
-
-    # 其他智能体暂时使用模拟版本
-    AGENTS_AVAILABLE = True
-    logger.info("✅ 田中先生智能体已加载")
-except ImportError as e:
-    logger.warning(f"⚠️  智能体模块部分可用: {e}")
-    AGENTS_AVAILABLE = False
 
 # 全局变量
 websocket_manager = WebSocketManager()
@@ -191,28 +183,25 @@ async def cleanup_resources():
 
 
 async def init_agents_system():
-    """初始化智能体系统"""
     global agents_system, collaboration_manager
 
-    if AGENTS_AVAILABLE:
-        # ✅ 全部使用真实智能体
-        agents_system = {
-            'tanaka': TanakaSensei(),
-            'koumi': KoumiAgent(),
-            'yamada': YamadaSensei(),
-            'sato':   SatoCoach(),
-            'membot': MemBot(),
-            'ai':     AIAnalyzer(),
-        }
+    # 1) 若导入失败，直接抛错，阻止静默回退到模板
+    if not AGENTS_AVAILABLE:
+        raise RuntimeError("智能体模块导入失败：已禁止 Mock 回退，请修复导入后再启动。")
 
-        collaboration_manager = MixedCollaborationManager(agents_system)
-        logger.info("🤖 智能体系统初始化完成（全部真实 AI）")
-    else:
-        # 仅当导入失败时才退回 Mock
-        agents_system = await create_mock_agents()
-        collaboration_manager = MixedCollaborationManager(agents_system)
-        logger.info("🎭 模拟智能体系统初始化完成（导入失败回退）")
+    # 2) 正常情况下，实例化 6 个真实智能体
+    agents_system = {
+        'tanaka': TanakaSensei(),
+        'koumi':  KoumiAgent(),
+        'yamada': YamadaSensei(),
+        'sato':   SatoCoach(),
+        'membot': MemBot(),
+        'ai':     AIAnalyzer(),
+    }
 
+    # 3) 保持你现有的协作管理器用法（无需改动其它代码）
+    collaboration_manager = MixedCollaborationManager(agents_system)
+    logger.info("🤖 智能体系统初始化完成（全部真实 AI，已禁用 Mock 回退）")
 
 
 async def create_mock_agents():
@@ -271,7 +260,8 @@ class MockAgent:
             "success": True,
             "learning_points": [f"模拟学习点: {message[:20]}..."],
             "suggestions": [f"建议练习更多{self.role}相关内容"],
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
+            "origin": "mock"
         }
 
 
@@ -471,9 +461,6 @@ async def send_chat_message(request: ChatRequest):
             )
 
             if result.get("success", True):
-                # 记录成功的对话
-                logger.info(f"智能体 {request.agent_name} 成功处理消息")
-
                 return ChatResponse(
                     success=True,
                     response=result["response"],
@@ -481,7 +468,10 @@ async def send_chat_message(request: ChatRequest):
                     learning_points=result.get("learning_points", []),
                     suggestions=result.get("suggestions", []),
                     timestamp=result.get("timestamp")
-                )
+                ).dict() | {
+                    "origin": result.get("origin", "template"),
+                    "model": result.get("model")
+                }
             else:
                 logger.error(f"智能体处理失败: {result.get('error', 'Unknown error')}")
                 return ChatResponse(
@@ -535,6 +525,15 @@ async def get_llm_status():
             "error": str(e),
             "timestamp": datetime.now().isoformat()
         }
+
+
+@app.get("/api/v1/mode")
+async def get_mode():
+    return {
+        "demo_mode": DEMO_MODE,
+        "agents_available": AGENTS_AVAILABLE,
+        "system_type": "real" if (not DEMO_MODE and AGENTS_AVAILABLE) else "mock"
+    }
 
 
 # 新增: 智能体列表端点
