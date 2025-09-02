@@ -25,6 +25,8 @@ from utils.database import init_database
 from utils.websocket_manager import WebSocketManager
 from utils.llm_client import get_llm_client
 
+from src.api.routers.novel import router as novel_router
+
 # 首先设置日志和创建logger
 from utils.logger import setup_logging
 
@@ -127,6 +129,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+app.include_router(novel_router, prefix="/api/v1/novel", tags=["novel"])
 
 FRONTEND_ORIGINS = [
     "http://localhost:3000",
