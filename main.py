@@ -76,6 +76,25 @@ class ChatResponse(BaseModel):
     error: Optional[str] = None
 
 
+class MultiAgentChatRequest(BaseModel):
+    message: str
+    user_id: str
+    session_id: str
+    active_agents: List[str]  # 多个智能体
+    collaboration_mode: str = "discussion"  # discussion, correction, creation, analysis
+    scene_context: str = "general"
+
+class MultiAgentChatResponse(BaseModel):
+    success: bool
+    responses: List[Dict[str, Any]]  # 多个智能体的回复
+    collaboration_mode: str
+    agents_participated: List[str]
+    conflicts: List[Dict[str, Any]] = []  # 冲突信息
+    final_recommendation: str = ""
+    user_arbitration_needed: bool = False
+    timestamp: str
+
+
 # 导入API路由 (这些文件稍后实现)
 API_ROUTES_AVAILABLE = False
 try:
@@ -309,6 +328,108 @@ class MixedCollaborationManager:
                     responses.append(fallback_response)
 
         return responses
+
+    async def multi_agent_collaboration(
+            self,
+            user_input: str,
+            active_agents: List[str],
+            mode: str = "discussion",
+            session_context: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
+        """多智能体协作处理"""
+
+        responses = []
+        conflicts = []
+
+        # 1. 获取所有智能体的初始回复
+        for agent_id in active_agents:
+            if agent_id in self.agents:
+                try:
+                    agent = self.agents[agent_id]
+                    response = await agent.process_user_input(
+                        user_input=user_input,
+                        session_context=session_context or {},
+                        scene=mode
+                    )
+
+                    # 添加额外信息
+                    response['agent_id'] = agent_id
+                    response['confidence'] = 0.8  # 可以后续优化
+                    response['timestamp'] = datetime.now().isoformat()
+
+                    responses.append(response)
+
+                except Exception as e:
+                    logger.error(f"智能体 {agent_id} 处理失败: {e}")
+                    # 添加错误回复
+                    responses.append({
+                        "content": f"{self.agents[agent_id].name}正在思考中，请稍等...",
+                        "agent_id": agent_id,
+                        "agent_name": self.agents[agent_id].name,
+                        "emotion": "🤔",
+                        "error": True,
+                        "confidence": 0.0,
+                        "timestamp": datetime.now().isoformat()
+                    })
+
+        # 2. 简单的冲突检测
+        conflicts = self._detect_simple_conflicts(responses)
+
+        # 3. 生成最终建议
+        final_recommendation = self._generate_collaboration_summary(responses, mode)
+
+        return {
+            "responses": responses,
+            "conflicts": conflicts,
+            "final_recommendation": final_recommendation,
+            "user_arbitration_needed": len(conflicts) > 0,
+            "collaboration_mode": mode,
+            "agents_participated": active_agents
+        }
+
+    def _detect_simple_conflicts(self, responses: List[Dict]) -> List[Dict]:
+        """简单的冲突检测"""
+        conflicts = []
+
+        # 检查是否有智能体给出明显不同的建议
+        for i, resp1 in enumerate(responses):
+            for j, resp2 in enumerate(responses[i + 1:], i + 1):
+                content1 = resp1.get('content', '').lower()
+                content2 = resp2.get('content', '').lower()
+
+                # 简单的冲突关键词检测
+                conflict_pairs = [
+                    ('正确', '错误'), ('对', '不对'), ('应该', '不应该'),
+                    ('建议', '不建议'), ('推荐', '不推荐')
+                ]
+
+                for word1, word2 in conflict_pairs:
+                    if word1 in content1 and word2 in content2:
+                        conflicts.append({
+                            "agent1": resp1.get('agent_id', ''),
+                            "agent2": resp2.get('agent_id', ''),
+                            "conflict_point": f"关于用户问题的不同观点",
+                            "conflict_id": f"conflict_{i}_{j}"
+                        })
+                        break
+
+        return conflicts
+
+    def _generate_collaboration_summary(self, responses: List[Dict], mode: str) -> str:
+        """生成协作总结"""
+        if not responses:
+            return "暂时无法生成协作总结。"
+
+        agent_names = [r.get('agent_name', '智能体') for r in responses]
+
+        if mode == "correction":
+            return f"📝 协作纠错总结：{', '.join(agent_names)}共同分析了您的问题，提供了专业的修正建议。"
+        elif mode == "creation":
+            return f"🎨 协作创作总结：{', '.join(agent_names)}协作完成了创作任务，展现了不同的创意角度。"
+        elif mode == "analysis":
+            return f"🔍 协作分析总结：{', '.join(agent_names)}从多个角度深入分析了问题，提供了全面的见解。"
+        else:  # discussion
+            return f"💬 协作讨论总结：{', '.join(agent_names)}进行了深入讨论，分享了各自的专业观点。"
 
 
 # =================== 路由定义 ===================
@@ -587,6 +708,120 @@ async def get_agents_status():
         "total_count": len(agents_status),
         "system_type": "real" if AGENTS_AVAILABLE else "mock"
     })
+
+
+@app.post("/api/v1/collaboration/multi-agent-chat")
+async def multi_agent_chat(request: MultiAgentChatRequest):
+    """多智能体协作聊天"""
+    try:
+        logger.info(f"多智能体协作请求: {request.active_agents}")
+
+        # 验证智能体ID
+        valid_agents = [agent for agent in request.active_agents if agent in agents_system]
+
+        if len(valid_agents) < 2:
+            return MultiAgentChatResponse(
+                success=False,
+                responses=[],
+                collaboration_mode=request.collaboration_mode,
+                agents_participated=valid_agents,
+                final_recommendation="需要至少2个智能体进行协作",
+                timestamp=datetime.now().isoformat()
+            )
+
+        # 构建会话上下文
+        session_context = {
+            "user_id": request.user_id,
+            "session_id": request.session_id,
+            "scene": request.scene_context,
+            "collaboration_mode": request.collaboration_mode
+        }
+
+        # 执行多智能体协作
+        result = await collaboration_manager.multi_agent_collaboration(
+            user_input=request.message,
+            active_agents=valid_agents,
+            mode=request.collaboration_mode,
+            session_context=session_context
+        )
+
+        return MultiAgentChatResponse(
+            success=True,
+            responses=result["responses"],
+            collaboration_mode=request.collaboration_mode,
+            agents_participated=result["agents_participated"],
+            conflicts=result["conflicts"],
+            final_recommendation=result["final_recommendation"],
+            user_arbitration_needed=result["user_arbitration_needed"],
+            timestamp=datetime.now().isoformat()
+        )
+
+    except Exception as e:
+        logger.error(f"多智能体协作失败: {str(e)}")
+        return MultiAgentChatResponse(
+            success=False,
+            responses=[],
+            collaboration_mode=request.collaboration_mode,
+            agents_participated=[],
+            final_recommendation=f"协作处理失败: {str(e)}",
+            timestamp=datetime.now().isoformat()
+        )
+
+
+@app.get("/api/v1/collaboration/modes")
+async def get_collaboration_modes():
+    """获取协作模式列表"""
+    return {
+        "modes": [
+            {
+                "id": "discussion",
+                "name": "自由讨论",
+                "description": "智能体们就话题进行自由讨论，展现不同观点"
+            },
+            {
+                "id": "correction",
+                "name": "协作纠错",
+                "description": "多个智能体协作纠正语法、用法等问题"
+            },
+            {
+                "id": "creation",
+                "name": "协作创作",
+                "description": "智能体们协作进行内容创作"
+            },
+            {
+                "id": "analysis",
+                "name": "深度分析",
+                "description": "从多个角度深入分析问题"
+            }
+        ]
+    }
+
+
+@app.post("/api/v1/collaboration/resolve-conflict")
+async def resolve_conflict(request: dict):
+    """处理用户仲裁"""
+    try:
+        conflict_id = request.get("conflict_id")
+        user_choice = request.get("user_choice")
+
+        logger.info(f"用户仲裁冲突 {conflict_id}: 选择 {user_choice}")
+
+        # 这里可以记录用户的选择，用于改进协作算法
+        # 暂时简单返回确认
+
+        return {
+            "success": True,
+            "message": "仲裁结果已记录",
+            "conflict_id": conflict_id,
+            "user_choice": user_choice
+        }
+
+    except Exception as e:
+        logger.error(f"处理冲突仲裁失败: {str(e)}")
+        return {
+            "success": False,
+            "error": str(e)
+        }
 
 
 # =================== WebSocket 路由 ===================

@@ -20,3 +20,22 @@ pydantic
 
 # 系统监控
 psutil
+
+# === 新增：仅添加多智能体协作必需的包 ===
+
+# 数据库支持 (可选，如果你想要持久化存储)
+sqlalchemy>=2.0.0  # 数据库ORM，用于MemBot数据持久化
+# alembic  # 数据库迁移，如果需要数据库schema管理
+
+# 异步支持 (如果使用PostgreSQL)
+# asyncpg  # PostgreSQL异步驱动，只在使用PostgreSQL时需要
+
+# LLM客户端增强 (如果需要更好的API调用)
+httpx  # 现代HTTP客户端，比requests更好的异步支持
+
+# 数据分析 (MemBot智能分析功能)
+numpy  # 基础数学运算，记忆算法需要
+# pandas  # 数据分析，如果需要复杂的学习数据分析
+
+# 可选：如果需要更丰富的UI
+# rich  # 命令行美化，调试时很有用
