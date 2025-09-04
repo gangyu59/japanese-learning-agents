@@ -1,18 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa9ee9da-64dc-4a4a-8082-3a8574f5e2b5" name="Changes" comment="" />
+    <list default="true" id="fa9ee9da-64dc-4a4a-8082-3a8574f5e2b5" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/core/agents/complete_agent_loader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/collaboration.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/core/grammar_workflows.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/llm_client.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/check_sqlite_schema_once.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/cleanup_sqlite_test_users.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/final_quick_verify.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/migrate_sqlite_add_grammar_point.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/migrate_sqlite_add_password_hash.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/migrate_sqlite_fill_missing_columns.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/migrate_sqlite_fix_learning_progress.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/migrate_sqlite_full_audit.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/run_all_tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/novel.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/novel.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/japanese_learning.db" beforeDir="false" afterPath="$PROJECT_DIR$/japanese_learning.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/agents/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/agents/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/agents/workflows/collaboration.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/workflows/collaboration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/agents/workflows/grammar_workflows.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/workflows/grammar_workflows.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/workflows/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/workflows/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/workflows/novel_collab.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/workflows/novel_collab.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/data_persistence_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/data_persistence_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/database_connection_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/database_connection_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/end_to_end_integration_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/end_to_end_integration_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/multi_agent_collaboration_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/multi_agent_collaboration_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/single_agent_regression_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/single_agent_regression_test.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="31r7thZsK62WNOo1ulva7DWmc5X" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -24,10 +65,25 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlite"
+    ]
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\1\Desktop\日语学习智能体\japanese-learning-agents\src\core\workflows" />
+      <recent name="C:\Users\1\Desktop\日语学习智能体\japanese-learning-agents\tests" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -44,6 +100,7 @@
       <option name="presentableId" value="Default" />
       <updated>1756270554009</updated>
       <workItem from="1756270562930" duration="4000" />
+      <workItem from="1756861700781" duration="24200000" />
     </task>
     <servers />
   </component>

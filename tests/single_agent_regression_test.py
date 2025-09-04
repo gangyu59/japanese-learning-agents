@@ -14,6 +14,13 @@ import os
 # 添加项目路径
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# === 强制把 src/ 加入 Python 路径（支持 from core...）===
+from pathlib import Path
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+SRC_PATH = PROJECT_ROOT / "src"
+if str(SRC_PATH) not in sys.path:
+    sys.path.insert(0, str(SRC_PATH))
+# =======================================================
 
 class SingleAgentTester:
     """单智能体测试类"""
