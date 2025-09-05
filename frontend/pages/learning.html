@@ -546,6 +546,35 @@
                 </div>
 
                 <div class="vocabulary-panel" id="vocabularyPanel">
+                    <!-- 词库工具条 -->
+                    <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
+                      <button class="clear-vocab-btn" id="btnImportVocab">导入词表</button>
+                      <button class="clear-vocab-btn" id="btnExportVocab">导出词典CSV</button>
+                      <button class="clear-vocab-btn" id="btnExportNotebook">导出生词本CSV</button>
+                      <button class="clear-vocab-btn" id="btnDedup">去重清理</button>
+                      <label style="display:flex;align-items:center;gap:6px;font-size:0.9em;color:#555;">
+                        <input type="checkbox" id="chkExtractFromUser" />
+                        也从用户消息抽词
+                      </label>
+                    </div>
+
+                    <!-- 导入面板（纯前端弹层） -->
+                    <div id="importPanel" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); z-index:9999;">
+                      <div style="max-width:720px; margin:8vh auto; background:#fff; border-radius:14px; padding:18px 18px 12px;">
+                        <h3 style="margin-bottom:8px;">导入词表（JSON/CSV/NDJSON）</h3>
+                        <p style="color:#666; font-size:13px; margin-bottom:8px;">
+                          每条包含：<code>word, romaji, meaning, level, tags</code>（level/tags 可省略）。
+                          示例：<code>学校,gakkou,学校,N5,基础</code>
+                        </p>
+                        <textarea id="importText" placeholder="在此粘贴词表文本…"
+                          style="width:100%; min-height:260px; font-family:monospace; padding:10px; border:1px solid #ddd; border-radius:8px;"></textarea>
+                        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:10px;">
+                          <button class="clear-vocab-btn" id="btnCloseImport">取消</button>
+                          <button class="clear-vocab-btn" id="btnDoImport">开始导入</button>
+                        </div>
+                      </div>
+                    </div>
+
                     <div class="panel-header">
                         <h3 class="panel-title">生词本</h3>
                         <button class="collapse-btn" id="vocabularyCollapseBtn">
