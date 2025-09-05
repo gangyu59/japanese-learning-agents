@@ -4,26 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa9ee9da-64dc-4a4a-8082-3a8574f5e2b5" name="Changes" comment="v6.4&#10;完善了小说协作页面，把三个区域的长度都对齐了。">
-      <change afterPath="$PROJECT_DIR$/env_loading_diagnostic.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/pages/user_guide.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mock_api.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/simple_collaboration_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_multi_agent_collaboration.py" afterDir="false" />
+    <list default="true" id="fa9ee9da-64dc-4a4a-8082-3a8574f5e2b5" name="Changes" comment="v6.5&#10;1）修改了index页面，把所有的辅助页面都可以都导航转入。&#10;2）添加了指南页面，介绍所有功能，并可以直接转入各个相应的页面。&#10;3）多智能体的协作还没有完全functional。">
+      <change afterPath="$PROJECT_DIR$/enhanced_disagreement_detector.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/assets/js/api/collaboration_api.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/js/multi_agent_collaboration.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/multi_agent_collaboration.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/multi_agent_collaboration.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/multi_agent_collaboration.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/japanese_learning.db" beforeDir="false" afterPath="$PROJECT_DIR$/japanese_learning.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/workflows/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/workflows/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/workflows/grammar_workflows.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/workflows/grammar_workflows.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/check_sqlite_schema_once.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/cleanup_sqlite_test_users.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/final_quick_verify.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/migrate_sqlite_add_grammar_point.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/migrate_sqlite_add_password_hash.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/migrate_sqlite_fill_missing_columns.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/migrate_sqlite_fix_learning_progress.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/migrate_sqlite_full_audit.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/workflows/collaboration.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/workflows/collaboration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/multi_agent_collaboration_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/multi_agent_collaboration_test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +105,7 @@
       <option name="presentableId" value="Default" />
       <updated>1756270554009</updated>
       <workItem from="1756270562930" duration="4000" />
-      <workItem from="1756861700781" duration="38004000" />
+      <workItem from="1756861700781" duration="46934000" />
     </task>
     <task id="LOCAL-00001" summary="v6.3&#10;进行了五项测试包括：数据持续性、数据库连接、端到端集成、单智能体回归、多智能体协作。现在除了多智能体协作模块以外其它的测试都100%通过了。">
       <option name="closed" value="true" />
@@ -133,7 +123,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756995306269</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="v6.5&#10;1）修改了index页面，把所有的辅助页面都可以都导航转入。&#10;2）添加了指南页面，介绍所有功能，并可以直接转入各个相应的页面。&#10;3）多智能体的协作还没有完全functional。">
+      <option name="closed" value="true" />
+      <created>1757044433212</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1757044433212</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -153,6 +151,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="v6.3&#10;进行了五项测试包括：数据持续性、数据库连接、端到端集成、单智能体回归、多智能体协作。现在除了多智能体协作模块以外其它的测试都100%通过了。" />
     <MESSAGE value="v6.4&#10;完善了小说协作页面，把三个区域的长度都对齐了。" />
-    <option name="LAST_COMMIT_MESSAGE" value="v6.4&#10;完善了小说协作页面，把三个区域的长度都对齐了。" />
+    <MESSAGE value="v6.5&#10;1）修改了index页面，把所有的辅助页面都可以都导航转入。&#10;2）添加了指南页面，介绍所有功能，并可以直接转入各个相应的页面。&#10;3）多智能体的协作还没有完全functional。" />
+    <option name="LAST_COMMIT_MESSAGE" value="v6.5&#10;1）修改了index页面，把所有的辅助页面都可以都导航转入。&#10;2）添加了指南页面，介绍所有功能，并可以直接转入各个相应的页面。&#10;3）多智能体的协作还没有完全functional。" />
   </component>
 </project>

@@ -1,37 +1,38 @@
-// 保存为: frontend/multi_agent_collaboration.js
+// frontend/assets/js/multi_agent_collaboration.js
 /**
  * 多智能体协作前端功能
- * 基于你现有的前端结构
+ * 支持真实的分歧检测和协作流程
  */
 
 class MultiAgentCollaboration {
     constructor() {
-        this.apiBase = '';  // 相对路径，因为前端和后端在同一域
+        this.apiBase = '';
         this.activeAgents = new Set();
         this.collaborationMode = 'discussion';
         this.currentSession = null;
+        this.isCollaborating = false;
 
-        // 智能体映射表
-        this.agentMap = {
-            'tanaka': '田中先生',
-            'koumi': '小美',
-            'ai': 'アイ',
-            'yamada': '山田先生',
-            'sato': '佐藤教练',
-            'membot': 'MemBot'
+        // 智能体配置
+        this.agentConfigs = {
+            'tanaka': { name: '田中先生', avatar: '👨‍🏫', role: '语法专家' },
+            'koumi': { name: '小美', avatar: '👧', role: '对话伙伴' },
+            'ai': { name: 'アイ', avatar: '🤖', role: '数据分析师' },
+            'yamada': { name: '山田先生', avatar: '🎌', role: '文化专家' },
+            'sato': { name: '佐藤教练', avatar: '🎯', role: '考试专家' },
+            'membot': { name: 'MemBot', avatar: '🧠', role: '记忆管家' }
         };
 
         this.init();
     }
 
     init() {
-        // 检查是否在正确页面
+        // 检查是否在协作页面
         if (!document.getElementById('multi-agent-controls')) {
-            return; // 不在协作页面，跳过初始化
+            return;
         }
 
         this.setupEventListeners();
-        this.loadAgentsList();
+        this.updateUIState();
     }
 
     setupEventListeners() {
@@ -68,58 +69,73 @@ class MultiAgentCollaboration {
         }
     }
 
-    async loadAgentsList() {
-        try {
-            const response = await fetch('/api/v1/agents/list');
-            const agents = await response.json();
-            this.renderAgentsSelection(agents);
-        } catch (error) {
-            console.error('加载智能体列表失败:', error);
-        }
-    }
-
-    renderAgentsSelection(agents) {
-        const container = document.getElementById('agents-selection');
-        if (!container) return;
-
-        const html = agents.map(agent => `
-            <div class="agent-option">
-                <label class="agent-label">
-                    <input type="checkbox" class="agent-checkbox" value="${agent.id}">
-                    <span class="agent-info">
-                        <span class="agent-avatar">${agent.avatar}</span>
-                        <span class="agent-name">${agent.name}</span>
-                        <span class="agent-role">${agent.role}</span>
-                    </span>
-                </label>
-            </div>
-        `).join('');
-
-        container.innerHTML = html;
-    }
-
     handleAgentToggle(checkbox) {
         const agentId = checkbox.value;
+        const option = checkbox.closest('.agent-option');
 
         if (checkbox.checked) {
             this.activeAgents.add(agentId);
+            option.classList.add('selected');
         } else {
             this.activeAgents.delete(agentId);
+            option.classList.remove('selected');
         }
 
+        this.updateUIState();
+    }
+
+    updateUIState() {
         this.updateCollaborationStatus();
+        this.updateActiveAgentsDisplay();
+        this.updateInputState();
     }
 
     updateCollaborationStatus() {
         const statusEl = document.getElementById('collaboration-status');
-        const sendBtn = document.getElementById('send-multi-agent');
+        const selectedCount = this.activeAgents.size;
 
-        if (this.activeAgents.size < 2) {
-            if (statusEl) statusEl.textContent = '请选择至少2个智能体进行协作';
-            if (sendBtn) sendBtn.disabled = true;
+        if (selectedCount >= 2) {
+            statusEl.textContent = `已选择${selectedCount}个智能体，准备协作！`;
+            statusEl.classList.add('ready');
         } else {
-            if (statusEl) statusEl.textContent = `已选择${this.activeAgents.size}个智能体，准备协作`;
-            if (sendBtn) sendBtn.disabled = false;
+            statusEl.textContent = '请选择至少2个智能体开始协作';
+            statusEl.classList.remove('ready');
+        }
+    }
+
+    updateActiveAgentsDisplay() {
+        const displayEl = document.getElementById('active-agents-display');
+
+        if (this.activeAgents.size > 0) {
+            const badges = Array.from(this.activeAgents).map(agentId => {
+                const config = this.agentConfigs[agentId];
+                return `<span class="active-agent-badge">${config.avatar} ${config.name}</span>`;
+            }).join('');
+
+            displayEl.innerHTML = badges;
+        } else {
+            displayEl.innerHTML = '';
+        }
+    }
+
+    updateInputState() {
+        const inputElement = document.getElementById('multi-agent-input');
+        const sendButton = document.getElementById('send-multi-agent');
+        const canCollaborate = this.activeAgents.size >= 2 && !this.isCollaborating;
+
+        if (inputElement) {
+            inputElement.disabled = !canCollaborate;
+        }
+
+        if (sendButton) {
+            sendButton.disabled = !canCollaborate;
+            sendButton.textContent = this.isCollaborating ? '协作中...' : '发送';
+        }
+
+        // 隐藏或显示欢迎界面
+        const welcomeScreen = document.querySelector('.welcome-screen');
+        if (welcomeScreen) {
+            welcomeScreen.style.display = canCollaborate ? 'none' : 'flex';
         }
     }
 
@@ -141,212 +157,309 @@ class MultiAgentCollaboration {
         const input = document.getElementById('multi-agent-input');
         const message = input?.value?.trim();
 
-        if (!message || this.activeAgents.size < 2) return;
+        if (!message || this.activeAgents.size < 2 || this.isCollaborating) {
+            return;
+        }
 
+        // 设置协作状态
+        this.isCollaborating = true;
+        this.updateInputState();
+
+        // 显示用户消息
+        this.displayUserMessage(message);
+        input.value = '';
+
+        // 显示协作开始提示
+        this.showCollaborationStart();
+
+        try {
+            // 发送协作请求
+            const result = await this.requestCollaboration(message);
+
+            // 处理协作结果
+            await this.displayCollaborationResult(result);
+
+        } catch (error) {
+            console.error('协作失败:', error);
+            this.displayErrorMessage('协作过程中出现错误，请重试');
+        } finally {
+            this.isCollaborating = false;
+            this.updateInputState();
+        }
+    }
+
+    async requestCollaboration(message) {
         const requestData = {
             message: message,
             user_id: 'demo_user',
-            session_id: this.currentSession || 'session_' + Date.now(),
+            session_id: this.currentSession || `session_${Date.now()}`,
             active_agents: Array.from(this.activeAgents),
             collaboration_mode: this.collaborationMode,
             scene_context: 'multi_agent_collaboration'
         };
 
-        // 显示用户消息
-        this.displayUserMessage(message);
-        if (input) input.value = '';
+            // 添加这行调试
+        console.log('发送的数据:', JSON.stringify(requestData, null, 2));
 
-        // 显示加载状态
-        this.showThinkingIndicator();
+       const response = await fetch('http://localhost:8000/api/v1/chat/multi-agent-collaboration', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData)
+        });
 
-        try {
-            const response = await fetch('/api/v1/collaboration/multi-agent-chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData)
-            });
+       // 添加这行调试
+        console.log('响应状态:', response.status, response.statusText);
 
-            const data = await response.json();
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
 
-            if (data.success) {
-                // 显示智能体回复
-                this.displayAgentResponses(data.responses);
+        const data = await response.json();
 
-                // 显示冲突（如果有）
-                if (data.conflicts && data.conflicts.length > 0) {
-                    this.displayConflicts(data.conflicts);
-                }
+        if (!data.success) {
+            throw new Error(data.error || '协作请求失败');
+        }
 
-                // 显示总结
-                if (data.final_recommendation) {
-                    this.displaySummary(data.final_recommendation);
-                }
-            } else {
-                this.displayError('协作请求失败，请重试');
-            }
+        return data;
+    }
 
-        } catch (error) {
-            console.error('协作请求失败:', error);
-            this.displayError('网络请求失败，请检查连接');
-        } finally {
-            this.hideThinkingIndicator();
+    showCollaborationStart() {
+        const agentNames = Array.from(this.activeAgents).map(id =>
+            this.agentConfigs[id].name
+        ).join('、');
+
+        this.addSystemMessage(`🤝 ${agentNames} 开始协作讨论...`);
+    }
+
+    async displayCollaborationResult(result) {
+        // 1. 显示智能体响应
+        if (result.responses && result.responses.length > 0) {
+            await this.displayAgentResponses(result.responses);
+        }
+
+        // 2. 显示分歧（如果有）
+        if (result.disagreements && result.disagreements.length > 0) {
+            await this.displayDisagreements(result.disagreements);
+        }
+
+        // 3. 显示冲突（向后兼容）
+        if (result.conflicts && result.conflicts.length > 0) {
+            await this.displayConflicts(result.conflicts);
+        }
+
+        // 4. 显示共识或总结
+        if (result.consensus) {
+            this.addSystemMessage(`💡 协作共识: ${result.consensus}`, 'summary');
+        }
+
+        // 5. 显示最终建议
+        if (result.final_recommendation) {
+            this.addSystemMessage(`📋 最终建议: ${result.final_recommendation}`, 'recommendation');
+        }
+
+        // 6. 如果需要用户仲裁
+        if (result.user_arbitration_needed) {
+            this.showArbitrationInterface(result.disagreements);
         }
     }
 
-    displayUserMessage(message) {
-        const container = document.getElementById('messages-container');
-        if (!container) return;
-
-        const messageEl = document.createElement('div');
-        messageEl.className = 'message user-message';
-        messageEl.innerHTML = `
-            <div class="message-content">
-                <span class="message-author">您</span>
-                <div class="message-text">${this.escapeHtml(message)}</div>
-                <div class="message-time">${new Date().toLocaleTimeString()}</div>
-            </div>
-        `;
-
-        container.appendChild(messageEl);
-        this.scrollToBottom();
+    async displayAgentResponses(responses) {
+        for (let i = 0; i < responses.length; i++) {
+            await this.delay(600 * (i + 1)); // 错开显示时间
+            this.displayAgentMessage(responses[i]);
+        }
     }
 
-    displayAgentResponses(responses) {
-        const container = document.getElementById('messages-container');
-        if (!container) return;
+    displayAgentMessage(response) {
+        const config = this.agentConfigs[response.agent_id] || {};
+        const avatar = config.avatar || '🤖';
+        const name = response.agent_name || config.name || response.agent_id;
 
-        responses.forEach((response, index) => {
-            // 添加延迟以模拟真实对话
-            setTimeout(() => {
-                const messageEl = document.createElement('div');
-                messageEl.className = 'message agent-message';
-                messageEl.innerHTML = `
-                    <div class="message-content">
-                        <span class="message-author">
-                            ${response.emotion || '🤖'} ${response.agent_name}
-                            ${response.confidence ? `(${Math.round(response.confidence * 100)}%)` : ''}
-                        </span>
-                        <div class="message-text">${this.formatContent(response.content)}</div>
-                        ${response.learning_points?.length ? 
-                            `<div class="learning-points">
-                                <strong>学习要点:</strong> ${response.learning_points.join(', ')}
-                             </div>` : ''
-                        }
-                        ${response.suggestions?.length ?
-                            `<div class="suggestions">
-                                <strong>建议:</strong> ${response.suggestions.join(', ')}
-                             </div>` : ''
-                        }
-                        <div class="message-time">${new Date().toLocaleTimeString()}</div>
-                    </div>
-                `;
+        const messageEl = this.addMessage('agent', '', `${avatar} ${name}`);
+        const contentDiv = messageEl.querySelector('.message-text');
 
-                container.appendChild(messageEl);
-                this.scrollToBottom();
-            }, index * 800); // 每个智能体间隔800ms
+        // 主要内容
+        contentDiv.innerHTML = this.formatContent(response.content);
+
+        // 置信度显示
+        if (response.confidence) {
+            const confidenceSpan = document.createElement('span');
+            confidenceSpan.className = 'confidence-indicator';
+            confidenceSpan.textContent = ` (${Math.round(response.confidence * 100)}%)`;
+            confidenceSpan.style.opacity = '0.7';
+            confidenceSpan.style.fontSize = '0.9em';
+            messageEl.querySelector('.message-author').appendChild(confidenceSpan);
+        }
+
+        // 学习要点
+        if (response.learning_points && response.learning_points.length > 0) {
+            const learningDiv = document.createElement('div');
+            learningDiv.className = 'learning-points';
+            learningDiv.innerHTML = `<strong>学习要点:</strong> ${response.learning_points.join(', ')}`;
+            messageEl.querySelector('.message-content').appendChild(learningDiv);
+        }
+
+        // 建议
+        if (response.suggestions && response.suggestions.length > 0) {
+            const suggestionsDiv = document.createElement('div');
+            suggestionsDiv.className = 'suggestions';
+            suggestionsDiv.innerHTML = `<strong>建议:</strong> ${response.suggestions.join(', ')}`;
+            messageEl.querySelector('.message-content').appendChild(suggestionsDiv);
+        }
+
+        return messageEl;
+    }
+
+    async displayDisagreements(disagreements) {
+        await this.delay(1000);
+
+        for (const disagreement of disagreements) {
+            this.displayDisagreementMessage(disagreement);
+            await this.delay(500);
+        }
+    }
+
+    displayDisagreementMessage(disagreement) {
+        const messageEl = this.addMessage('conflict', '', '⚠️ 发现观点分歧');
+        const contentDiv = messageEl.querySelector('.message-text');
+
+        let content = `关于 "${disagreement.topic}" 的分歧:\n\n`;
+
+        // 显示各智能体的立场
+        for (const [agent, position] of Object.entries(disagreement.positions)) {
+            content += `• ${agent}: ${position}\n`;
+        }
+
+        content += `\n严重程度: ${disagreement.severity}`;
+
+        contentDiv.innerHTML = this.formatContent(content);
+    }
+
+    async displayConflicts(conflicts) {
+        await this.delay(800);
+
+        const messageEl = this.addMessage('conflict', '', '⚖️ 智能体冲突');
+        const contentDiv = messageEl.querySelector('.message-text');
+
+        let content = '检测到以下冲突观点:\n\n';
+        conflicts.forEach((conflict, index) => {
+            content += `${index + 1}. ${conflict[0]} vs ${conflict[1]}: ${conflict[2]}\n`;
+        });
+
+        contentDiv.innerHTML = this.formatContent(content);
+    }
+
+    showArbitrationInterface(disagreements) {
+        const messageEl = this.addMessage('system', '', '⚖️ 需要您的仲裁');
+        const contentDiv = messageEl.querySelector('.message-content');
+
+        disagreements.forEach((disagreement, index) => {
+            const arbitrationDiv = document.createElement('div');
+            arbitrationDiv.className = 'arbitration-section';
+            arbitrationDiv.style.marginTop = '15px';
+            arbitrationDiv.style.padding = '10px';
+            arbitrationDiv.style.border = '1px solid #ddd';
+            arbitrationDiv.style.borderRadius = '8px';
+
+            const titleDiv = document.createElement('div');
+            titleDiv.innerHTML = `<strong>分歧 ${index + 1}: ${disagreement.topic}</strong>`;
+            arbitrationDiv.appendChild(titleDiv);
+
+            const buttonsDiv = document.createElement('div');
+            buttonsDiv.style.marginTop = '10px';
+
+            // 为每个立场创建按钮
+            Object.entries(disagreement.positions).forEach(([agent, position]) => {
+                const button = document.createElement('button');
+                button.className = 'btn btn-secondary';
+                button.style.margin = '3px';
+                button.textContent = `支持 ${agent} (${position})`;
+                button.onclick = () => this.handleArbitration(disagreement, agent, position);
+                buttonsDiv.appendChild(button);
+            });
+
+            arbitrationDiv.appendChild(buttonsDiv);
+            contentDiv.appendChild(arbitrationDiv);
         });
     }
 
-    displayConflicts(conflicts) {
-        const container = document.getElementById('messages-container');
-        if (!container) return;
+    handleArbitration(disagreement, chosenAgent, chosenPosition) {
+        this.addSystemMessage(
+            `✅ 您选择支持 ${chosenAgent} 的观点: ${chosenPosition}`,
+            'arbitration-result'
+        );
 
-        setTimeout(() => {
-            const conflictEl = document.createElement('div');
-            conflictEl.className = 'message conflict-message';
-            conflictEl.innerHTML = `
-                <div class="message-content conflict">
-                    <span class="message-author">⚖️ 观点分歧</span>
-                    <div class="message-text">
-                        智能体们对此问题有不同看法：
-                        ${conflicts.map(c => `
-                            <div class="conflict-item">
-                                <strong>${this.agentMap[c.agent1] || c.agent1}</strong> vs 
-                                <strong>${this.agentMap[c.agent2] || c.agent2}</strong>: 
-                                ${c.conflict_point}
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="message-time">${new Date().toLocaleTimeString()}</div>
-                </div>
-            `;
-
-            container.appendChild(conflictEl);
-            this.scrollToBottom();
-        }, conflicts.length * 1000); // 在所有智能体回复后显示
+        // 禁用仲裁按钮
+        const arbitrationSections = document.querySelectorAll('.arbitration-section');
+        arbitrationSections.forEach(section => {
+            const buttons = section.querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = true);
+        });
     }
 
-    displaySummary(summary) {
-        const container = document.getElementById('messages-container');
-        if (!container) return;
-
-        setTimeout(() => {
-            const summaryEl = document.createElement('div');
-            summaryEl.className = 'message summary-message';
-            summaryEl.innerHTML = `
-                <div class="message-content summary">
-                    <span class="message-author">💡 协作总结</span>
-                    <div class="message-text">${this.formatContent(summary)}</div>
-                    <div class="message-time">${new Date().toLocaleTimeString()}</div>
-                </div>
-            `;
-
-            container.appendChild(summaryEl);
-            this.scrollToBottom();
-        }, 2000);
+    displayUserMessage(message) {
+        this.addMessage('user', message, '您');
     }
 
-    displayError(error) {
-        const container = document.getElementById('messages-container');
-        if (!container) return;
-
-        const errorEl = document.createElement('div');
-        errorEl.className = 'message error-message';
-        errorEl.innerHTML = `
-            <div class="message-content error">
-                <span class="message-author">❌ 错误</span>
-                <div class="message-text">${this.escapeHtml(error)}</div>
-                <div class="message-time">${new Date().toLocaleTimeString()}</div>
-            </div>
-        `;
-
-        container.appendChild(errorEl);
-        this.scrollToBottom();
+    displayErrorMessage(error) {
+        this.addMessage('error', error, '❌ 错误');
     }
 
-    showThinkingIndicator() {
-        const container = document.getElementById('messages-container');
-        if (!container) return;
+    addMessage(type, content, author) {
+        const messagesContainer = document.getElementById('messages-container');
 
-        const thinkingEl = document.createElement('div');
-        thinkingEl.id = 'thinking-indicator';
-        thinkingEl.className = 'message thinking-message';
-        thinkingEl.innerHTML = `
-            <div class="message-content thinking">
-                <span class="message-author">🤔 智能体们正在思考...</span>
-                <div class="thinking-dots">
-                    <span></span><span></span><span></span>
-                </div>
-            </div>
-        `;
-
-        container.appendChild(thinkingEl);
-        this.scrollToBottom();
-    }
-
-    hideThinkingIndicator() {
-        const thinkingEl = document.getElementById('thinking-indicator');
-        if (thinkingEl) {
-            thinkingEl.remove();
+        // 隐藏欢迎界面
+        const welcomeScreen = messagesContainer.querySelector('.welcome-screen');
+        if (welcomeScreen) {
+            welcomeScreen.style.display = 'none';
         }
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}-message`;
+
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+
+        if (author) {
+            const authorSpan = document.createElement('span');
+            authorSpan.className = 'message-author';
+            authorSpan.textContent = author;
+            messageContent.appendChild(authorSpan);
+        }
+
+        const textDiv = document.createElement('div');
+        textDiv.className = 'message-text';
+        textDiv.innerHTML = this.formatContent(content);
+        messageContent.appendChild(textDiv);
+
+        // 添加时间戳
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'message-time';
+        timeDiv.textContent = new Date().toLocaleTimeString();
+        messageContent.appendChild(timeDiv);
+
+        messageDiv.appendChild(messageContent);
+        messagesContainer.appendChild(messageDiv);
+
+        // 滚动到底部
+        this.scrollToBottom();
+
+        return messageDiv;
+    }
+
+    addSystemMessage(content, type = 'system') {
+        return this.addMessage(type, content, null);
     }
 
     formatContent(content) {
+        if (!content) return '';
+
         return this.escapeHtml(content)
             .replace(/\n/g, '<br>')
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>');
     }
 
     escapeHtml(text) {
@@ -361,11 +474,16 @@ class MultiAgentCollaboration {
             container.scrollTop = container.scrollHeight;
         }
     }
+
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 }
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
     window.multiAgentCollaboration = new MultiAgentCollaboration();
+    console.log('🤝 多智能体协作系统已初始化');
 });
 
 // 导出供其他脚本使用
