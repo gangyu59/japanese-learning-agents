@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
@@ -49,8 +49,13 @@
 
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 30px;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .main-content.sidebar-collapsed {
+            grid-template-columns: 1fr 60px;
         }
 
         .chat-area {
@@ -63,31 +68,101 @@
             flex-direction: column;
         }
 
-        .agents-panel {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            height: fit-content;
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .agents-title {
-            font-size: 1.3em;
-            margin-bottom: 20px;
+        .agents-panel, .vocabulary-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .panel-title {
+            font-size: 1.2em;
             color: #2c3e50;
-            text-align: center;
+            font-weight: 600;
+        }
+
+        .collapse-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .collapse-btn:hover {
+            background: #5a67d8;
+            transform: scale(1.1);
+        }
+
+        .panel-content {
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .agents-panel.collapsed .panel-content,
+        .vocabulary-panel.collapsed .panel-content {
+            height: 0 !important;
+            opacity: 0;
+            margin-top: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .agents-panel.collapsed .panel-title,
+        .vocabulary-panel.collapsed .panel-title {
+            display: none;
+        }
+
+        .agents-panel.collapsed,
+        .vocabulary-panel.collapsed {
+            padding: 15px 10px !important;
+            width: 60px;
+        }
+
+        .agents-panel.collapsed .collapse-btn,
+        .vocabulary-panel.collapsed .collapse-btn {
+            margin: 0 auto;
+        }
+
+        .agents-panel.collapsed .panel-header,
+        .vocabulary-panel.collapsed .panel-header {
+            justify-content: center;
+            margin-bottom: 0;
         }
 
         .agent-card {
             background: #f8f9fa;
             border-radius: 15px;
             padding: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             border: 2px solid transparent;
             position: relative;
         }
@@ -113,15 +188,16 @@
         }
 
         .agent-avatar {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 16px;
+            flex-shrink: 0;
         }
 
         .tanaka { background: linear-gradient(45deg, #2196F3, #1976D2); }
@@ -133,22 +209,98 @@
 
         .agent-info {
             flex: 1;
+            min-width: 0;
         }
 
         .agent-name {
             font-weight: 600;
             margin-bottom: 3px;
             color: #2c3e50;
+            font-size: 0.95em;
         }
 
         .agent-role {
-            font-size: 0.9em;
+            font-size: 0.8em;
             color: #666;
         }
 
         .agent-emotion {
-            font-size: 1.2em;
-            margin-left: auto;
+            font-size: 1.1em;
+            flex-shrink: 0;
+        }
+
+        .vocabulary-panel {
+            flex: 1;
+            max-height: 500px;
+        }
+
+        .vocabulary-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .vocabulary-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.2s ease;
+        }
+
+        .vocabulary-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .vocab-word {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .vocab-romaji {
+            font-size: 0.9em;
+            color: #667eea;
+            font-style: italic;
+            margin-bottom: 4px;
+        }
+
+        .vocab-meaning {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .vocab-source {
+            font-size: 0.75em;
+            color: #999;
+            margin-top: 4px;
+            border-top: 1px solid #eee;
+            padding-top: 4px;
+        }
+
+        .empty-vocab {
+            text-align: center;
+            color: #999;
+            padding: 30px;
+            font-style: italic;
+        }
+
+        .clear-vocab-btn {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .clear-vocab-btn:hover {
+            background: #e9ecef;
         }
 
         .chat-messages {
@@ -291,6 +443,14 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
+
+            .main-content.sidebar-collapsed {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                order: -1;
+            }
         }
     </style>
 </head>
@@ -301,7 +461,7 @@
             <p>与AI智能体老师一起学习日语</p>
         </div>
 
-        <div class="main-content">
+        <div class="main-content" id="mainContent">
             <div class="chat-area">
                 <div class="chat-messages" id="chatMessages">
                     <div class="message agent-message">
@@ -316,343 +476,96 @@
 
                 <div class="chat-input">
                     <input type="text" class="input-field" placeholder="输入您的消息..." id="messageInput">
-                    <button class="send-button" onclick="sendMessage()" id="sendButton">发送</button>
+                    <button class="send-button" id="sendButton">发送</button>
                 </div>
             </div>
 
-            <div class="agents-panel">
-                <h3 class="agents-title">选择智能体老师</h3>
-
-                <div class="agent-card" onclick="selectAgent('tanaka')" id="card-tanaka">
-                    <div class="agent-avatar tanaka">田</div>
-                    <div class="agent-info">
-                        <div class="agent-name">田中先生</div>
-                        <div class="agent-role">语法专家</div>
+            <div class="sidebar" id="sidebar">
+                <div class="agents-panel" id="agentsPanel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">选择智能体老师</h3>
+                        <button class="collapse-btn" id="agentsCollapseBtn">
+                            <span>▼</span>
+                        </button>
                     </div>
-                    <div class="agent-emotion" id="emotion-tanaka">😐</div>
+                    <div class="panel-content" id="agentsContent">
+                        <div class="agent-card" id="card-tanaka">
+                            <div class="agent-avatar tanaka">田</div>
+                            <div class="agent-info">
+                                <div class="agent-name">田中先生</div>
+                                <div class="agent-role">语法专家</div>
+                            </div>
+                            <div class="agent-emotion" id="emotion-tanaka">😐</div>
+                        </div>
+
+                        <div class="agent-card" id="card-koumi">
+                            <div class="agent-avatar koumi">美</div>
+                            <div class="agent-info">
+                                <div class="agent-name">小美</div>
+                                <div class="agent-role">对话伙伴</div>
+                            </div>
+                            <div class="agent-emotion" id="emotion-koumi">😊</div>
+                        </div>
+
+                        <div class="agent-card" id="card-ai">
+                            <div class="agent-avatar ai">AI</div>
+                            <div class="agent-info">
+                                <div class="agent-name">アイ助手</div>
+                                <div class="agent-role">数据分析师</div>
+                            </div>
+                            <div class="agent-emotion" id="emotion-ai">🔍</div>
+                        </div>
+
+                        <div class="agent-card" id="card-yamada">
+                            <div class="agent-avatar yamada">山</div>
+                            <div class="agent-info">
+                                <div class="agent-name">山田先生</div>
+                                <div class="agent-role">文化专家</div>
+                            </div>
+                            <div class="agent-emotion" id="emotion-yamada">😌</div>
+                        </div>
+
+                        <div class="agent-card" id="card-sato">
+                            <div class="agent-avatar sato">佐</div>
+                            <div class="agent-info">
+                                <div class="agent-name">佐藤教练</div>
+                                <div class="agent-role">考试专家</div>
+                            </div>
+                            <div class="agent-emotion" id="emotion-sato">💪</div>
+                        </div>
+
+                        <div class="agent-card" id="card-membot">
+                            <div class="agent-avatar membot">M</div>
+                            <div class="agent-info">
+                                <div class="agent-name">MemBot</div>
+                                <div class="agent-role">记忆管家</div>
+                            </div>
+                            <div class="agent-emotion" id="emotion-membot">🧠</div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="agent-card" onclick="selectAgent('koumi')" id="card-koumi">
-                    <div class="agent-avatar koumi">美</div>
-                    <div class="agent-info">
-                        <div class="agent-name">小美</div>
-                        <div class="agent-role">对话伙伴</div>
+                <div class="vocabulary-panel" id="vocabularyPanel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">生词本</h3>
+                        <button class="collapse-btn" id="vocabularyCollapseBtn">
+                            <span>▼</span>
+                        </button>
                     </div>
-                    <div class="agent-emotion" id="emotion-koumi">😊</div>
-                </div>
-
-                <div class="agent-card" onclick="selectAgent('ai')" id="card-ai">
-                    <div class="agent-avatar ai">AI</div>
-                    <div class="agent-info">
-                        <div class="agent-name">アイ助手</div>
-                        <div class="agent-role">数据分析师</div>
+                    <div class="panel-content" id="vocabularyContent">
+                        <button class="clear-vocab-btn">清空生词本</button>
+                        <div class="vocabulary-list" id="vocabularyList">
+                            <div class="empty-vocab">
+                                📝 生词会在对话中自动收集
+                            </div>
+                        </div>
                     </div>
-                    <div class="agent-emotion" id="emotion-ai">🔍</div>
-                </div>
-
-                <div class="agent-card" onclick="selectAgent('yamada')" id="card-yamada">
-                    <div class="agent-avatar yamada">山</div>
-                    <div class="agent-info">
-                        <div class="agent-name">山田先生</div>
-                        <div class="agent-role">文化专家</div>
-                    </div>
-                    <div class="agent-emotion" id="emotion-yamada">😌</div>
-                </div>
-
-                <div class="agent-card" onclick="selectAgent('sato')" id="card-sato">
-                    <div class="agent-avatar sato">佐</div>
-                    <div class="agent-info">
-                        <div class="agent-name">佐藤教练</div>
-                        <div class="agent-role">考试专家</div>
-                    </div>
-                    <div class="agent-emotion" id="emotion-sato">💪</div>
-                </div>
-
-                <div class="agent-card" onclick="selectAgent('membot')" id="card-membot">
-                    <div class="agent-avatar membot">M</div>
-                    <div class="agent-info">
-                        <div class="agent-name">MemBot</div>
-                        <div class="agent-role">记忆管家</div>
-                    </div>
-                    <div class="agent-emotion" id="emotion-membot">🧠</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        const API_BASE_URL = 'http://localhost:8000';
-
-        const agents = {
-          tanaka: {
-            name: '田中先生',
-            role: '语法专家',
-            avatar: '👨‍🏫',
-            personality: { strict: 8, patient: 6, humor: 3 },
-            expertise: ['grammar', 'formal_language'],
-            speaking_style: 'formal',
-            emotions: ['😐', '🤔', '😤', '😊', '👍']
-          },
-          koumi: {
-            name: '小美',
-            role: '对话伙伴',
-            avatar: '👧',
-            personality: { strict: 2, patient: 9, humor: 8 },
-            expertise: ['conversation', 'casual_language', 'youth_culture'],
-            speaking_style: 'casual',
-            emotions: ['😊', '😄', '😍', '🤗', '😉']
-          },
-          ai: {
-            name: 'アイ',
-            role: '分析师',
-            avatar: '🤖',
-            personality: { strict: 5, patient: 7, humor: 4 },
-            expertise: ['analysis', 'personalization', 'data'],
-            speaking_style: 'professional',
-            emotions: ['🤔', '💡', '📊', '🔍', '⚡']
-          },
-          yamada: {
-            name: '山田先生',
-            role: '文化专家',
-            avatar: '🎌',
-            personality: { strict: 4, patient: 8, humor: 7 },
-            expertise: ['culture', 'history', 'traditions'],
-            speaking_style: 'storytelling',
-            emotions: ['😌', '🎎', '⛩️', '🍃', '📿']
-          },
-          sato: {
-            name: '佐藤教练',
-            role: '考试专家',
-            avatar: '🎯',
-            personality: { strict: 9, patient: 5, humor: 2 },
-            expertise: ['jlpt', 'testing', 'strategy'],
-            speaking_style: 'motivational',
-            emotions: ['😤', '💪', '🏆', '⚡', '🔥']
-          },
-          membot: {
-            name: '记忆管家',
-            role: '学习记录',
-            avatar: '🧠',
-            personality: { strict: 6, patient: 10, humor: 5 },
-            expertise: ['memory', 'progress', 'scheduling'],
-            speaking_style: 'systematic',
-            emotions: ['🧠', '📚', '⏰', '💾', '📈']
-          }
-        };
-
-
-        let currentAgents = new Set();
-        let sessionId = 'session_' + Date.now();
-        let isProcessing = false;
-
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('messageInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-        });
-
-        function selectAgent(agentId) {
-            const card = document.getElementById(`card-${agentId}`);
-
-            if (currentAgents.has(agentId)) {
-                currentAgents.delete(agentId);
-                card.classList.remove('active');
-                showNotification(`${agents[agentId].name} 已停用`);
-            } else {
-                currentAgents.add(agentId);
-                card.classList.add('active');
-                showNotification(`${agents[agentId].name} 已激活`);
-                addAgentMessage(agentId, `こんにちは！${agents[agentId].name}です。よろしくお願いします！`, [], [], getRandomEmotion(agentId));
-            }
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
-
-            if (!message || isProcessing) return;
-
-            if (currentAgents.size === 0) {
-                showNotification('请先选择至少一个智能体老师！');
-                return;
-            }
-
-            addMessage(message, 'user');
-            input.value = '';
-            setProcessing(true);
-
-            try {
-                await processMessageWithAPI(message);
-            } catch (error) {
-                console.error('消息处理错误:', error);
-                addSystemMessage('抱歉，系统出现错误，请稍后重试。');
-            } finally {
-                setProcessing(false);
-            }
-        }
-
-        async function processMessageWithAPI(userMessage) {
-            const activeAgentsList = Array.from(currentAgents);
-
-            for (const [idx, agentId] of activeAgentsList.entries()) {
-                try {
-                    if (idx > 0) {
-                        await new Promise(resolve => setTimeout(resolve, 1500));
-                    }
-
-                    const requestBody = {
-                        message: String(userMessage),
-                        user_id: 'demo_user',
-                        session_id: sessionId,
-                        agent_name: agentId,
-                        scene_context: 'general'
-                    };
-
-                    console.log(`发送给 ${agents[agentId].name}:`, requestBody);
-
-                    const response = await fetch(`${API_BASE_URL}/api/v1/chat/send`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json; charset=utf-8',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify(requestBody)
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log(`${agents[agentId].name} 响应:`, data);
-
-                        if (data.success && data.response) {
-                            const emotion = data.emotion || getRandomEmotion(agentId);
-                            updateAgentEmotion(agentId, emotion);
-                            addAgentMessage(agentId, data.response, data.learning_points || [], data.suggestions || [], emotion);
-                        } else {
-                            addAgentMessage(agentId, data.response || '抱歉，我无法理解您的问题。', [], [], '😅');
-                        }
-                    } else {
-                        console.error(`API请求失败 (${agents[agentId].name}):`, response.status);
-                        addAgentMessage(agentId, '抱歉，我现在无法回答，请稍后再试。', [], [], '😵');
-                    }
-                } catch (error) {
-                    console.error(`请求 ${agents[agentId].name} 时出错:`, error);
-                    addAgentMessage(agentId, '连接出现问题，请检查网络连接。', [], [], '😵');
-                }
-            }
-        }
-
-        function addMessage(content, sender) {
-            const chatMessages = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}-message`;
-            messageDiv.textContent = content;
-            chatMessages.appendChild(messageDiv);
-            scrollToBottom();
-        }
-
-        function addAgentMessage(agentId, content, learningPoints, suggestions, emotion) {
-            const chatMessages = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message agent-message';
-
-            let html = `
-                <div class="agent-header">
-                    <div class="agent-avatar-small ${agentId}">${getAgentAvatar(agentId)}</div>
-                    <span>${agents[agentId].name}：</span>
-                    <span class="agent-emotion">${emotion}</span>
-                </div>
-                <div>${content}</div>
-            `;
-
-            if (learningPoints && learningPoints.length > 0) {
-                html += `<div class="learning-points"><strong>📚 学习点：</strong> ${learningPoints.join(' • ')}</div>`;
-            }
-
-            if (suggestions && suggestions.length > 0) {
-                html += `<div class="suggestions"><strong>💡 建议：</strong> ${suggestions.join(' • ')}</div>`;
-            }
-
-            messageDiv.innerHTML = html;
-            chatMessages.appendChild(messageDiv);
-            scrollToBottom();
-        }
-
-        function addSystemMessage(content) {
-            const chatMessages = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message agent-message';
-            messageDiv.innerHTML = `
-                <div class="agent-header">
-                    <span style="color: #666;">🔔 系统：</span>
-                </div>
-                <div>${content}</div>
-            `;
-            chatMessages.appendChild(messageDiv);
-            scrollToBottom();
-        }
-
-        function getAgentAvatar(agentId) {
-            const avatars = {
-              'tanaka': '田', 'koumi': '美', 'ai': 'AI',
-              'yamada': '山', 'sato': '佐', 'membot': 'M'
-            };
-            return avatars[agentId] || '?';
-        }
-
-        function updateAgentEmotion(agentId, emotion) {
-            const emotionElement = document.getElementById(`emotion-${agentId}`);
-            if (emotionElement) {
-                emotionElement.textContent = emotion;
-            }
-        }
-
-        function getRandomEmotion(agentId) {
-            const emotions = agents[agentId].emotions;
-            return emotions[Math.floor(Math.random() * emotions.length)];
-        }
-
-        function setProcessing(processing) {
-            isProcessing = processing;
-            const sendButton = document.getElementById('sendButton');
-            const input = document.getElementById('messageInput');
-
-            if (processing) {
-                sendButton.innerHTML = '<div class="loading"></div>';
-                sendButton.disabled = true;
-                input.disabled = true;
-            } else {
-                sendButton.innerHTML = '发送';
-                sendButton.disabled = false;
-                input.disabled = false;
-            }
-        }
-
-        function showNotification(message) {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 15px 25px;
-                background: #667eea;
-                color: white;
-                border-radius: 10px;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                z-index: 10000;
-                animation: slideIn 0.3s ease-out;
-            `;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            setTimeout(() => notification.remove(), 3000);
-        }
-
-        function scrollToBottom() {
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-    </script>
+    <!-- 根据您的文件结构正确引用learning.js -->
+    <script src="../assets/js/learning.js"></script>
 </body>
 </html>
