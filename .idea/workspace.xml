@@ -4,34 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa9ee9da-64dc-4a4a-8082-3a8574f5e2b5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/core/agents/complete_agent_loader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/core/collaboration.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/core/grammar_workflows.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/llm_client.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/check_sqlite_schema_once.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/cleanup_sqlite_test_users.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/final_quick_verify.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/migrate_sqlite_add_grammar_point.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/migrate_sqlite_add_password_hash.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/migrate_sqlite_fill_missing_columns.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/migrate_sqlite_fix_learning_progress.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/migrate_sqlite_full_audit.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/run_all_tests.py" afterDir="false" />
+    <list default="true" id="fa9ee9da-64dc-4a4a-8082-3a8574f5e2b5" name="Changes" comment="v6.4&#10;完善了小说协作页面，把三个区域的长度都对齐了。">
+      <change afterPath="$PROJECT_DIR$/env_loading_diagnostic.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/pages/user_guide.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mock_api.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/simple_collaboration_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_multi_agent_collaboration.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/assets/css/novel.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/novel.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/japanese_learning.db" beforeDir="false" afterPath="$PROJECT_DIR$/japanese_learning.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/agents/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/agents/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/agents/workflows/collaboration.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/workflows/collaboration.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/agents/workflows/grammar_workflows.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/workflows/grammar_workflows.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/core/workflows/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/workflows/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/core/workflows/novel_collab.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/workflows/novel_collab.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/data_persistence_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/data_persistence_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/database_connection_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/database_connection_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/end_to_end_integration_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/end_to_end_integration_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/multi_agent_collaboration_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/multi_agent_collaboration_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/single_agent_regression_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/single_agent_regression_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/core/workflows/grammar_workflows.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/core/workflows/grammar_workflows.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/check_sqlite_schema_once.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/cleanup_sqlite_test_users.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/final_quick_verify.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/migrate_sqlite_add_grammar_point.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/migrate_sqlite_add_password_hash.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/migrate_sqlite_fill_missing_columns.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/migrate_sqlite_fix_learning_progress.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/migrate_sqlite_full_audit.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +33,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="HTML File" />
         <option value="Python Script" />
       </list>
     </option>
@@ -62,6 +55,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "JavaScript Debug.multi_agent_collaboration.html.executor": "Run",
+    "JavaScript Debug.profile.html.executor": "Run",
+    "JavaScript Debug.settings.html.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
@@ -84,6 +81,24 @@
       <recent name="C:\Users\1\Desktop\日语学习智能体\japanese-learning-agents\tests" />
     </key>
   </component>
+  <component name="RunManager" selected="JavaScript Debug.multi_agent_collaboration.html">
+    <configuration name="multi_agent_collaboration.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/main.py/frontend/pages/multi_agent_collaboration.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="profile.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/main.py/frontend/pages/profile.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="settings.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/main.py/frontend/pages/settings.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript Debug.multi_agent_collaboration.html" />
+        <item itemvalue="JavaScript Debug.settings.html" />
+        <item itemvalue="JavaScript Debug.profile.html" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -100,11 +115,44 @@
       <option name="presentableId" value="Default" />
       <updated>1756270554009</updated>
       <workItem from="1756270562930" duration="4000" />
-      <workItem from="1756861700781" duration="24200000" />
+      <workItem from="1756861700781" duration="38004000" />
     </task>
+    <task id="LOCAL-00001" summary="v6.3&#10;进行了五项测试包括：数据持续性、数据库连接、端到端集成、单智能体回归、多智能体协作。现在除了多智能体协作模块以外其它的测试都100%通过了。">
+      <option name="closed" value="true" />
+      <created>1756995180260</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1756995180260</updated>
+    </task>
+    <task id="LOCAL-00002" summary="v6.4&#10;完善了小说协作页面，把三个区域的长度都对齐了。">
+      <option name="closed" value="true" />
+      <created>1756995306269</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1756995306269</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="v6.3&#10;进行了五项测试包括：数据持续性、数据库连接、端到端集成、单智能体回归、多智能体协作。现在除了多智能体协作模块以外其它的测试都100%通过了。" />
+    <MESSAGE value="v6.4&#10;完善了小说协作页面，把三个区域的长度都对齐了。" />
+    <option name="LAST_COMMIT_MESSAGE" value="v6.4&#10;完善了小说协作页面，把三个区域的长度都对齐了。" />
   </component>
 </project>

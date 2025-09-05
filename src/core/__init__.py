@@ -1,27 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-Package exports for the core module.
-只做“相对导入”，避免运行方式不同导致找不到 core 包。
+把老包名 'core' 映射到新的 'src.core'，让历史代码/测试继续可用。
 """
+import importlib
+import sys as _sys
 
-# 适配层：你工程里提供了 src/core/grammar_workflows.py 的转发
-from .grammar_workflows import GrammarCollaborationWorkflows  # noqa: F401
+# 让 `import core` 指向当前包
+_sys.modules.setdefault("core", importlib.import_module(__name__))
 
-# 让外部可以 “from core.workflows import CollaborationWorkflow”
-from .workflows import CollaborationWorkflow  # noqa: F401
-
-# collaboration 相关（如果没有真实 orchestrator，也不会报错）
+# 同时把子包 core.workflows 指到 src.core.workflows
 try:
-    from .collaboration import (  # noqa: F401
-        MultiAgentOrchestrator,
-        CollaborationMode,
+    _sys.modules.setdefault(
+        "core.workflows",
+        importlib.import_module("src.core.workflows"),
     )
 except Exception:
+    # 如果运行环境特殊（例如直接以 'core' 为顶层包），静默忽略
     pass
-
-__all__ = [
-    "GrammarCollaborationWorkflows",
-    "CollaborationWorkflow",
-    "MultiAgentOrchestrator",
-    "CollaborationMode",
-]
