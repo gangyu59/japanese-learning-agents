@@ -1054,11 +1054,12 @@ class MultiAgentChatResponse(BaseModel):
 # 导入API路由 (这些文件稍后实现)
 API_ROUTES_AVAILABLE = False
 try:
-    from src.api.routers import chat, agents, learning, analytics
+    from src.api.routers import chat, agents, learning, analytics, progress
 
     # 检查是否有router属性
     if (hasattr(chat, 'router') and hasattr(agents, 'router') and
-            hasattr(learning, 'router') and hasattr(analytics, 'router')):
+            hasattr(learning, 'router') and hasattr(analytics, 'router') and
+            hasattr(progress, 'router')):
         API_ROUTES_AVAILABLE = True
     else:
         print("⚠️ API路由模块未完全实现，将只启动基础服务")
@@ -1915,6 +1916,71 @@ async def get_collaboration_modes():
         ]
     }
 
+@app.get("/health")
+async def health_check():
+    return {
+        "status": "healthy",
+        "progress_tracking": True,
+        "message": "日语学习系统运行正常"
+    }
+
+
+# 添加到main.py末尾
+@app.get("/api/v1/progress/summary")
+async def get_progress_summary(user_id: str = "demo_user"):
+    """获取学习进度摘要"""
+    try:
+        import sys
+        sys.path.append('src')
+        from data.repositories.progress_tracker import ProgressTracker
+
+        tracker = ProgressTracker()
+        summary = tracker.get_user_progress_summary(user_id)
+
+        return {
+            "success": True,
+            "data": summary
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
+
+@app.post("/api/v1/progress/track")
+async def track_learning_progress(
+        user_input: str,
+        agent_responses: dict,
+        session_id: str,
+        scene_context: str = "general"
+):
+    """手动追踪学习进度"""
+    try:
+        import sys
+        sys.path.append('src')
+        from data.repositories.progress_tracker import ProgressTracker
+
+        tracker = ProgressTracker()
+        learning_data = tracker.extract_learning_data(
+            user_input, agent_responses, session_id, scene_context
+        )
+
+        return {
+            "success": True,
+            "learning_data": {
+                "grammar_points_count": len(learning_data.get('grammar_points', [])),
+                "vocabulary_count": len(learning_data.get('vocabulary', [])),
+                "cultural_topics_count": len(learning_data.get('cultural_topics', [])),
+                "corrections_count": len(learning_data.get('corrections', []))
+            }
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
 
 # =================== WebSocket 路由 ===================
 
@@ -2112,6 +2178,7 @@ if API_ROUTES_AVAILABLE:
     app.include_router(agents.router, prefix="/api/agents", tags=["智能体"])
     app.include_router(learning.router, prefix="/api/learning", tags=["学习"])
     app.include_router(analytics.router, prefix="/api/analytics", tags=["分析"])
+    app.include_router(progress.router, tags=["进度追踪"])
 
 if __name__ == "__main__":
     uvicorn.run(
@@ -2121,3 +2188,77 @@ if __name__ == "__main__":
         reload=True,
         log_level="info"
     )
+
+# 简单的进度追踪端点
+@app.post("/api/v1/progress/track-simple")
+async def track_simple(
+    user_input: str, 
+    session_id: str,
+    agent_name: str = "unknown",
+    agent_content: str = ""
+):
+    try:
+        import sys
+        sys.path.append('src')
+        from data.repositories.progress_tracker import ProgressTracker
+        
+        tracker = ProgressTracker()
+        agent_responses = {
+            agent_name: {
+                'content': agent_content,
+                'agent_name': agent_name
+            }
+        }
+        
+        learning_data = tracker.extract_learning_data(
+            user_input, agent_responses, session_id, 'general'
+        )
+        
+        return {
+            'success': True,
+            'message': '学习数据追踪成功',
+            'learning_data': {
+                'grammar_points': len(learning_data.get('grammar_points', [])),
+                'vocabulary': len(learning_data.get('vocabulary', [])),
+                'cultural_topics': len(learning_data.get('cultural_topics', []))
+            }
+        }
+    except Exception as e:
+        return {'success': False, 'error': str(e)}
+
+
+@app.post("/api/v1/progress/track-working")
+async def track_progress_simple(
+    user_input: str,
+    agent_name: str,
+    agent_content: str,
+    session_id: str
+):
+    try:
+        import sys
+        sys.path.append('src')
+        from data.repositories.progress_tracker import ProgressTracker
+        
+        tracker = ProgressTracker()
+        agent_responses = {
+            agent_name: {
+                'content': agent_content,
+                'agent_name': agent_name
+            }
+        }
+        
+        learning_data = tracker.extract_learning_data(
+            user_input, agent_responses, session_id, 'general'
+        )
+        
+        return {
+            'success': True,
+            'message': '学习数据追踪成功',
+            'learning_data': {
+                'grammar_points': len(learning_data.get('grammar_points', [])),
+                'vocabulary': len(learning_data.get('vocabulary', [])),
+                'cultural_topics': len(learning_data.get('cultural_topics', []))
+            }
+        }
+    except Exception as e:
+        return {'success': False, 'error': str(e)}

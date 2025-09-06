@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 真实学习进度 - 日语学习系统</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/progress.css">
+</head>
+<body>
+    <div class="container">
+        <div class="loading-indicator">🔄 加载学习数据中...</div>
+
+        <!-- 进度内容将由JavaScript动态生成 -->
+        <div id="progress-content" style="display: none;">
+            <!-- 内容将由progress_real.js填充 -->
+        </div>
+
+        <!-- 刷新按钮 -->
+        <button class="refresh-progress" onclick="window.progressManager && window.progressManager.refreshProgress()">🔄</button>
+    </div>
+
+    <script src="assets/js/progress_real.js"></script>
+</body>
+</html>

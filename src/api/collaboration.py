@@ -1,63 +1,25 @@
-# src/api/collaboration.py
-"""
-Multi-Agent Collaboration API
-多智能体协作API端点
-"""
-
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Optional
-import asyncio
-import logging
-from datetime import datetime
-
-# 导入协作编排器
-from ..workflows.collaboration import MultiAgentOrchestrator, CollaborationMode, CollaborationResult
-
-router = APIRouter()
-logger = logging.getLogger(__name__)
-
-# 全局协作编排器实例
-orchestrator = MultiAgentOrchestrator()
 
 
-class MultiAgentChatRequest(BaseModel):
-    """多智能体聊天请求"""
-    message: str = Field(..., description="用户消息")
-    user_id: str = Field(..., description="用户ID")
-    session_id: str = Field(..., description="会话ID")
-    active_agents: List[str] = Field(..., description="参与的智能体列表")
-    collaboration_mode: str = Field(default="discussion", description="协作模式")
-    scene_context: str = Field(default="general", description="场景上下文")
-    additional_context: Dict[str, Any] = Field(default_factory=dict, description="额外上下文")
+# 进度追踪
+def track_learning_async(user_input: str, agent_responses: dict, session_id: str):
+    try:
+        import requests
+        requests.post("http://localhost:8000/api/v1/progress/track",
+                     json={
+                         "user_input": user_input,
+                         "agent_responses": agent_responses,
+                         "session_id": session_id
+                     }, timeout=1)
+    except:
+        pass
 
-
-class MultiAgentChatResponse(BaseModel):
-    """多智能体聊天响应"""
-    success: bool
-    session_id: str
-    collaboration_mode: str
-    agents_participated: List[str]
-    responses: List[Dict[str, Any]]  # 各智能体的响应
-    consensus: Optional[str]  # 达成的共识
-    conflicts: List[Dict[str, Any]]  # 冲突信息
-    final_recommendation: str  # 最终建议
-    user_arbitration_needed: bool  # 是否需要用户仲裁
-    timestamp: datetime
-
-
-class ConflictResolutionRequest(BaseModel):
-    """冲突解决请求"""
-    session_id: str
-    user_choice: str  # 用户的选择
-    conflict_id: str  # 冲突标识
-    additional_feedback: Optional[str] = None
-
-
+# === 修改现有的 multi_agent_chat 函数 ===
 @router.post("/multi-agent-chat", response_model=MultiAgentChatResponse)
 async def multi_agent_chat(request: MultiAgentChatRequest):
     """
-    多智能体协作聊天端点
+    多智能体协作聊天端点 - 已集成学习进度追踪
 
     支持多个智能体同时参与对话，自动检测和处理分歧
     """
@@ -100,8 +62,10 @@ async def multi_agent_chat(request: MultiAgentChatRequest):
 
         # 格式化响应
         formatted_responses = []
+        agent_responses_for_tracking = {}  # 用于进度追踪的响应格式
+
         for response in result.responses:
-            formatted_responses.append({
+            formatted_response = {
                 "agent_id": response.agent_id,
                 "agent_name": response.agent_name,
                 "content": response.content,
@@ -110,7 +74,19 @@ async def multi_agent_chat(request: MultiAgentChatRequest):
                 "learning_points": response.learning_points,
                 "suggestions": response.suggestions,
                 "timestamp": response.timestamp.isoformat()
-            })
+            }
+            formatted_responses.append(formatted_response)
+
+            # 为进度追踪准备数据
+            agent_responses_for_tracking[response.agent_name] = {
+                "content": response.content,
+                "agent_name": response.agent_name,
+                "learning_points": response.learning_points,
+                "suggestions": response.suggestions
+            }
+
+         # 追踪学习进度
+        track_learning_async(request.message, agent_responses_for_tracking, request.session_id)
 
         # 格式化冲突信息
         formatted_conflicts = []
@@ -140,113 +116,9 @@ async def multi_agent_chat(request: MultiAgentChatRequest):
         raise HTTPException(status_code=500, detail=f"协作处理失败: {str(e)}")
 
 
-@router.post("/resolve-conflict")
-async def resolve_conflict(request: ConflictResolutionRequest):
-    """
-    用户仲裁冲突端点
-
-    当智能体产生分歧时，用户可以通过此端点进行仲裁
-    """
-    try:
-        logger.info(f"用户仲裁冲突: {request.conflict_id}, 选择: {request.user_choice}")
-
-        # 这里可以记录用户的仲裁选择，用于后续学习
-        # TODO: 将用户选择保存到数据库，用于改善协作算法
-
-        return {
-            "success": True,
-            "message": "仲裁结果已记录，智能体们会学习您的偏好",
-            "conflict_id": request.conflict_id,
-            "user_choice": request.user_choice
-        }
-
-    except Exception as e:
-        logger.error(f"冲突解决错误: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"冲突解决失败: {str(e)}")
-
-
-@router.get("/collaboration-modes")
-async def get_collaboration_modes():
-    """获取支持的协作模式列表"""
-    return {
-        "modes": [
-            {
-                "id": "discussion",
-                "name": "自由讨论",
-                "description": "智能体们就话题进行自由讨论，展现不同观点"
-            },
-            {
-                "id": "correction",
-                "name": "协作纠错",
-                "description": "多个智能体协作纠正语法、用法等问题"
-            },
-            {
-                "id": "creation",
-                "name": "协作创作",
-                "description": "智能体们协作进行内容创作，如小说、对话等"
-            },
-            {
-                "id": "analysis",
-                "name": "深度分析",
-                "description": "从多个角度深入分析问题或内容"
-            }
-        ]
-    }
-
-
-@router.get("/active-agents")
-async def get_active_agents():
-    """获取可用的智能体列表"""
-    return {
-        "agents": [
-            {
-                "id": "tanaka",
-                "name": "田中先生",
-                "role": "语法专家",
-                "expertise": ["grammar", "syntax", "formal_language"],
-                "personality": "严谨、专业、注重准确性"
-            },
-            {
-                "id": "koumi",
-                "name": "小美",
-                "role": "对话伙伴",
-                "expertise": ["conversation", "casual_language", "youth_culture"],
-                "personality": "活泼、友善、年轻化用语"
-            },
-            {
-                "id": "ai",
-                "name": "アイ",
-                "role": "数据分析师",
-                "expertise": ["analysis", "statistics", "learning_optimization"],
-                "personality": "逻辑、准确、数据驱动"
-            },
-            {
-                "id": "yamada",
-                "name": "山田先生",
-                "role": "文化专家",
-                "expertise": ["culture", "history", "traditional_knowledge"],
-                "personality": "博学、风趣、传统智慧"
-            },
-            {
-                "id": "sato",
-                "name": "佐藤教练",
-                "role": "考试专家",
-                "expertise": ["jlpt", "exam_strategy", "goal_setting"],
-                "personality": "目标导向、激励、高效"
-            },
-            {
-                "id": "membot",
-                "name": "MemBot",
-                "role": "记忆管家",
-                "expertise": ["memory", "spaced_repetition", "progress_tracking"],
-                "personality": "系统化、精确、科学记忆"
-            }
-        ]
-    }
-
-
+# === 修改现有的 _single_agent_fallback 函数 ===
 async def _single_agent_fallback(request: MultiAgentChatRequest, agent_id: str):
-    """单智能体回退模式"""
+    """单智能体回退模式 - 已集成学习进度追踪"""
     try:
         # 使用现有的单智能体API逻辑
         agent = orchestrator.agents[agent_id]
@@ -261,6 +133,24 @@ async def _single_agent_fallback(request: MultiAgentChatRequest, agent_id: str):
             user_input=request.message,
             session_context=session_context,
             scene=request.scene_context
+        )
+
+        # === 新增：追踪单智能体的学习进度 ===
+        agent_name = result.get("agent_name", agent_id)
+        single_agent_responses = {
+            agent_name: {
+                "content": result.get("content", ""),
+                "agent_name": agent_name,
+                "learning_points": result.get("learning_points", []),
+                "suggestions": result.get("suggestions", [])
+            }
+        }
+
+        track_learning_progress(
+            user_input=request.message,
+            agent_responses=single_agent_responses,
+            session_id=request.session_id,
+            scene_context=request.scene_context
         )
 
         # 格式化为多智能体响应格式
@@ -291,35 +181,65 @@ async def _single_agent_fallback(request: MultiAgentChatRequest, agent_id: str):
         raise HTTPException(status_code=500, detail=f"单智能体回退失败: {str(e)}")
 
 
-# WebSocket支持（可选）
-@router.websocket("/ws/collaboration/{session_id}")
-async def collaboration_websocket(websocket, session_id: str):
-    """
-    WebSocket端点支持实时协作
+# === 如果你有单独的单智能体API，也需要类似的修改 ===
+# 例如，如果有类似这样的端点：
 
-    可以实时显示智能体的思考过程和协作流程
+@router.post("/single-agent-chat")
+async def single_agent_chat(request: SingleAgentChatRequest):
     """
-    await websocket.accept()
-
+    单智能体聊天端点 - 已集成学习进度追踪
+    """
     try:
-        while True:
-            # 接收前端消息
-            data = await websocket.receive_json()
+        # ... 现有的处理逻辑 ...
 
-            # 处理协作请求
-            # TODO: 实现实时协作逻辑
+        result = await agent.process_user_input(
+            user_input=request.message,
+            session_context=session_context,
+            scene=request.scene_context
+        )
 
-            # 发送响应
-            await websocket.send_json({
-                "type": "collaboration_update",
-                "session_id": session_id,
-                "data": data
-            })
+        # === 追踪学习进度 ===
+        agent_name = result.get("agent_name", request.agent_name)
+        agent_responses = {
+            agent_name: {
+                "content": result.get("content", ""),
+                "agent_name": agent_name,
+                "learning_points": result.get("learning_points", []),
+                "suggestions": result.get("suggestions", [])
+            }
+        }
+
+        track_learning_progress(
+            user_input=request.message,
+            agent_responses=agent_responses,
+            session_id=request.session_id,
+            scene_context=request.scene_context
+        )
+
+        # 返回原有格式的响应
+        return {
+            "response": result.get("content", "抱歉，我无法回答。"),
+            "agent_name": result.get("agent_name", request.agent_name),
+            "learning_points": result.get("learning_points", []),
+            "suggestions": result.get("suggestions", []),
+            "emotion": result.get("emotion", "😊"),
+            "success": not result.get("error", False)
+        }
 
     except Exception as e:
-        logger.error(f"WebSocket协作错误: {str(e)}")
-        await websocket.close()
+        return {
+            "response": f"系统错误：{str(e)}",
+            "success": False,
+            "error": str(e)
+        }
 
 
-# 导出路由
-__all__ = ['router']
+# === 添加进度追踪状态检查端点 ===
+@router.get("/progress-tracking-status")
+async def get_progress_tracking_status():
+    """检查进度追踪功能状态"""
+    return {
+        "progress_tracking_enabled": PROGRESS_TRACKER_AVAILABLE,
+        "message": "进度追踪功能正常" if PROGRESS_TRACKER_AVAILABLE else "进度追踪功能不可用",
+        "database_status": "connected" if PROGRESS_TRACKER_AVAILABLE else "not_available"
+    }

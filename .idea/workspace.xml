@@ -4,12 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa9ee9da-64dc-4a4a-8082-3a8574f5e2b5" name="Changes" comment="v7.1&#10;1）学习功能改进了，把对话中的生词罗列在一个生词本里，加上romaji注释。&#10;2）现在是用户自己输入的生词，而不是智能体回复的生词。">
-      <change afterPath="$PROJECT_DIR$/frontend/assets/data/vocab/vocab_jlpt_n5_n4.csv" afterDir="false" />
+    <list default="true" id="fa9ee9da-64dc-4a4a-8082-3a8574f5e2b5" name="Changes" comment="v7.2&#10;1）学习功能里的生词生成、导入、导出都成功了。&#10;2）切词还不太合理，经常整个一句话都被认为是生词，中文也被认为是日文。">
+      <change afterPath="$PROJECT_DIR$/frontend/assets/js/progress_real.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scripts/setup_progress_system.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/api/routers/progress.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/data/repositories/progress_tracker.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_database.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test_integration.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/assets/js/learning.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/learning.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/pages/learning.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/pages/learning.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/japanese_learning.db" beforeDir="false" afterPath="$PROJECT_DIR$/japanese_learning.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api/collaboration.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/collaboration.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/models/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/models/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/data/models/learning.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/models/learning.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,8 +28,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="HTML File" />
-        <option value="Python Script" />
         <option value="JavaScript File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -107,7 +115,7 @@
       <option name="presentableId" value="Default" />
       <updated>1756270554009</updated>
       <workItem from="1756270562930" duration="4000" />
-      <workItem from="1756861700781" duration="58057000" />
+      <workItem from="1756861700781" duration="69048000" />
     </task>
     <task id="LOCAL-00001" summary="v6.3&#10;进行了五项测试包括：数据持续性、数据库连接、端到端集成、单智能体回归、多智能体协作。现在除了多智能体协作模块以外其它的测试都100%通过了。">
       <option name="closed" value="true" />
@@ -149,7 +157,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757063093164</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="v7.2&#10;1）学习功能里的生词生成、导入、导出都成功了。&#10;2）切词还不太合理，经常整个一句话都被认为是生词，中文也被认为是日文。">
+      <option name="closed" value="true" />
+      <created>1757090529723</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1757090529723</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -172,6 +188,7 @@
     <MESSAGE value="v6.5&#10;1）修改了index页面，把所有的辅助页面都可以都导航转入。&#10;2）添加了指南页面，介绍所有功能，并可以直接转入各个相应的页面。&#10;3）多智能体的协作还没有完全functional。" />
     <MESSAGE value="v7.0&#10;重要的里程碑！多智能体的协作已经完全工作了。" />
     <MESSAGE value="v7.1&#10;1）学习功能改进了，把对话中的生词罗列在一个生词本里，加上romaji注释。&#10;2）现在是用户自己输入的生词，而不是智能体回复的生词。" />
-    <option name="LAST_COMMIT_MESSAGE" value="v7.1&#10;1）学习功能改进了，把对话中的生词罗列在一个生词本里，加上romaji注释。&#10;2）现在是用户自己输入的生词，而不是智能体回复的生词。" />
+    <MESSAGE value="v7.2&#10;1）学习功能里的生词生成、导入、导出都成功了。&#10;2）切词还不太合理，经常整个一句话都被认为是生词，中文也被认为是日文。" />
+    <option name="LAST_COMMIT_MESSAGE" value="v7.2&#10;1）学习功能里的生词生成、导入、导出都成功了。&#10;2）切词还不太合理，经常整个一句话都被认为是生词，中文也被认为是日文。" />
   </component>
 </project>

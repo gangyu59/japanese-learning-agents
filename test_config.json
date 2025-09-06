@@ -1,0 +1,36 @@
+{
+  "_comment": "日语学习Multi-Agent系统测试配置文件",
+  "database": {
+    "url": "sqlite:///./japanese_learning.db",
+    "test_timeout": 45
+  },
+  "api": {
+    "base_url": "http://localhost:8000",
+    "timeout": 15,
+    "_comment": "API服务地址和超时时间（秒）"
+  },
+  "test_phases": {
+    "phase_1_database": true,
+    "phase_2_single_agent": true,
+    "phase_3_collaboration": true,
+    "phase_4_persistence": true,
+    "phase_5_integration": true,
+    "_comment": "控制哪些测试阶段被执行"
+  },
+  "performance": {
+    "concurrent_requests": 5,
+    "max_response_time": 10,
+    "_comment": "性能测试参数"
+  },
+  "cleanup": {
+    "auto_cleanup": true,
+    "keep_test_data": false,
+    "_comment": "测试数据清理设置"
+  },
+  "reporting": {
+    "generate_html_report": true,
+    "save_detailed_logs": true,
+    "report_directory": "./test_reports",
+    "_comment": "测试报告生成设置"
+  }
+}
