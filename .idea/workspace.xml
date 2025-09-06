@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa9ee9da-64dc-4a4a-8082-3a8574f5e2b5" name="Changes" comment="v7.3&#10;学习进展追踪基本成功了：。&#10;✅ 数据库正常，包含真实学习数据&#10;✅ 进度计算引擎正常工作&#10;✅ API查询功能完全正常&#10;✅ 前端可以显示真实进度&#10;❌ 只是自动追踪有技术问题">
-      <change afterPath="$PROJECT_DIR$/frontend/assets/css/voice-minimal.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/assets/js/voice.js" afterDir="false" />
+    <list default="true" id="fa9ee9da-64dc-4a4a-8082-3a8574f5e2b5" name="Changes" comment="v8.0&#10;语音输入成功了：。&#10;✅ 识别准确&#10;✅ 输入简介&#10;✅ 与智能体互动正常&#10;❌ 识别过程中希望用hourglass来告知用户">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/assets/js/chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/chat.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/css/voice-minimal.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/voice-minimal.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/japanese_learning.db" beforeDir="false" afterPath="$PROJECT_DIR$/japanese_learning.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,7 +107,7 @@
       <option name="presentableId" value="Default" />
       <updated>1756270554009</updated>
       <workItem from="1756270562930" duration="4000" />
-      <workItem from="1756861700781" duration="72354000" />
+      <workItem from="1756861700781" duration="73014000" />
     </task>
     <task id="LOCAL-00001" summary="v6.3&#10;进行了五项测试包括：数据持续性、数据库连接、端到端集成、单智能体回归、多智能体协作。现在除了多智能体协作模块以外其它的测试都100%通过了。">
       <option name="closed" value="true" />
@@ -167,7 +165,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757130152519</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="v8.0&#10;语音输入成功了：。&#10;✅ 识别准确&#10;✅ 输入简介&#10;✅ 与智能体互动正常&#10;❌ 识别过程中希望用hourglass来告知用户">
+      <option name="closed" value="true" />
+      <created>1757133661465</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1757133661465</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -192,6 +198,7 @@
     <MESSAGE value="v7.1&#10;1）学习功能改进了，把对话中的生词罗列在一个生词本里，加上romaji注释。&#10;2）现在是用户自己输入的生词，而不是智能体回复的生词。" />
     <MESSAGE value="v7.2&#10;1）学习功能里的生词生成、导入、导出都成功了。&#10;2）切词还不太合理，经常整个一句话都被认为是生词，中文也被认为是日文。" />
     <MESSAGE value="v7.3&#10;学习进展追踪基本成功了：。&#10;✅ 数据库正常，包含真实学习数据&#10;✅ 进度计算引擎正常工作&#10;✅ API查询功能完全正常&#10;✅ 前端可以显示真实进度&#10;❌ 只是自动追踪有技术问题" />
-    <option name="LAST_COMMIT_MESSAGE" value="v7.3&#10;学习进展追踪基本成功了：。&#10;✅ 数据库正常，包含真实学习数据&#10;✅ 进度计算引擎正常工作&#10;✅ API查询功能完全正常&#10;✅ 前端可以显示真实进度&#10;❌ 只是自动追踪有技术问题" />
+    <MESSAGE value="v8.0&#10;语音输入成功了：。&#10;✅ 识别准确&#10;✅ 输入简介&#10;✅ 与智能体互动正常&#10;❌ 识别过程中希望用hourglass来告知用户" />
+    <option name="LAST_COMMIT_MESSAGE" value="v8.0&#10;语音输入成功了：。&#10;✅ 识别准确&#10;✅ 输入简介&#10;✅ 与智能体互动正常&#10;❌ 识别过程中希望用hourglass来告知用户" />
   </component>
 </project>

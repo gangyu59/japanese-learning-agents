@@ -10,6 +10,11 @@
     box-shadow: 0 0 15px rgba(229, 62, 62, 0.5);
 }
 
+/* 新增：缓慢闪烁动画 */
+.voice-btn.processing {
+    animation: voice-blink 1.2s ease-in-out infinite;
+}
+
 @keyframes voice-pulse {
     0% {
         box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.7);
@@ -19,6 +24,18 @@
     }
     100% {
         box-shadow: 0 0 0 0 rgba(229, 62, 62, 0);
+    }
+}
+
+/* 新增：缓慢闪烁动画效果 */
+@keyframes voice-blink {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.05);
     }
 }
 
