@@ -1642,6 +1642,15 @@
                 avatarStyle = getAgentAvatarStyle(senderId);
             }
 
+            // 为智能体消息添加播放按钮 - 修复转义问题
+            const actionsHtml = (senderId !== 'user') ? `
+                <div class="message-actions">
+                    <button class="speaker-btn" onclick="speakMessage(this)" title="播放语音" data-content="${encodeURIComponent(content)}">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                </div>
+            ` : '';
+
             messageDiv.innerHTML = `
                 <div class="message-avatar" style="${avatarStyle}">${avatarContent}</div>
                 <div class="message-content">
@@ -1649,7 +1658,8 @@
                         <strong>${senderName}</strong>
                         <span>${new Date().toLocaleTimeString()}</span>
                     </div>
-                    <div>${content}</div>
+                    <div class="message-text">${content}</div>
+                    ${actionsHtml}
                 </div>
             `;
 
@@ -1658,6 +1668,102 @@
 
             // 添加动画效果
             messageDiv.classList.add('bounce');
+        }
+
+        // 修复后的 speakMessage 函数
+        function speakMessage(buttonElement) {
+            // 从按钮的 data 属性获取内容
+            const encodedContent = buttonElement.getAttribute('data-content');
+            const content = decodeURIComponent(encodedContent);
+
+            // 检查语音管理器是否可用
+            if (typeof window.voiceManagerInstance === 'undefined' || !window.voiceManagerInstance) {
+                if (typeof VoiceInputManager !== 'undefined') {
+                    window.voiceManagerInstance = new VoiceInputManager();
+                } else {
+                    showNotification('语音功能不可用', 'warning');
+                    return;
+                }
+            }
+
+            // 如果正在播放，停止播放
+            if (window.voiceManagerInstance.isSpeaking()) {
+                window.voiceManagerInstance.stopSpeaking();
+                resetAllSpeakerButtons();
+                return;
+            }
+
+            // 重置所有按钮状态
+            resetAllSpeakerButtons();
+
+            // 设置当前按钮为加载状态
+            buttonElement.classList.add('loading');
+            buttonElement.innerHTML = '<i class="fas fa-cog fa-spin"></i>';
+
+            // 开始播放
+            try {
+                // 清理内容并播放
+                const cleanContent = window.voiceManagerInstance.cleanTextForSpeech(content);
+
+                if (!cleanContent.trim()) {
+                    showNotification('没有可播放的日语内容', 'warning');
+                    resetSpeakerButton(buttonElement);
+                    return;
+                }
+
+                // 创建语音合成实例
+                const utterance = new SpeechSynthesisUtterance(cleanContent);
+                utterance.lang = 'ja-JP';
+                utterance.rate = 0.8;
+                utterance.pitch = 1.0;
+                utterance.volume = 0.8;
+
+                // 选择日语语音
+                const voices = speechSynthesis.getVoices();
+                const japaneseVoice = voices.find(v => v.lang.startsWith('ja'));
+                if (japaneseVoice) {
+                    utterance.voice = japaneseVoice;
+                }
+
+                // 播放开始时
+                utterance.onstart = () => {
+                    buttonElement.classList.remove('loading');
+                    buttonElement.classList.add('playing');
+                    buttonElement.innerHTML = '<i class="fas fa-stop"></i>';
+                };
+
+                // 播放结束时
+                utterance.onend = () => {
+                    resetAllSpeakerButtons();
+                };
+
+                // 播放错误时
+                utterance.onerror = (event) => {
+                    console.error('语音播放错误:', event.error);
+                    showNotification('语音播放失败', 'error');
+                    resetAllSpeakerButtons();
+                };
+
+                speechSynthesis.speak(utterance);
+
+            } catch (error) {
+                console.error('播放失败:', error);
+                showNotification('语音播放失败', 'error');
+                resetSpeakerButton(buttonElement);
+            }
+        }
+
+        // 重置所有播放按钮状态
+        function resetAllSpeakerButtons() {
+            document.querySelectorAll('.speaker-btn').forEach(btn => {
+                resetSpeakerButton(btn);
+            });
+        }
+
+        // 重置单个播放按钮状态
+        function resetSpeakerButton(btn) {
+            btn.classList.remove('loading', 'playing');
+            btn.innerHTML = '<i class="fas fa-volume-up"></i>';
         }
 
         // 获取智能体头像样式

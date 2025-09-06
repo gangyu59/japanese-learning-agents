@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>语音功能测试</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+            margin: 0;
+        }
+
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .message-content {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            max-width: 70%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .message-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.8em;
+            color: #718096;
+        }
+
+        .message-actions {
+            margin-top: 8px;
+            display: flex;
+            gap: 8px;
+            opacity: 1;
+        }
+
+        .speaker-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .speaker-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .speaker-btn.playing {
+            background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+            animation: speaker-pulse 1.5s ease-in-out infinite;
+        }
+
+        .speaker-btn.loading {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+        }
+
+        .speaker-btn.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes speaker-pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(237, 137, 54, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(237, 137, 54, 0);
+            }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .test-controls {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #e6fffa;
+            border-radius: 8px;
+        }
+
+        .test-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .test-btn:hover {
+            background: #3182ce;
+        }
+
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎌 语音功能测试页面</h1>
+
+        <div class="test-controls">
+            <h3>测试控制</h3>
+            <button class="test-btn" onclick="addTestMessage()">添加测试消息</button>
+            <button class="test-btn" onclick="testDirectPlay()">直接播放测试</button>
+            <button class="test-btn" onclick="checkSpeechSynthesis()">检查语音合成</button>
+            <button class="test-btn" onclick="listVoices()">列出可用语音</button>
+            <button class="test-btn" onclick="stopAllSpeech()">停止所有播放</button>
+            <div id="status" class="status info">准备就绪</div>
+        </div>
+
+        <div id="messages">
+            <!-- 预设测试消息 -->
+            <div class="message">
+                <div class="message-avatar" style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);">👨‍🏫</div>
+                <div class="message-content">
+                    <div class="message-meta">
+                        <strong>田中先生</strong>
+                        <span>测试消息</span>
+                    </div>
+                    <div>こんにちは。日本語の学習を始めましょう。</div>
+                    <div class="message-actions">
+                        <button class="speaker-btn" onclick="speakMessageDirect(this)" title="播放语音" data-content="こんにちは。日本語の学習を始めましょう。">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="message">
+                <div class="message-avatar" style="background: linear-gradient(135deg, #ed64a6 0%, #d53f8c 100%);">👧</div>
+                <div class="message-content">
+                    <div class="message-meta">
+                        <strong>小美</strong>
+                        <span>测试消息</span>
+                    </div>
+                    <div>やっほー！一緒に楽しく日本語を練習しよう！</div>
+                    <div class="message-actions">
+                        <button class="speaker-btn" onclick="speakMessageDirect(this)" title="播放语音" data-content="やっほー！一緒に楽しく日本語を練習しよう！">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let messageCounter = 0;
+
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        function addTestMessage() {
+            messageCounter++;
+            const messages = document.getElementById('messages');
+            const testTexts = [
+                'ありがとうございます。',
+                'おはようございます。',
+                'こんばんは。お疲れ様でした。',
+                'すみません、もう一度お願いします。',
+                '今日はいい天気ですね。'
+            ];
+
+            const randomText = testTexts[Math.floor(Math.random() * testTexts.length)];
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.innerHTML = `
+                <div class="message-avatar" style="background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);">🎌</div>
+                <div class="message-content">
+                    <div class="message-meta">
+                        <strong>测试智能体 ${messageCounter}</strong>
+                        <span>${new Date().toLocaleTimeString()}</span>
+                    </div>
+                    <div>${randomText}</div>
+                    <div class="message-actions">
+                        <button class="speaker-btn" onclick="speakMessageDirect(this)" title="播放语音" data-content="${randomText}">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            messages.appendChild(messageDiv);
+            updateStatus(`添加了测试消息: ${randomText}`, 'success');
+        }
+
+        function speakMessageDirect(buttonElement) {
+            const content = buttonElement.getAttribute('data-content');
+            updateStatus(`尝试播放: ${content}`, 'info');
+
+            if (!content) {
+                updateStatus('错误: 没有找到播放内容', 'error');
+                return;
+            }
+
+            // 停止当前播放
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+                resetAllButtons();
+                updateStatus('停止了当前播放', 'info');
+                return;
+            }
+
+            // 重置所有按钮
+            resetAllButtons();
+
+            // 设置加载状态
+            buttonElement.classList.add('loading');
+            buttonElement.innerHTML = '<i class="fas fa-cog fa-spin"></i>';
+
+            try {
+                const utterance = new SpeechSynthesisUtterance(content);
+                utterance.lang = 'ja-JP';
+                utterance.rate = 0.8;
+                utterance.pitch = 1.0;
+                utterance.volume = 0.8;
+
+                // 设置语音
+                const voices = speechSynthesis.getVoices();
+                const japaneseVoice = voices.find(v => v.lang.startsWith('ja'));
+                if (japaneseVoice) {
+                    utterance.voice = japaneseVoice;
+                    updateStatus(`使用日语语音: ${japaneseVoice.name}`, 'success');
+                } else {
+                    updateStatus('未找到日语语音，使用系统默认', 'info');
+                }
+
+                // 播放事件处理
+                utterance.onstart = () => {
+                    buttonElement.classList.remove('loading');
+                    buttonElement.classList.add('playing');
+                    buttonElement.innerHTML = '<i class="fas fa-stop"></i>';
+                    updateStatus('开始播放语音', 'success');
+                };
+
+                utterance.onend = () => {
+                    resetAllButtons();
+                    updateStatus('播放完成', 'success');
+                };
+
+                utterance.onerror = (event) => {
+                    updateStatus(`播放错误: ${event.error}`, 'error');
+                    resetAllButtons();
+                };
+
+                // 开始播放
+                speechSynthesis.speak(utterance);
+
+            } catch (error) {
+                updateStatus(`播放失败: ${error.message}`, 'error');
+                resetAllButtons();
+            }
+        }
+
+        function resetAllButtons() {
+            document.querySelectorAll('.speaker-btn').forEach(btn => {
+                btn.classList.remove('loading', 'playing');
+                btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+            });
+        }
+
+        function testDirectPlay() {
+            updateStatus('测试直接播放...', 'info');
+
+            const utterance = new SpeechSynthesisUtterance('これはテストです。');
+            utterance.lang = 'ja-JP';
+
+            utterance.onstart = () => updateStatus('直接播放开始', 'success');
+            utterance.onend = () => updateStatus('直接播放完成', 'success');
+            utterance.onerror = (e) => updateStatus(`直接播放错误: ${e.error}`, 'error');
+
+            speechSynthesis.speak(utterance);
+        }
+
+        function checkSpeechSynthesis() {
+            if ('speechSynthesis' in window) {
+                updateStatus('语音合成 API 可用', 'success');
+
+                const voices = speechSynthesis.getVoices();
+                const japaneseVoices = voices.filter(v => v.lang.startsWith('ja'));
+
+                if (japaneseVoices.length > 0) {
+                    updateStatus(`找到 ${japaneseVoices.length} 个日语语音`, 'success');
+                } else {
+                    updateStatus('未找到日语语音，但可以使用系统默认语音', 'info');
+                }
+            } else {
+                updateStatus('语音合成 API 不可用', 'error');
+            }
+        }
+
+        function listVoices() {
+            const voices = speechSynthesis.getVoices();
+
+            if (voices.length === 0) {
+                updateStatus('未找到任何语音，尝试等待加载...', 'info');
+
+                speechSynthesis.onvoiceschanged = () => {
+                    const newVoices = speechSynthesis.getVoices();
+                    updateStatus(`加载了 ${newVoices.length} 个语音`, 'success');
+
+                    const japaneseVoices = newVoices.filter(v => v.lang.startsWith('ja'));
+                    console.log('日语语音:', japaneseVoices);
+
+                    speechSynthesis.onvoiceschanged = null;
+                };
+                return;
+            }
+
+            const japaneseVoices = voices.filter(v => v.lang.startsWith('ja'));
+
+            console.log('所有语音:', voices);
+            console.log('日语语音:', japaneseVoices);
+
+            if (japaneseVoices.length > 0) {
+                updateStatus(`可用日语语音: ${japaneseVoices.map(v => v.name).join(', ')}`, 'success');
+            } else {
+                updateStatus('未找到专门的日语语音，但可以使用系统默认', 'info');
+            }
+        }
+
+        function stopAllSpeech() {
+            speechSynthesis.cancel();
+            resetAllButtons();
+            updateStatus('已停止所有语音播放', 'info');
+        }
+
+        // 页面加载完成后检查语音功能
+        window.addEventListener('load', () => {
+            updateStatus('页面加载完成，检查语音功能...', 'info');
+            setTimeout(() => {
+                checkSpeechSynthesis();
+                listVoices();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

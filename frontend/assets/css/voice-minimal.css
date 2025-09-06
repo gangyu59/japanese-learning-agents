@@ -79,16 +79,92 @@
     }
 }
 
-/* 语音状态指示器 */
-.voice-status-mini {
-    font-size: 0.8em;
-    color: #666;
-    text-align: center;
-    padding: 4px;
-    background: rgba(66, 153, 225, 0.1);
-    border-radius: 4px;
-    margin-top: 4px;
-    display: none;
+/* 新增：消息播放按钮样式 */
+.message-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.message:hover .message-actions {
+    opacity: 1;
+}
+
+.speaker-btn {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.speaker-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
+}
+
+.speaker-btn.playing {
+    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+    animation: speaker-pulse 1.5s ease-in-out infinite;
+}
+
+.speaker-btn.loading {
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+}
+
+.speaker-btn.loading i {
+    animation: spin 1s linear infinite;
+}
+
+/* 播放按钮动画 */
+@keyframes speaker-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(237, 137, 54, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 6px rgba(237, 137, 54, 0);
+    }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 音波动画效果 */
+.speaker-btn.playing::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    animation: sound-wave 0.8s ease-in-out infinite;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes sound-wave {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0.3;
+    }
 }
 
 /* 语音识别候选项对话框 */

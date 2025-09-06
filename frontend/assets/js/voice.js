@@ -238,7 +238,15 @@ class VoiceInputManager {
         // 停止当前播放
         this.synthesis.cancel();
 
-        const utterance = new SpeechSynthesisUtterance(text);
+        // 清理文本：移除HTML标签和特殊标记
+        const cleanText = this.cleanTextForSpeech(text);
+
+        if (!cleanText.trim()) {
+            console.warn('没有可播放的文本内容');
+            return;
+        }
+
+        const utterance = new SpeechSynthesisUtterance(cleanText);
         utterance.lang = language;
         utterance.rate = 0.8;   // 语速
         utterance.pitch = 1.0;  // 音调
@@ -251,7 +259,60 @@ class VoiceInputManager {
             utterance.voice = voice;
         }
 
+        // 添加播放事件监听
+        utterance.onstart = () => {
+            console.log('开始播放:', cleanText);
+        };
+
+        utterance.onend = () => {
+            console.log('播放完成');
+        };
+
+        utterance.onerror = (event) => {
+            console.error('播放错误:', event.error);
+        };
+
         this.synthesis.speak(utterance);
+    }
+
+    /**
+     * 清理文本用于语音播放
+     */
+    cleanTextForSpeech(text) {
+        if (!text) return '';
+
+        // 移除HTML标签
+        let cleanText = text.replace(/<[^>]*>/g, '');
+
+        // 移除模拟响应标记
+        cleanText = cleanText.replace(/\*\[.*?\]\*/g, '');
+
+        // 移除中文翻译部分（保留日语）
+        const parts = cleanText.split(/\*\*中文翻译：\*\*|\*\*中文提示：\*\*/);
+        if (parts.length > 1) {
+            cleanText = parts[0].trim();
+        }
+
+        // 移除多余的空白字符
+        cleanText = cleanText.replace(/\s+/g, ' ').trim();
+
+        return cleanText;
+    }
+
+    /**
+     * 停止当前播放
+     */
+    stopSpeaking() {
+        if (this.synthesis) {
+            this.synthesis.cancel();
+        }
+    }
+
+    /**
+     * 检查是否正在播放
+     */
+    isSpeaking() {
+        return this.synthesis && this.synthesis.speaking;
     }
 
     /**
