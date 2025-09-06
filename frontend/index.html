@@ -250,19 +250,38 @@
             color: rgba(255,255,255,0.8);
         }
 
+        /* 替换思考指示器为旋转半圆圈 */
         .thinking-indicator {
             display: none;
-            padding: 10px 20px;
-            background: #fff3cd;
-            border-radius: 20px;
-            margin: 10px 0;
-            font-style: italic;
-            color: #856404;
+            padding: 15px 0;
+            text-align: center;
         }
 
         .thinking-indicator.active {
-            display: block;
-            animation: pulse 1.5s infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #4299e1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .thinking-text {
+            color: #718096;
+            font-style: italic;
+            font-size: 0.9em;
         }
 
         .chat-input {
@@ -653,6 +672,70 @@
             .nav-links {
                 display: none;
             }
+        }
+
+        .main-response {
+            background: #f7fafc;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            font-weight: 500;
+            border-left: 4px solid #4299e1;
+        }
+
+        .explanation-section {
+            background: #fff5f5;
+            margin-bottom: 10px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            border-left: 3px solid #fed7d7;
+        }
+
+        .translation-section {
+            background: #f0fff4;
+            border-left: 3px solid #9ae6b4;
+        }
+
+        .grammar-section {
+            background: #fffaf0;
+            border-left: 3px solid #fbd38d;
+        }
+
+        .example-section {
+            background: #ebf8ff;
+            border-left: 3px solid #90cdf4;
+        }
+
+        .suggestion-section {
+            background: #f7fafc;
+            border-left: 3px solid #a0aec0;
+        }
+
+        .message-actions {
+            margin-top: 8px;
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .main-response:hover .message-actions {
+            opacity: 1;
+        }
+
+        .analysis-section {
+            background: #e6fffa;
+            border-left: 3px solid #4fd1c7;
+        }
+
+        .result-section {
+            background: #f0fff4;
+            border-left: 3px solid #68d391;
+        }
+
+        .explanation-section {
+            background: #fffaf0;
+            border-left: 3px solid #f6ad55;
         }
     </style>
     <link href="assets/css/voice-minimal.css" rel="stylesheet">
@@ -1137,6 +1220,7 @@
             culture: 40,
             todayTime: 45
         };
+        let isVoiceRecording = false;
 
         // 新增：后端API配置
         const API_BASE_URL = 'http://localhost:8000';
@@ -1642,14 +1726,11 @@
                 avatarStyle = getAgentAvatarStyle(senderId);
             }
 
-            // 为智能体消息添加播放按钮 - 修复转义问题
-            const actionsHtml = (senderId !== 'user') ? `
-                <div class="message-actions">
-                    <button class="speaker-btn" onclick="speakMessage(this)" title="播放语音" data-content="${encodeURIComponent(content)}">
-                        <i class="fas fa-volume-up"></i>
-                    </button>
-                </div>
-            ` : '';
+            // 格式化智能体回复内容
+            let formattedContent = content;
+            if (senderId !== 'user') {
+                formattedContent = formatAgentResponse(content);
+            }
 
             messageDiv.innerHTML = `
                 <div class="message-avatar" style="${avatarStyle}">${avatarContent}</div>
@@ -1658,8 +1739,7 @@
                         <strong>${senderName}</strong>
                         <span>${new Date().toLocaleTimeString()}</span>
                     </div>
-                    <div class="message-text">${content}</div>
-                    ${actionsHtml}
+                    ${formattedContent}
                 </div>
             `;
 
@@ -1670,100 +1750,169 @@
             messageDiv.classList.add('bounce');
         }
 
-        // 修复后的 speakMessage 函数
-        function speakMessage(buttonElement) {
-            // 从按钮的 data 属性获取内容
-            const encodedContent = buttonElement.getAttribute('data-content');
-            const content = decodeURIComponent(encodedContent);
+        // 改进的格式化智能体回复函数
+        function formatAgentResponse(content) {
+            let sections = [];
 
-            // 检查语音管理器是否可用
-            if (typeof window.voiceManagerInstance === 'undefined' || !window.voiceManagerInstance) {
-                if (typeof VoiceInputManager !== 'undefined') {
-                    window.voiceManagerInstance = new VoiceInputManager();
-                } else {
-                    showNotification('语音功能不可用', 'warning');
-                    return;
+            // 处理已经有良好格式的回复（如アイ的回复）
+            if (content.includes('【') && content.includes('】')) {
+                // 按【】分割
+                const parts = content.split(/(?=【)/);
+
+                parts.forEach((part, index) => {
+                    if (part.trim()) {
+                        if (index === 0) {
+                            // 第一部分是主要回复
+                            sections.push(`
+                                <div class="message-text main-response">
+                                    ${part.trim()}
+                                    <div class="message-actions">
+                                        <button class="speaker-btn" onclick="speakMessage(this)" title="播放语音" data-content="${encodeURIComponent(part.trim())}">
+                                            <i class="fas fa-volume-up"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            `);
+                        } else {
+                            // 其他部分是解释
+                            let sectionClass = getSectionClass(part);
+                            sections.push(`
+                                <div class="message-text ${sectionClass}">
+                                    ${part.trim()}
+                                </div>
+                            `);
+                        }
+                    }
+                });
+            }
+            // 处理混合格式的回复（如山田先生的回复）
+            else {
+                // 尝试分离日语主要内容和中文解释
+                const sentences = content.split(/[。！？]/);
+                let japanesePart = '';
+                let chinesePart = '';
+
+                sentences.forEach(sentence => {
+                    sentence = sentence.trim();
+                    if (!sentence) return;
+
+                    // 检查是否主要包含日文字符
+                    const hasHiragana = /[\u3040-\u309F]/.test(sentence);
+                    const hasKatakana = /[\u30A0-\u30FF]/.test(sentence);
+                    const chineseRatio = (sentence.match(/[一-龯]/g) || []).length / sentence.length;
+
+                    // 如果包含假名或中文占比较低，归为日语部分
+                    if ((hasHiragana || hasKatakana) && chineseRatio < 0.7) {
+                        japanesePart += sentence + '。';
+                    } else if (chineseRatio > 0.3) {
+                        chinesePart += sentence + '。';
+                    }
+                });
+
+                // 添加日语主要部分
+                if (japanesePart.trim()) {
+                    // 清理日语部分，移除括号内的中文解释
+                    const cleanJapanese = japanesePart
+                        .replace(/（[^）]*）/g, '')  // 移除中文括号
+                        .replace(/\([^)]*\)/g, '')   // 移除英文括号
+                        .replace(/\*\*.*?\*\*/g, '') // 移除星号标记
+                        .replace(/。+/g, '。')       // 合并多个句号
+                        .trim();
+
+                    sections.push(`
+                        <div class="message-text main-response">
+                            ${cleanJapanese}
+                            <div class="message-actions">
+                                <button class="speaker-btn" onclick="speakMessage(this)" title="播放语音" data-content="${encodeURIComponent(cleanJapanese)}">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `);
+                }
+
+                // 添加中文解释部分
+                if (chinesePart.trim()) {
+                    sections.push(`
+                        <div class="message-text translation-section">
+                            <strong>文化解释：</strong><br>
+                            ${chinesePart.trim()}
+                        </div>
+                    `);
+                }
+
+                // 如果没有明确分离，就作为整体处理但仍然只播放日语部分
+                if (!japanesePart.trim() && !chinesePart.trim()) {
+                    // 提取前面的日语句子作为主要内容
+                    const firstSentences = content.split(/[。！？]/);
+                    let mainContent = '';
+                    let foundJapanese = false;
+
+                    for (let sentence of firstSentences.slice(0, 3)) { // 只取前3句
+                        sentence = sentence.trim();
+                        if (sentence && (/[\u3040-\u309F\u30A0-\u30FF]/.test(sentence))) {
+                            mainContent += sentence + '。';
+                            foundJapanese = true;
+                        }
+                        if (foundJapanese && sentence && !/[\u3040-\u309F\u30A0-\u30FF]/.test(sentence)) {
+                            break; // 遇到纯中文句子就停止
+                        }
+                    }
+
+                    if (mainContent) {
+                        sections.push(`
+                            <div class="message-text main-response">
+                                ${mainContent}
+                                <div class="message-actions">
+                                    <button class="speaker-btn" onclick="speakMessage(this)" title="播放语音" data-content="${encodeURIComponent(mainContent)}">
+                                        <i class="fas fa-volume-up"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `);
+
+                        // 剩余内容作为解释
+                        const remainingContent = content.replace(mainContent, '').trim();
+                        if (remainingContent) {
+                            sections.push(`
+                                <div class="message-text explanation-section">
+                                    ${remainingContent}
+                                </div>
+                            `);
+                        }
+                    } else {
+                        // 如果完全无法分离，就保持原样但提取播放内容
+                        const playContent = content.split(/[。！？]/)[0] + '。';
+                        sections.push(`
+                            <div class="message-text main-response">
+                                ${content}
+                                <div class="message-actions">
+                                    <button class="speaker-btn" onclick="speakMessage(this)" title="播放语音" data-content="${encodeURIComponent(playContent)}">
+                                        <i class="fas fa-volume-up"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `);
+                    }
                 }
             }
 
-            // 如果正在播放，停止播放
-            if (window.voiceManagerInstance.isSpeaking()) {
-                window.voiceManagerInstance.stopSpeaking();
-                resetAllSpeakerButtons();
-                return;
-            }
-
-            // 重置所有按钮状态
-            resetAllSpeakerButtons();
-
-            // 设置当前按钮为加载状态
-            buttonElement.classList.add('loading');
-            buttonElement.innerHTML = '<i class="fas fa-cog fa-spin"></i>';
-
-            // 开始播放
-            try {
-                // 清理内容并播放
-                const cleanContent = window.voiceManagerInstance.cleanTextForSpeech(content);
-
-                if (!cleanContent.trim()) {
-                    showNotification('没有可播放的日语内容', 'warning');
-                    resetSpeakerButton(buttonElement);
-                    return;
-                }
-
-                // 创建语音合成实例
-                const utterance = new SpeechSynthesisUtterance(cleanContent);
-                utterance.lang = 'ja-JP';
-                utterance.rate = 0.8;
-                utterance.pitch = 1.0;
-                utterance.volume = 0.8;
-
-                // 选择日语语音
-                const voices = speechSynthesis.getVoices();
-                const japaneseVoice = voices.find(v => v.lang.startsWith('ja'));
-                if (japaneseVoice) {
-                    utterance.voice = japaneseVoice;
-                }
-
-                // 播放开始时
-                utterance.onstart = () => {
-                    buttonElement.classList.remove('loading');
-                    buttonElement.classList.add('playing');
-                    buttonElement.innerHTML = '<i class="fas fa-stop"></i>';
-                };
-
-                // 播放结束时
-                utterance.onend = () => {
-                    resetAllSpeakerButtons();
-                };
-
-                // 播放错误时
-                utterance.onerror = (event) => {
-                    console.error('语音播放错误:', event.error);
-                    showNotification('语音播放失败', 'error');
-                    resetAllSpeakerButtons();
-                };
-
-                speechSynthesis.speak(utterance);
-
-            } catch (error) {
-                console.error('播放失败:', error);
-                showNotification('语音播放失败', 'error');
-                resetSpeakerButton(buttonElement);
-            }
+            return sections.join('');
         }
 
-        // 重置所有播放按钮状态
-        function resetAllSpeakerButtons() {
-            document.querySelectorAll('.speaker-btn').forEach(btn => {
-                resetSpeakerButton(btn);
-            });
-        }
-
-        // 重置单个播放按钮状态
-        function resetSpeakerButton(btn) {
-            btn.classList.remove('loading', 'playing');
-            btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        // 辅助函数：判断段落类型
+        function getSectionClass(content) {
+            if (content.includes('データ') || content.includes('分析') || content.includes('レポート')) {
+                return 'analysis-section';
+            } else if (content.includes('提案') || content.includes('推奨') || content.includes('最適')) {
+                return 'suggestion-section';
+            } else if (content.includes('結果') || content.includes('効果')) {
+                return 'result-section';
+            } else if (content.includes('例') || content.includes('示例')) {
+                return 'example-section';
+            } else {
+                return 'explanation-section';
+            }
         }
 
         // 获取智能体头像样式
@@ -1790,12 +1939,19 @@
 
         // 显示/隐藏思考指示器
         function showThinkingIndicator() {
-            document.getElementById('thinkingIndicator').classList.add('active');
+            const indicator = document.getElementById('thinkingIndicator');
+            indicator.innerHTML = `
+                <div class="spinner"></div>
+                <span class="thinking-text">智能体正在思考中...</span>
+            `;
+            indicator.classList.add('active');
             isThinking = true;
         }
 
         function hideThinkingIndicator() {
-            document.getElementById('thinkingIndicator').classList.remove('active');
+            const indicator = document.getElementById('thinkingIndicator');
+            indicator.classList.remove('active');
+            indicator.innerHTML = '';
             isThinking = false;
         }
 
@@ -1881,8 +2037,19 @@
 
                 voiceRecognition.onresult = function(event) {
                     const result = event.results[0][0].transcript;
-                    document.getElementById('messageInput').value = result;
-                    showNotification('语音识别完成！', 'success');
+
+                    // 重置语音按钮状态
+                    isVoiceRecording = false;
+                    const voiceBtn = document.querySelector('.voice-btn');
+                    voiceBtn.style.background = 'linear-gradient(135deg, #ed8936 0%, #dd6b20 100%)';
+                    voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+
+                    // 将识别结果放入输入框
+                    const input = document.getElementById('messageInput');
+                    input.value = result;
+                    input.focus();
+
+                    showNotification('语音识别完成，请检查后发送', 'success');
                 };
 
                 voiceRecognition.onerror = function(event) {
@@ -1892,20 +2059,30 @@
         }
 
         function startVoiceInput() {
-            if (typeof VoiceInputManager !== 'undefined') {
-                if (!window.voiceManagerInstance) {
-                    window.voiceManagerInstance = new VoiceInputManager();
-                }
-                window.voiceManagerInstance.startVoiceInput();
-            } else {
-                // 原来的简单实现作为后备
-                if (voiceRecognition) {
+            if (voiceRecognition && !isVoiceRecording) {
+                try {
+                    // 清空当前输入框内容
+                    document.getElementById('messageInput').value = '';
+
                     voiceRecognition.start();
+                    isVoiceRecording = true;
                     showNotification('正在监听语音输入...', 'info');
-                    // ... 你的原始代码
-                } else {
-                    showNotification('浏览器不支持语音识别功能', 'warning');
+
+                    const voiceBtn = document.querySelector('.voice-btn');
+                    voiceBtn.style.background = 'linear-gradient(135deg, #e53e3e 0%, #c53030 100%)';
+                    voiceBtn.innerHTML = '<i class="fas fa-stop"></i>';
+                } catch (error) {
+                    console.error('语音识别启动失败:', error);
+                    showNotification('语音识别启动失败', 'error');
                 }
+            } else if (isVoiceRecording) {
+                voiceRecognition.stop();
+                isVoiceRecording = false;
+                const voiceBtn = document.querySelector('.voice-btn');
+                voiceBtn.style.background = 'linear-gradient(135deg, #ed8936 0%, #dd6b20 100%)';
+                voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            } else {
+                showNotification('浏览器不支持语音识别功能', 'warning');
             }
         }
 
@@ -2284,7 +2461,6 @@
             };
         }
     </script>
-    <script src="assets/js/voice.js"></script>
     <script src="assets/js/voice-integration.js"></script>
 </body>
 </html>

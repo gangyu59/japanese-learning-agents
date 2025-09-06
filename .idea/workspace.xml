@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa9ee9da-64dc-4a4a-8082-3a8574f5e2b5" name="Changes" comment="v8.1&#10;语音输入完善：&#10;在系统识别语音的过程中话筒按钮缓慢闪烁，表示系统在工作，内容出来后就停止">
-      <change afterPath="$PROJECT_DIR$/frontend/assets/js/voice-integration.js" afterDir="false" />
+    <list default="true" id="fa9ee9da-64dc-4a4a-8082-3a8574f5e2b5" name="Changes" comment="v8.2&#10;语音播放初步实现，有待完整测试。">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/assets/css/voice-minimal.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/css/voice-minimal.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/assets/js/voice.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/voice.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/assets/js/voice-integration.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/assets/js/voice-integration.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/japanese_learning.db" beforeDir="false" afterPath="$PROJECT_DIR$/japanese_learning.db" afterDir="false" />
     </list>
@@ -20,15 +18,16 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="CSS File" />
         <option value="JavaScript File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -49,6 +48,7 @@
     "JavaScript Debug.multi_agent_collaboration.html.executor": "Run",
     "JavaScript Debug.profile.html.executor": "Run",
     "JavaScript Debug.settings.html.executor": "Run",
+    "JavaScript Debug.voice-test.html.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
@@ -114,7 +114,7 @@
       <option name="presentableId" value="Default" />
       <updated>1756270554009</updated>
       <workItem from="1756270562930" duration="4000" />
-      <workItem from="1756861700781" duration="74658000" />
+      <workItem from="1756861700781" duration="87224000" />
     </task>
     <task id="LOCAL-00001" summary="v6.3&#10;进行了五项测试包括：数据持续性、数据库连接、端到端集成、单智能体回归、多智能体协作。现在除了多智能体协作模块以外其它的测试都100%通过了。">
       <option name="closed" value="true" />
@@ -188,7 +188,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757134212878</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="v8.2&#10;语音播放初步实现，有待完整测试。">
+      <option name="closed" value="true" />
+      <created>1757136100610</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1757136100610</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -215,6 +223,7 @@
     <MESSAGE value="v7.3&#10;学习进展追踪基本成功了：。&#10;✅ 数据库正常，包含真实学习数据&#10;✅ 进度计算引擎正常工作&#10;✅ API查询功能完全正常&#10;✅ 前端可以显示真实进度&#10;❌ 只是自动追踪有技术问题" />
     <MESSAGE value="v8.0&#10;语音输入成功了：。&#10;✅ 识别准确&#10;✅ 输入简介&#10;✅ 与智能体互动正常&#10;❌ 识别过程中希望用hourglass来告知用户" />
     <MESSAGE value="v8.1&#10;语音输入完善：&#10;在系统识别语音的过程中话筒按钮缓慢闪烁，表示系统在工作，内容出来后就停止" />
-    <option name="LAST_COMMIT_MESSAGE" value="v8.1&#10;语音输入完善：&#10;在系统识别语音的过程中话筒按钮缓慢闪烁，表示系统在工作，内容出来后就停止" />
+    <MESSAGE value="v8.2&#10;语音播放初步实现，有待完整测试。" />
+    <option name="LAST_COMMIT_MESSAGE" value="v8.2&#10;语音播放初步实现，有待完整测试。" />
   </component>
 </project>

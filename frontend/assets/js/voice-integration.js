@@ -144,40 +144,86 @@ function speakMessageContent(content, buttonElement) {
     buttonElement.innerHTML = '<i class="fas fa-cog fa-spin"></i>';
 
     try {
-        // 清理内容
+        // 清理内容 - 只保留日语部分
         const cleanContent = cleanTextForSpeech(content);
 
         if (!cleanContent.trim()) {
             if (window.showNotification) {
-                window.showNotification('没有可播放的内容', 'warning');
+                window.showNotification('没有可播放的日语内容', 'warning');
             }
             resetSpeakerButton(buttonElement);
             return;
         }
 
-        console.log('清理后的内容:', cleanContent);
+        console.log('清理后的日语内容:', cleanContent);
+
+        // 检测智能体类型
+        const messageElement = buttonElement.closest('.message');
+        console.log('消息元素:', messageElement);
+
+        // 尝试多种方式获取发送者名称
+        const senderElement1 = messageElement.querySelector('.sender-name');
+        const senderElement2 = messageElement.querySelector('strong');
+        const senderElement3 = messageElement.querySelector('.message-meta strong');
+
+        console.log('方式1 (.sender-name):', senderElement1?.textContent);
+        console.log('方式2 (strong):', senderElement2?.textContent);
+        console.log('方式3 (.message-meta strong):', senderElement3?.textContent);
+
+        // 也检查头像来确定智能体
+        const avatarElement = messageElement.querySelector('.message-avatar');
+        console.log('头像内容:', avatarElement?.textContent);
+
+        let senderName = '';
+        if (senderElement3) {
+            senderName = senderElement3.textContent.trim();
+        } else if (senderElement2) {
+            senderName = senderElement2.textContent.trim();
+        } else if (senderElement1) {
+            senderName = senderElement1.textContent.trim();
+        }
+
+        // 如果还是找不到，通过头像判断
+        if (!senderName && avatarElement) {
+            const avatar = avatarElement.textContent.trim();
+            switch(avatar) {
+                case '👧': senderName = '小美'; break;
+                case '👨‍🏫': senderName = '田中先生'; break;
+                case '🤖': senderName = 'アイ'; break;
+                case '🎌': senderName = '山田先生'; break;
+                case '🎯': senderName = '佐藤教练'; break;
+                case '🧠': senderName = '记忆管家'; break;
+            }
+        }
+
+        console.log('最终确定的发送者:', `"${senderName}"`);
 
         // 创建语音合成实例
         const utterance = new SpeechSynthesisUtterance(cleanContent);
         utterance.lang = 'ja-JP';
-        utterance.rate = 0.8;
-        utterance.pitch = 1.0;
         utterance.volume = 0.8;
+
+        // 根据智能体设置语音参数
+        let voiceConfig = getVoiceConfig(senderName);
+        utterance.rate = voiceConfig.rate;
+        utterance.pitch = voiceConfig.pitch;
 
         // 设置日语语音
         const setVoice = () => {
             const voices = speechSynthesis.getVoices();
-            const japaneseVoice = voices.find(v =>
-                v.lang.startsWith('ja') ||
-                v.name.toLowerCase().includes('japanese') ||
-                v.name.toLowerCase().includes('japan')
-            );
+            console.log('可用语音数量:', voices.length);
 
-            if (japaneseVoice) {
-                utterance.voice = japaneseVoice;
-                console.log('使用日语语音:', japaneseVoice.name);
+            // 打印所有日语语音供调试
+            const japaneseVoices = voices.filter(v => v.lang.startsWith('ja'));
+            console.log('可用的日语语音:', japaneseVoices.map(v => `${v.name} (${v.lang})`));
+
+            let selectedVoice = selectVoiceForAgent(voices, senderName);
+
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+                console.log(`${senderName} 使用语音: ${selectedVoice.name} (${selectedVoice.lang})`);
             } else {
-                console.warn('未找到日语语音，使用默认语音');
+                console.warn('未找到合适的日语语音，使用默认语音');
             }
         };
 
@@ -224,30 +270,146 @@ function speakMessageContent(content, buttonElement) {
     }
 }
 
+
+// 为智能体选择合适的语音
+function selectVoiceForAgent(voices, senderName) {
+    // 过滤出日语语音
+    const japaneseVoices = voices.filter(v => v.lang.startsWith('ja'));
+
+    if (japaneseVoices.length === 0) {
+        return null;
+    }
+
+    console.log('为', senderName, '选择语音，可用语音:', japaneseVoices.map(v => v.name));
+
+    let selectedVoice = null;
+
+    if (senderName.includes('小美')) {
+        // 小美：先尝试 Ayumi（童声，像少女），再尝试 Sayaka，最后用默认第一个
+        selectedVoice = japaneseVoices.find(v => v.name.includes('Ayumi')) ||
+                      japaneseVoices.find(v => v.name.includes('Sayaka')) ||
+                      japaneseVoices[0]; // 使用第一个日语语音作为备选
+        console.log('小美使用少女声音:', selectedVoice?.name);
+    }
+    else if (senderName.includes('アイ')) {
+        // AI：使用 Haruka（听起来比较像AI/童声）
+        selectedVoice = japaneseVoices.find(v => v.name.includes('Haruka'));
+        console.log('アイ使用童声/AI声音:', selectedVoice?.name);
+    }
+    else if (senderName.includes('记忆管家')) {
+        // 记忆管家：使用 Ayumi（童声效果）
+        selectedVoice = japaneseVoices.find(v => v.name.includes('Ayumi'));
+        console.log('记忆管家使用童声:', selectedVoice?.name);
+    }
+    else if (senderName.includes('田中先生')) {
+        // 田中先生：使用 Ichiro（成熟男声）
+        selectedVoice = japaneseVoices.find(v => v.name.includes('Ichiro'));
+        console.log('田中先生使用成熟男声:', selectedVoice?.name);
+    }
+    else if (senderName.includes('山田先生')) {
+        // 山田先生：用 Ichiro 但调整参数
+        selectedVoice = japaneseVoices.find(v => v.name.includes('Ichiro'));
+        console.log('山田先生使用男声（温和版）:', selectedVoice?.name);
+    }
+    else if (senderName.includes('佐藤教练')) {
+        // 佐藤教练：用 Ichiro 但参数更激烈
+        selectedVoice = japaneseVoices.find(v => v.name.includes('Ichiro'));
+        console.log('佐藤教练使用男声（激励版）:', selectedVoice?.name);
+    }
+
+    // 如果没找到指定语音，使用默认
+    if (!selectedVoice) {
+        selectedVoice = japaneseVoices[0];
+        console.log('使用默认语音:', selectedVoice.name);
+    }
+
+    console.log('最终选择:', selectedVoice.name);
+    return selectedVoice;
+}
+
+
+// 更新语音参数配置，让相同语音听起来不同
+function getVoiceConfig(senderName) {
+    if (senderName.includes('小美')) {
+        return {
+            rate: 1.1,   // 稍快（活泼少女）
+            pitch: 1.4   // 很高音调（少女声）
+        };
+    } else if (senderName.includes('アイ')) {
+        return {
+            rate: 0.8,   // 慢速（机器感）
+            pitch: 0.7   // 低音调（AI/童声机器化）
+        };
+    } else if (senderName.includes('记忆管家')) {
+        return {
+            rate: 0.9,   // 稍慢（系统化）
+            pitch: 1.3   // 高音调（童声）
+        };
+    } else if (senderName.includes('田中先生')) {
+        return {
+            rate: 0.75,  // 很慢（严格老师）
+            pitch: 0.8   // 低音调（权威感）
+        };
+    } else if (senderName.includes('山田先生')) {
+        return {
+            rate: 0.85,  // 慢速（温和）
+            pitch: 0.9   // 稍低音调（温和男声）
+        };
+    } else if (senderName.includes('佐藤教练')) {
+        return {
+            rate: 1.2,   // 快速（激励感）
+            pitch: 0.8   // 低音调（有力男声）
+        };
+    } else {
+        return {
+            rate: 0.8,
+            pitch: 1.0
+        };
+    }
+}
+
 /**
- * 清理文本用于语音播放
+ * 清理文本用于语音播放 - 只保留日语内容
  */
 function cleanTextForSpeech(text) {
     if (!text) return '';
 
+    console.log('原始文本:', text);
+
     let cleanText = text;
 
-    // 移除HTML标签
+    // 移除HTML标签和格式标记
     cleanText = cleanText.replace(/<[^>]*>/g, '');
+    cleanText = cleanText.replace(/\*\*/g, '');
+    cleanText = cleanText.replace(/（.*?）/g, '');
+    cleanText = cleanText.replace(/\(.*?\)/g, '');
 
-    // 移除模拟响应标记
-    cleanText = cleanText.replace(/\*\[.*?\]\*/g, '');
+    // 按句子分割，但保持更宽松的过滤
+    const sentences = cleanText.split(/[。．！？\n]/);
+    const japaneseSentences = [];
 
-    // 移除中文翻译部分（保留日语）
-    const parts = cleanText.split(/\*\*中文翻译：\*\*|\*\*中文提示：\*\*/);
-    if (parts.length > 1) {
-        cleanText = parts[0].trim();
+    for (let sentence of sentences) {
+        sentence = sentence.trim();
+        if (!sentence || sentence.length < 2) continue;
+
+        // 检查是否包含日文字符（平假名、片假名、或常见日语汉字）
+        const hasHiragana = /[\u3040-\u309F]/.test(sentence);
+        const hasKatakana = /[\u30A0-\u30FF]/.test(sentence);
+        const hasJapaneseKanji = /[申合格目指練習試験]/.test(sentence); // 常见日语汉字
+
+        // 检查是否是明显的中文解释段落
+        const isChineseExplanation = /[很高兴认识您|作为|一定|优秀|著名|重点大学|特别是|景色|非常有名|让我想起|如果您|学习|过程中|遇到|任何|问题|请随时|告诉我|详细解说|比如|区别|正确用法|变形规则|例如|句子中|主题|助词|表示|相当于|中文|礼貌体|断定|建议|可以从|每天|基础|配合|例句|进行|记忆|期待|一起|探索]/.test(sentence);
+
+        // 如果包含日文字符且不是中文解释，就保留
+        if ((hasHiragana || hasKatakana || hasJapaneseKanji) && !isChineseExplanation) {
+            japaneseSentences.push(sentence);
+        }
     }
 
-    // 移除多余的空白字符
-    cleanText = cleanText.replace(/\s+/g, ' ').trim();
+    const result = japaneseSentences.join('。');
+    console.log('过滤后的日语:', result);
 
-    return cleanText;
+    return result;
 }
 
 /**
@@ -364,3 +526,31 @@ window.voiceIntegration = {
 };
 
 console.log('语音集成模块已加载');
+
+// 调试函数：列出所有可用语音
+function debugAvailableVoices() {
+    const voices = speechSynthesis.getVoices();
+    console.log('=== 所有可用语音 ===');
+    voices.forEach((voice, index) => {
+        console.log(`${index}: ${voice.name} (${voice.lang}) - ${voice.localService ? '本地' : '远程'}`);
+    });
+
+    const japaneseVoices = voices.filter(v => v.lang.startsWith('ja'));
+    console.log('=== 日语语音 ===');
+    japaneseVoices.forEach((voice, index) => {
+        console.log(`${index}: ${voice.name} (${voice.lang})`);
+    });
+}
+
+// 兼容函数：为了支持 index.html 中可能调用 speakMessage 的地方
+window.speakMessage = function(buttonElement) {
+    const content = buttonElement.getAttribute('data-content');
+    if (content) {
+        speakMessageContent(decodeURIComponent(content), buttonElement);
+    }
+};
+
+// 确保这些函数也可以全局访问
+window.resetAllSpeakerButtons = resetAllSpeakerButtons;
+window.resetSpeakerButton = resetSpeakerButton;
+window.debugAvailableVoices = debugAvailableVoices;
