@@ -655,6 +655,7 @@
             }
         }
     </style>
+    <link href="assets/css/voice-minimal.css" rel="stylesheet">
 </head>
 <body>
     <!-- 新增：顶部导航栏 -->
@@ -1785,20 +1786,20 @@
         }
 
         function startVoiceInput() {
-            if (voiceRecognition) {
-                voiceRecognition.start();
-                showNotification('正在监听语音输入...', 'info');
-
-                const voiceBtn = document.querySelector('.voice-btn');
-                voiceBtn.style.background = 'linear-gradient(135deg, #e53e3e 0%, #c53030 100%)';
-                voiceBtn.innerHTML = '<i class="fas fa-stop"></i>';
-
-                setTimeout(() => {
-                    voiceBtn.style.background = 'linear-gradient(135deg, #ed8936 0%, #dd6b20 100%)';
-                    voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-                }, 3000);
+            if (typeof VoiceInputManager !== 'undefined') {
+                if (!window.voiceManagerInstance) {
+                    window.voiceManagerInstance = new VoiceInputManager();
+                }
+                window.voiceManagerInstance.startVoiceInput();
             } else {
-                showNotification('浏览器不支持语音识别功能', 'warning');
+                // 原来的简单实现作为后备
+                if (voiceRecognition) {
+                    voiceRecognition.start();
+                    showNotification('正在监听语音输入...', 'info');
+                    // ... 你的原始代码
+                } else {
+                    showNotification('浏览器不支持语音识别功能', 'warning');
+                }
             }
         }
 
@@ -2156,6 +2157,28 @@
                 });
             });
         }
+
+        // 语音功能增强
+        if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+            let voiceManager = null;
+
+            // 重写 startVoiceInput 函数
+            const originalStartVoiceInput = window.startVoiceInput;
+            window.startVoiceInput = function() {
+                if (!voiceManager) {
+                    try {
+                        voiceManager = new VoiceInputManager();
+                    } catch (error) {
+                        console.error('语音功能初始化失败:', error);
+                        if (originalStartVoiceInput) originalStartVoiceInput();
+                        return;
+                    }
+                }
+                voiceManager.startVoiceInput();
+            };
+        }
     </script>
+    <script src="assets/js/voice.js"></script>
+    <script src="assets/js/voice-integration.js"></script>
 </body>
 </html>

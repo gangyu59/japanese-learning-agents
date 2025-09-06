@@ -1,0 +1,171 @@
+/**
+ * 最小语音样式文件
+ * 路径: frontend/assets/css/voice-minimal.css
+ * 功能: 只添加语音功能的样式，不影响现有页面
+ */
+
+/* 语音按钮增强样式 */
+.voice-btn.listening {
+    animation: voice-pulse 1.5s infinite;
+    box-shadow: 0 0 15px rgba(229, 62, 62, 0.5);
+}
+
+@keyframes voice-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 8px rgba(229, 62, 62, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(229, 62, 62, 0);
+    }
+}
+
+/* 语音波形动画 */
+.voice-wave {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+    display: none;
+}
+
+.voice-btn.listening .voice-wave {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.voice-wave span {
+    width: 3px;
+    height: 15px;
+    background: #e53e3e;
+    border-radius: 2px;
+    animation: voice-wave 1.2s infinite ease-in-out;
+}
+
+.voice-wave span:nth-child(2) { animation-delay: 0.1s; }
+.voice-wave span:nth-child(3) { animation-delay: 0.2s; }
+.voice-wave span:nth-child(4) { animation-delay: 0.3s; }
+.voice-wave span:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes voice-wave {
+    0%, 40%, 100% {
+        transform: scaleY(0.4);
+        opacity: 0.5;
+    }
+    20% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+/* 语音状态指示器 */
+.voice-status-mini {
+    font-size: 0.8em;
+    color: #666;
+    text-align: center;
+    padding: 4px;
+    background: rgba(66, 153, 225, 0.1);
+    border-radius: 4px;
+    margin-top: 4px;
+    display: none;
+}
+
+/* 语音识别候选项对话框 */
+.voice-alternatives-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+}
+
+.voice-alternatives-dialog .dialog-content {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.voice-alternatives-dialog h4 {
+    margin: 0 0 20px 0;
+    color: #333;
+    text-align: center;
+}
+
+.alternatives-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.alternative-btn {
+    padding: 12px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+
+.alternative-btn:hover,
+.alternative-btn.selected {
+    border-color: #4299e1;
+    background: #ebf8ff;
+    transform: translateY(-2px);
+}
+
+.alternative-btn.selected {
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.3);
+}
+
+.dialog-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.dialog-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-retry {
+    background: #4299e1;
+    color: white;
+}
+
+.btn-retry:hover {
+    background: #3182ce;
+}
+
+.btn-cancel {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.btn-cancel:hover {
+    background: #cbd5e0;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
